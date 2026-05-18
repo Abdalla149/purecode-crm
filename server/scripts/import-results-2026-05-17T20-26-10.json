@@ -1,0 +1,493 @@
+{
+  "created": [
+    {
+      "name": "All In Roofing",
+      "phone": "(323) 287-2407",
+      "id": "nTOHtXL6Q1rN8CBQjiBE"
+    },
+    {
+      "name": "Kayhan's Roofing",
+      "phone": "(818) 938-2233",
+      "id": "1zwKx2aGzpysGSbeMVYE"
+    },
+    {
+      "name": "Francisco's Roofing Inc.",
+      "phone": "(323) 253-5146",
+      "id": "nVWe0fQaVNKRVujq5BTT"
+    },
+    {
+      "name": "The Local Roofers Builder",
+      "phone": "(213) 322-6765",
+      "id": "fy1ayFtwa4immusIJMmT"
+    },
+    {
+      "name": "Metal Roofing Los Angeles",
+      "phone": "(323) 968-6348",
+      "id": "julEYBCS6coATacDkbGc"
+    },
+    {
+      "name": "Prime Craft Roof Systems",
+      "phone": "(424) 497-7559",
+      "id": "qgoyzm9G4TEmvZ13WbvJ"
+    },
+    {
+      "name": "LA Roofing Contractors",
+      "phone": "(323) 900-5107",
+      "id": "g4MiyLJzcKHuG2eEj3ow"
+    },
+    {
+      "name": "LA Roofing Masters",
+      "phone": "(567) 806-1116",
+      "id": "71JRmv7cfvX0cx6HA2w7"
+    },
+    {
+      "name": "Golden Winter Roofing Painting",
+      "phone": "(213) 908-6594",
+      "id": "2ODJWok66bjGfACCW3tO"
+    },
+    {
+      "name": "Best Team Roofing & Exteriors",
+      "phone": "(213) 642-2600",
+      "id": "jlWzKilgO9C2V6PzXmPE"
+    },
+    {
+      "name": "Golden Team Roofing",
+      "phone": "(310) 499-6183",
+      "id": "tPub3G8kiGDcR60JUsBe"
+    },
+    {
+      "name": "California First Roofing",
+      "phone": "(424) 777-1619",
+      "id": "EUHV24s4h6Lnw6kyOJuY"
+    },
+    {
+      "name": "LA Roof Masters Hollywood",
+      "phone": "(323) 948-0159",
+      "id": "ye65l6NAD6JWYsAuLXRL"
+    },
+    {
+      "name": "The Los Angeles Roofers",
+      "phone": "(323) 207-4996",
+      "id": "KYjPUqxkGYp4GcFYzbu9"
+    },
+    {
+      "name": "Atlas Roofing",
+      "phone": "(866) 303-2912",
+      "id": "wzNmc1JVbo9MgRjM9giF"
+    },
+    {
+      "name": "Roofing Specialists of San Diego",
+      "phone": "(858) 922-5903",
+      "id": "RlnF9D44XDcwGG7LqysS"
+    },
+    {
+      "name": "Peak Builders & Roofers of San Diego",
+      "phone": "(619) 330-1299",
+      "id": "S8WidOd2JJumjjPafZKg"
+    },
+    {
+      "name": "619 Roofing",
+      "phone": "(619) 609-0214",
+      "id": "FHXJrwsZTPhgMuYhm8VR"
+    },
+    {
+      "name": "San Diego Roofing, INC.",
+      "phone": "(619) 280-1000",
+      "id": "UoyVvLOJoC175fb4V59n"
+    },
+    {
+      "name": "Alma Roofing",
+      "phone": "(619) 693-3670",
+      "id": "OYJm6LHITPumwMNWBXCs"
+    },
+    {
+      "name": "Colin's Emergency Roofers",
+      "phone": "(858) 923-4199",
+      "id": "TGDQYc8gG5pDhhTjBiYW"
+    },
+    {
+      "name": "Shake, Shingle & Roll Roofing",
+      "phone": "(858) 278-7791",
+      "id": "jFkLFUrmFJutL58vgpWv"
+    },
+    {
+      "name": "Coast Remodeling Services",
+      "phone": "(858) 325-9045",
+      "id": "ALPh8jzJb3AuB4nsgLIK"
+    },
+    {
+      "name": "RC Roofing Inc.",
+      "phone": "(858) 274-8920",
+      "id": "jn6sIcTgkaFOXFZJwBg3"
+    },
+    {
+      "name": "Resilient Roofing",
+      "phone": "(619) 501-2138",
+      "id": "5qdxCZ47dp7BYeLyx4P4"
+    },
+    {
+      "name": "Exclusively Roofing Inc.",
+      "phone": "(619) 663-1261",
+      "id": "JaJHSxEN7yMYQzO1UJZH"
+    },
+    {
+      "name": "Pioneer Roofing Company",
+      "phone": "(619) 432-7663",
+      "id": "9bMOvOzKfFrX8i5TPlhF"
+    },
+    {
+      "name": "Dana Logsdon Roofing San Diego",
+      "phone": "(619) 390-8177",
+      "id": "eONakarNM41lvZqu0xz3"
+    },
+    {
+      "name": "RSI Roofing",
+      "phone": "(858) 278-7200",
+      "id": "baomKm2JvOgEzyUW1HKn"
+    },
+    {
+      "name": "San Diego County Roofing & Solar",
+      "phone": "(855) 732-6868",
+      "id": "Cb3UsakLeWBO9FAUik9K"
+    },
+    {
+      "name": "Ascent Roofing San Diego",
+      "phone": "(858) 758-3594",
+      "id": "BIi0yCI0VrKfFpBVEoeX"
+    },
+    {
+      "name": "Christian Roofing, Inc",
+      "phone": "(619) 812-2407",
+      "id": "RiWd3vmCteKyOT5zKHsY"
+    },
+    {
+      "name": "RM Roofing Inc.",
+      "phone": "(619) 765-2837",
+      "id": "E72UVquEHpcYE5jhCXFy"
+    },
+    {
+      "name": "San Francisco Roofing Pro",
+      "phone": "(628) 500-7390",
+      "id": "07TjTd877prHQSDOhRr7"
+    },
+    {
+      "name": "Marina Bay Roofing",
+      "phone": "(628) 233-8140",
+      "id": "ymdcYHVsukRv2E1oFghZ"
+    },
+    {
+      "name": "Apollo Roofing Company",
+      "phone": "(925) 701-8458",
+      "id": "yg9h2AsnWyLQc8BpxCxQ"
+    },
+    {
+      "name": "San Francisco Roofing Service",
+      "phone": "(321) 358-0420",
+      "id": "hcDiAjaZWUDXos0mqbAG"
+    },
+    {
+      "name": "Blake Roofing",
+      "phone": "(628) 500-9304",
+      "id": "Wu9CsyZmwwvYaGX4BPol"
+    },
+    {
+      "name": "SF Roof Specialists",
+      "phone": "(628) 209-0999",
+      "id": "q6pqBfFDa8qtDS0vzpTP"
+    },
+    {
+      "name": "New City Roofing Co",
+      "phone": "(628) 300-3022",
+      "id": "R9WYGeF79cURXDcZiEkG"
+    },
+    {
+      "name": "ROOF EXPRESS",
+      "phone": "(650) 666-5554",
+      "id": "zWjwQvIv676zqyU3ZJHb"
+    },
+    {
+      "name": "Eco Smart Roofer",
+      "phone": "(415) 240-9840",
+      "id": "SRKEsL7UXNWWeP5vQVbb"
+    },
+    {
+      "name": "Ace Roofing SF, Inc",
+      "phone": "(415) 872-9300",
+      "id": "gx5gpafli99TECNSeWJz"
+    },
+    {
+      "name": "ELM Roofing Contractors Inc",
+      "phone": "(415) 534-4396",
+      "id": "PvRu1iGL2h9J3zh4ZvOM"
+    },
+    {
+      "name": "San Francisco Roofing",
+      "phone": "(415) 317-5576",
+      "id": "AqfhX6WMprtBlT1Drhkh"
+    },
+    {
+      "name": "Premier Roofing Solutions",
+      "phone": "(628) 877-2090",
+      "id": "kgIRaA9RUvzTLh7s69a9"
+    },
+    {
+      "name": "ROOFWORX Inc.",
+      "phone": "(855) 717-5620",
+      "id": "YHnSx3Z5KlVaiHUx8wuK"
+    },
+    {
+      "name": "Apex Roofing Company",
+      "phone": "(628) 500-9096",
+      "id": "unVVfLbrGoV0sAGEAqXP"
+    },
+    {
+      "name": "7x7 Roofing",
+      "phone": "(415) 535-8170",
+      "id": "1xsT3NxFspYdQmsAyOS3"
+    },
+    {
+      "name": "Royal Roofing CA",
+      "phone": "(408) 418-2474",
+      "id": "Blbr3v1iIoWIGw5wkNNe"
+    },
+    {
+      "name": "Roof Doctor",
+      "phone": "(415) 801-0116",
+      "id": "6xEWN4xTKFq3zSSBIpkm"
+    },
+    {
+      "name": "Dominguez Roofing",
+      "phone": "(341) 234-3280",
+      "id": "dogGVVMnbPdzPYFaiKfz"
+    },
+    {
+      "name": "Apollo Roofing Company",
+      "phone": "(669) 201-3290",
+      "id": "a6SHlvQbdYc0cT5YH4TE"
+    },
+    {
+      "name": "Los Gatos Roofing",
+      "phone": "(408) 677-2818",
+      "id": "NGMISwOQofjneJPJAixO"
+    },
+    {
+      "name": "San Jose Roofing - Keith Roofing Company",
+      "phone": "(408) 295-8616",
+      "id": "jnXtgerREwrMl5VsoZYn"
+    },
+    {
+      "name": "Eastman Roofing & Waterproofing, Inc.",
+      "phone": "(408) 389-1385",
+      "id": "5BgL4vlgpWiqcxdm70dl"
+    },
+    {
+      "name": "Trio Roofers",
+      "phone": "(408) 886-9287",
+      "id": "ZWgkJEKjx1O0EhMtMVri"
+    },
+    {
+      "name": "Newhaus Roofing & Construction",
+      "phone": "(855) 846-5355",
+      "id": "atIKyItnuPh7r58xx9ms"
+    },
+    {
+      "name": "NR Roofing CA",
+      "phone": "(669) 345-4555",
+      "id": "Mm2uzlOBNn7btKkvkAx6"
+    },
+    {
+      "name": "All About Roofing Repair & Installation",
+      "phone": "(408) 426-0590",
+      "id": "V9SKoO43BqSMuzPKEMmI"
+    },
+    {
+      "name": "Master Craft Roofing",
+      "phone": "(408) 472-4668",
+      "id": "nmIV01b94T6bwDC9Vc9d"
+    },
+    {
+      "name": "Top Home Roofers",
+      "phone": "(408) 443-2520",
+      "id": "7TKAZBFXWBUhcggTcPgf"
+    },
+    {
+      "name": "Any Roof Repair & Installation",
+      "phone": "(669) 304-3716",
+      "id": "YuqKibvrY94RAuQQ0Aah"
+    },
+    {
+      "name": "Roofs By Reveille, Inc",
+      "phone": "(800) 395-7855",
+      "id": "AfQ5hLk8mhpdATYFNjsp"
+    },
+    {
+      "name": "Conrad Roofing Service",
+      "phone": "(408) 294-7615",
+      "id": "0rFz5YidwyDtaZVqD6LY"
+    },
+    {
+      "name": "Westshore Roofing, Inc.",
+      "phone": "(408) 456-0200",
+      "id": "Z1NclWTJWL3mx0sIJieV"
+    },
+    {
+      "name": "Diamond Ridge Roofing Systems",
+      "phone": "(669) 348-2500",
+      "id": "wjAo0WR51hN82ZSInvZS"
+    },
+    {
+      "name": "California Roofing Center",
+      "phone": "(888) 491-3532",
+      "id": "nirTFPLSVfBIXX3WzPpv"
+    },
+    {
+      "name": "Best Roof Repair",
+      "phone": "(669) 305-6780",
+      "id": "DECpUORY04hOuT2c0KWP"
+    },
+    {
+      "name": "South Bay Skyline Roofing",
+      "phone": "(650) 507-7500",
+      "id": "w6s3HXQPlnpZimmbgCj8"
+    },
+    {
+      "name": "R E Roofing & Construction Inc.",
+      "phone": "(408) 626-9320",
+      "id": "HEbs2VHcsP0ptcM948x2"
+    },
+    {
+      "name": "Clean Roofing",
+      "phone": "(888) 336-2115",
+      "id": "ZqtidKYYRbZ0TYXQjYeA"
+    },
+    {
+      "name": "Roof Pros Roofing & General Construction",
+      "phone": "(559) 408-6506",
+      "id": "2J9O84INc8vjPwjCQgdH"
+    },
+    {
+      "name": "Best Choice Roofing",
+      "phone": "(559) 575-2734",
+      "id": "6M8RCErO55rf5iWKWfjl"
+    },
+    {
+      "name": "New View Roofing",
+      "phone": "(559) 326-8683",
+      "id": "3OoKPpKhlUzVcpItUYy3"
+    },
+    {
+      "name": "Roof Maxx of N. Fresno, CA",
+      "phone": "(559) 550-6398",
+      "id": "4HUXwDEbI2nSJ39ZtOTV"
+    },
+    {
+      "name": "Grandmark Roofing",
+      "phone": "(559) 272-7495",
+      "id": "RZIjwrHmKHGOcALQp4JB"
+    },
+    {
+      "name": "High Impact Roofing Inc",
+      "phone": "(559) 477-2671",
+      "id": "Ede7LkjTmzH2jMv2ObmP"
+    },
+    {
+      "name": "HGC Roofing INC",
+      "phone": "(559) 691-7223",
+      "id": "b0jJdewBgL9DtYAlAeZP"
+    },
+    {
+      "name": "The Roofing Crew LLC",
+      "phone": "(559) 283-3020",
+      "id": "Uduk7JfzGaYWFqXcxaZY"
+    },
+    {
+      "name": "A&C Pro Roofing",
+      "phone": "(559) 558-2634",
+      "id": "rWt4LsE6e4FHIB1ITfVR"
+    },
+    {
+      "name": "Authentic Roofs",
+      "phone": "(559) 916-5251",
+      "id": "IXvaowJ11jPJ7YeNKU4D"
+    },
+    {
+      "name": "Hi Tech Roofing services Co.",
+      "phone": "(559) 270-0917",
+      "id": "uUV8ywK1g1a6ZrGGINx1"
+    },
+    {
+      "name": "Zinc Roofing & Air Conditioning",
+      "phone": "(559) 352-3140",
+      "id": "LuXufZ3R5YM7qKcxUcC6"
+    },
+    {
+      "name": "Fresno Roofing Co Inc",
+      "phone": "(559) 255-8377",
+      "id": "HIcARH4u111fdxops9bD"
+    },
+    {
+      "name": "AAA Roofing",
+      "phone": "(559) 704-4880",
+      "id": "DOcYkDc7BRt7zck0SvAO"
+    },
+    {
+      "name": "Apex Valley Roofing, Inc",
+      "phone": "(559) 435-6474",
+      "id": "4bydhML56AbsteGSKboC"
+    },
+    {
+      "name": "Roofs 4 Less",
+      "phone": "(559) 818-0638",
+      "id": "f5OUaeFmNB7RCPeZdi6J"
+    }
+  ],
+  "duplicates": [
+    {
+      "name": "Benefit Roofing",
+      "phone": "(800) 670-2551",
+      "id": "kkAJfgt2FjezqVo8jrnJ"
+    },
+    {
+      "name": "Bilt-Well Roofing",
+      "phone": "(323) 254-2888",
+      "id": "uEcUDNfsJ1v7lK9UqG53"
+    },
+    {
+      "name": "Costar Roofing inc",
+      "phone": "(818) 337-1212",
+      "id": "JUKhqq4FF3BytAimsIbd"
+    },
+    {
+      "name": "Treven Zael Roofing",
+      "phone": "(213) 232-9700",
+      "id": "53lfUqrd5N45FTtGXrgR"
+    },
+    {
+      "name": "Evo Roof Repair Los Angeles",
+      "phone": "(323) 593-2556",
+      "id": "JDSg4EUUJlcYhqPBMprG"
+    },
+    {
+      "name": "California First Roofing",
+      "phone": "(424) 777-1619",
+      "id": "EUHV24s4h6Lnw6kyOJuY"
+    },
+    {
+      "name": "Bay Contractors & Roofing",
+      "phone": "(321) 358-0420",
+      "id": "hcDiAjaZWUDXos0mqbAG"
+    },
+    {
+      "name": "Infinite Roofing Solutions",
+      "phone": "(559) 550-6398",
+      "id": "4HUXwDEbI2nSJ39ZtOTV"
+    }
+  ],
+  "skipped": [
+    {
+      "name": "California Roofers",
+      "reason": "no phone"
+    }
+  ],
+  "errors": []
+}

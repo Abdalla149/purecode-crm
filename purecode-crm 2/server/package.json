@@ -1,0 +1,19 @@
+{
+  "name": "purecode-crm-server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "PureCode CRM Backend — GHL + JustCall wrapper",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --watch index.js",
+    "start": "node index.js",
+    "hash-password": "node -e \"import('bcryptjs').then(b=>b.default.hash(process.argv[1],10).then(console.log))\" "
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

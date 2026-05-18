@@ -1,0 +1,37 @@
+{
+  "created": [
+    {
+      "name": "Treven Zael Roofing",
+      "phone": "(213) 232-9700",
+      "id": "53lfUqrd5N45FTtGXrgR"
+    },
+    {
+      "name": "Evo Roof Repair Los Angeles",
+      "phone": "(323) 593-2556",
+      "id": "JDSg4EUUJlcYhqPBMprG"
+    }
+  ],
+  "skipped": [
+    {
+      "name": "California Roofers",
+      "reason": "no phone"
+    }
+  ],
+  "errors": [
+    {
+      "name": "Benefit Roofing",
+      "phone": "(800) 670-2551",
+      "error": "HTTP 400: {\"statusCode\":400,\"message\":\"This location does not allow duplicated contacts.\",\"meta\":{\"contactName\":\"\",\"contactId\":\"kkAJfgt2FjezqVo8jrnJ\",\"matchingField\":\"phone\"},\"traceId\":\"f881426d-b1b2-4be8-bdc5-"
+    },
+    {
+      "name": "Bilt-Well Roofing",
+      "phone": "(323) 254-2888",
+      "error": "HTTP 400: {\"statusCode\":400,\"message\":\"This location does not allow duplicated contacts.\",\"meta\":{\"contactName\":\"\",\"contactId\":\"uEcUDNfsJ1v7lK9UqG53\",\"matchingField\":\"phone\"},\"traceId\":\"05f84e38-c264-4e41-85c7-"
+    },
+    {
+      "name": "Costar Roofing inc",
+      "phone": "(818) 337-1212",
+      "error": "HTTP 400: {\"statusCode\":400,\"message\":\"This location does not allow duplicated contacts.\",\"meta\":{\"contactName\":\"\",\"contactId\":\"JUKhqq4FF3BytAimsIbd\",\"matchingField\":\"phone\"},\"traceId\":\"b945499f-4cd2-43c8-a36c-"
+    }
+  ]
+}

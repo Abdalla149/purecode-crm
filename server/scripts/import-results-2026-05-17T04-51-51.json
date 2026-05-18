@@ -1,0 +1,370 @@
+{
+  "created": [],
+  "skipped": [
+    {
+      "name": "California Roofers",
+      "reason": "no phone"
+    },
+    {
+      "name": "Deacon Metal Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Earl Bennett Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "JR Custom Roofing Inc",
+      "reason": "no phone"
+    },
+    {
+      "name": "Final Touch Construction",
+      "reason": "no phone"
+    },
+    {
+      "name": "Los Angeles Roofing.",
+      "reason": "no phone"
+    },
+    {
+      "name": "Hilltop Construction Co",
+      "reason": "no phone"
+    },
+    {
+      "name": "All Seasons Roofing & Waterproofing, Inc.",
+      "reason": "no phone"
+    },
+    {
+      "name": "San Diego Expert Roofing Contractors",
+      "reason": "no phone"
+    },
+    {
+      "name": "Sam Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "A&R PREMIUM ROOFING COMPANY",
+      "reason": "no phone"
+    },
+    {
+      "name": "Roofing Costa Mesa Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Cortez Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Cooper Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Corona Gutter Cleaning Services",
+      "reason": "no phone"
+    },
+    {
+      "name": "Best Roofing Solution - Orange",
+      "reason": "no phone"
+    },
+    {
+      "name": "Superior Roofing Llc",
+      "reason": "no phone"
+    },
+    {
+      "name": "Tokos Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Sacramento Valley Roofing and Gutters",
+      "reason": "no phone"
+    },
+    {
+      "name": "Top Roof Professional",
+      "reason": "no phone"
+    },
+    {
+      "name": "Freedom Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Gorrocino Roofing Inc.",
+      "reason": "no phone"
+    },
+    {
+      "name": "Olivos Roofing and Gutters",
+      "reason": "no phone"
+    },
+    {
+      "name": "Anderson Roofing Co",
+      "reason": "no phone"
+    },
+    {
+      "name": "3 Bro's Roofing Inc",
+      "reason": "no phone"
+    },
+    {
+      "name": "Suncrest Roofing And Gutter Solutions",
+      "reason": "no phone"
+    },
+    {
+      "name": "Paramount Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "AOC Roofing Construction, Inc.",
+      "reason": "no phone"
+    },
+    {
+      "name": "Super Sigma Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Paramount Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "D.Garrison Roofing Co. Inc.",
+      "reason": "no phone"
+    },
+    {
+      "name": "IG roof repair-roofing repair in turlock near modesto manteca merced stockton madera roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Robert Freeman Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Tracy Roofing Pros",
+      "reason": "no phone"
+    },
+    {
+      "name": "Cool-Roofing Systems, Inc.",
+      "reason": "no phone"
+    },
+    {
+      "name": "Dann Heath",
+      "reason": "no phone"
+    },
+    {
+      "name": "Mario Bros. Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Chapman Coast Roof Company, Inc.",
+      "reason": "no phone"
+    },
+    {
+      "name": "Accurate Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Best Value Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Shane & Sons Roofing & Construction",
+      "reason": "no phone"
+    },
+    {
+      "name": "All Season's Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Summit Roofing & Gutters",
+      "reason": "no phone"
+    },
+    {
+      "name": "All Rain Roofing, Inc.",
+      "reason": "no phone"
+    },
+    {
+      "name": "J M Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "HD Roofing Contractor",
+      "reason": "no phone"
+    },
+    {
+      "name": "Rooftek Roofing Co",
+      "reason": "no phone"
+    },
+    {
+      "name": "Andes Roofing Corp",
+      "reason": "no phone"
+    },
+    {
+      "name": "Joe's Roofing Services",
+      "reason": "no phone"
+    },
+    {
+      "name": "Rod & Wes Clark's Roofing Co",
+      "reason": "no phone"
+    },
+    {
+      "name": "Timberline Roofing Solutions",
+      "reason": "no phone"
+    },
+    {
+      "name": "Paramount Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Milpitas Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Roofline Services Company",
+      "reason": "no phone"
+    },
+    {
+      "name": "Bill's Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Machu Picchu Roofing Inc",
+      "reason": "no phone"
+    },
+    {
+      "name": "VelmoraZ Roofing Services",
+      "reason": "no phone"
+    },
+    {
+      "name": "Blue Sky Roofing LLC",
+      "reason": "no phone"
+    },
+    {
+      "name": "Shelton Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "RoofRenew Services",
+      "reason": "no phone"
+    },
+    {
+      "name": "ALS Roofing & Construction",
+      "reason": "no phone"
+    },
+    {
+      "name": "Top Notch Roof Co",
+      "reason": "no phone"
+    },
+    {
+      "name": "Michael Fellman Siding And Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Metal Roofing Californias",
+      "reason": "no phone"
+    },
+    {
+      "name": "West Redding",
+      "reason": "no phone"
+    },
+    {
+      "name": "Best Contracting Services",
+      "reason": "no phone"
+    },
+    {
+      "name": "G C Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "C R J Roofing Vision Metal Inc.",
+      "reason": "no phone"
+    },
+    {
+      "name": "Nu-Ray Metals",
+      "reason": "no phone"
+    },
+    {
+      "name": "California Roofing Services Inc",
+      "reason": "no phone"
+    },
+    {
+      "name": "Top Roofing San Francisco",
+      "reason": "no phone"
+    },
+    {
+      "name": "Apovali roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "C B E Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "A&M ROOFING",
+      "reason": "no phone"
+    },
+    {
+      "name": "Brendan Roofing and Waterproofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Victor's Roofing & Construction",
+      "reason": "no phone"
+    },
+    {
+      "name": "Fox Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Mid-Peninsula Roofing, Inc.",
+      "reason": "no phone"
+    },
+    {
+      "name": "Provance Roofing Services",
+      "reason": "no phone"
+    },
+    {
+      "name": "Gold Star Roofing Co",
+      "reason": "no phone"
+    },
+    {
+      "name": "ELT Construction & Roofing owner at Straight Line Infrastructure LLC",
+      "reason": "no phone"
+    },
+    {
+      "name": "Jcv Specialists",
+      "reason": "no phone"
+    },
+    {
+      "name": "Scudder Roofing",
+      "reason": "no phone"
+    },
+    {
+      "name": "Prylanta Roofing Contractors",
+      "reason": "no phone"
+    },
+    {
+      "name": "Claremont Intuition Free Evaluation Roof Repair",
+      "reason": "no phone"
+    },
+    {
+      "name": "Chando Construction",
+      "reason": "no phone"
+    },
+    {
+      "name": "Del Rey Oaks",
+      "reason": "no phone"
+    }
+  ],
+  "errors": [
+    {
+      "name": "Benefit Roofing",
+      "phone": "(800) 670-2551",
+      "error": "HTTP 401: {\"msg\":\"Api key is invalid.\"}"
+    },
+    {
+      "name": "Bilt-Well Roofing",
+      "phone": "(323) 254-2888",
+      "error": "HTTP 401: {\"msg\":\"Api key is invalid.\"}"
+    },
+    {
+      "name": "Costar Roofing inc",
+      "phone": "(818) 337-1212",
+      "error": "HTTP 401: {\"msg\":\"Api key is invalid.\"}"
+    }
+  ]
+}

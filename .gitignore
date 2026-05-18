@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Environment — NEVER commit secrets
+.env
+.env.local
+server/.env
+server/.env.local
+
+# Build output
+client/dist/
+
+# Logs
+*.log
+/tmp/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PureCode CRM — UI Playbook v1</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07080b;--bg2:#0e0f14;--bg3:#151619;--bg4:#1c1d23;--bg5:#23242c;
+  --primary:#00e5a0;--primary-dim:rgba(0,229,160,0.1);--primary-glow:rgba(0,229,160,0.15);
+  --orange:#ff6b35;--orange-dim:rgba(255,107,53,0.12);
+  --blue:#4ea8de;--blue-dim:rgba(78,168,222,0.12);
+  --purple:#a78bfa;--purple-dim:rgba(167,139,250,0.12);
+  --gold:#f5c842;--gold-dim:rgba(245,200,66,0.12);
+  --red:#ff4d6a;--red-dim:rgba(255,77,106,0.12);
+  --text:#edeae3;--text2:#8a8780;--text3:#4a4845;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);
+  --r:8px;
+}
+html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:3px}
+
+/* ─── PLAYBOOK SHELL ─── */
+.playbook{max-width:1400px;margin:0 auto;padding:0 24px}
+
+/* ─── COVER ─── */
+.cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;padding:80px 0;border-bottom:1px solid var(--border)}
+.cover::before{content:'';position:absolute;width:900px;height:900px;background:radial-gradient(circle,rgba(0,229,160,0.06) 0%,transparent 60%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:0}
+.cover-inner{position:relative;z-index:1}
+.cover-meta{display:flex;align-items:center;gap:16px;margin-bottom:48px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+.cover-meta .dot{width:6px;height:6px;background:var(--primary);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.cover-tag{font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:var(--primary);letter-spacing:.18em;text-transform:uppercase;margin-bottom:24px}
+.cover-title{font-family:'Syne',sans-serif;font-size:96px;font-weight:800;letter-spacing:-.04em;line-height:.95;margin-bottom:24px}
+.cover-title .accent{color:var(--primary);font-style:italic;font-weight:600}
+.cover-sub{font-size:20px;color:var(--text2);max-width:680px;line-height:1.5;margin-bottom:48px}
+.cover-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:900px;border-top:1px solid var(--border);padding-top:32px}
+.cover-stat-num{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;color:var(--primary);line-height:1}
+.cover-stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:6px}
+
+/* ─── SECTION ─── */
+.section{padding:80px 0;border-bottom:1px solid var(--border);position:relative}
+.section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:48px;flex-wrap:wrap;gap:24px}
+.section-num{font-family:'DM Mono',monospace;font-size:12px;color:var(--text3);letter-spacing:.15em;margin-bottom:12px}
+.section-title{font-family:'Syne',sans-serif;font-size:56px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.section-title .accent{color:var(--primary);font-style:italic;font-weight:600}
+.section-sub{font-size:16px;color:var(--text2);max-width:520px;text-align:right;line-height:1.6}
+
+/* ─── ARCHITECTURE ─── */
+.arch{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:48px;position:relative}
+.arch-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:stretch;position:relative}
+.arch-node{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:24px 20px;position:relative;text-align:center}
+.arch-node.active{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary-dim),0 8px 32px rgba(0,229,160,0.12)}
+.arch-node-icon{font-size:32px;margin-bottom:12px;display:block}
+.arch-node-label{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:4px}
+.arch-node-sub{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.arch-node-detail{font-size:12px;color:var(--text2);margin-top:10px;line-height:1.5}
+.arch-arrow{display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:24px;font-family:'DM Mono',monospace}
+.arch-stack{margin-top:32px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.arch-stack-item{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.arch-stack-name{font-family:'DM Mono',monospace;font-size:12px;color:var(--primary);margin-bottom:4px}
+.arch-stack-role{font-size:12px;color:var(--text2)}
+.arch-stack-cost{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:6px}
+
+/* ─── ROLE COMPARISON ─── */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.role-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:32px;position:relative;overflow:hidden}
+.role-card.admin{border-color:rgba(245,200,66,0.2)}
+.role-card.admin::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent)}
+.role-card.agent{border-color:rgba(0,229,160,0.2)}
+.role-card.agent::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),transparent)}
+.role-header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.role-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:20px}
+.role-icon.admin{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,200,66,0.3)}
+.role-icon.agent{background:var(--primary-dim);color:var(--primary);border:1px solid rgba(0,229,160,0.3)}
+.role-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:2px}
+.role-desc{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.role-list{list-style:none}
+.role-list li{padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text2)}
+.role-list li:last-child{border-bottom:none}
+.role-list .check{color:var(--primary);font-weight:700;flex-shrink:0;margin-top:2px}
+.role-list .x{color:var(--red);font-weight:700;flex-shrink:0;margin-top:2px}
+.role-list strong{color:var(--text);font-weight:600}
+
+/* ─── MOCKUP FRAME ─── */
+.mockup-frame{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,0.5),0 8px 24px rgba(0,0,0,0.3);margin-top:32px}
+.mockup-titlebar{background:#000;border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:8px}
+.tb-dot{width:11px;height:11px;border-radius:50%}
+.tb-dot.r{background:#ff5f57}.tb-dot.y{background:#febc2e}.tb-dot.g{background:#28c840}
+.tb-url{margin-left:14px;background:var(--bg3);border-radius:6px;padding:4px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);flex:1;max-width:400px}
+.tb-url .dot-live{display:inline-block;width:6px;height:6px;background:var(--primary);border-radius:50%;margin-right:8px;vertical-align:middle}
+
+/* ─── APP CHROME ─── */
+.app-shell{display:flex;height:780px}
+.app-topbar{height:52px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px;flex-shrink:0}
+.app-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:var(--primary);letter-spacing:.08em}
+.app-sep{width:1px;height:20px;background:var(--border);margin:0 4px}
+.app-page-title{font-size:13px;color:var(--text2);font-weight:500}
+.app-topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.search-mini{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:12px;color:var(--text3);min-width:200px}
+.bell-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;width:32px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;position:relative}
+.bell-dot{position:absolute;top:5px;right:6px;width:6px;height:6px;background:var(--orange);border-radius:50%}
+.user-chip{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:4px 12px 4px 5px;font-size:12px;color:var(--text2)}
+.user-chip-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:10px;color:#000}
+.user-chip-av.admin{background:var(--gold)}
+.user-chip-av.agent{background:var(--primary)}
+
+.app-body{display:flex;flex:1;overflow:hidden}
+.app-sidebar{width:200px;background:var(--bg2);border-right:1px solid var(--border);padding:12px 0;flex-shrink:0;overflow-y:auto}
+.nav-section{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);padding:14px 16px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;color:var(--text2);font-size:13px;border-left:2px solid transparent;cursor:pointer;transition:all .12s}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,0.02)}
+.nav-item.active{color:var(--primary);background:var(--primary-dim);border-left-color:var(--primary)}
+.nav-icon{font-size:13px;width:18px;text-align:center}
+.nav-item .badge{margin-left:auto;font-family:'DM Mono',monospace;font-size:10px;background:var(--bg4);color:var(--text3);padding:1px 6px;border-radius:100px}
+.nav-item.active .badge{background:var(--primary);color:#000}
+
+.app-main{flex:1;overflow-y:auto;padding:20px 24px;background:var(--bg)}
+.app-page-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.app-page-h1{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1}
+.app-page-subtitle{font-size:12px;color:var(--text2);margin-top:4px}
+.app-page-actions{display:flex;gap:8px}
+
+/* ─── BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:all .12s}
+.btn-primary{background:var(--primary);color:#000}
+.btn-secondary{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.btn-danger{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,77,106,0.25)}
+.btn-sm{padding:4px 10px;font-size:11px}
+.btn-xs{padding:3px 8px;font-size:10px;border-radius:5px}
+.btn-call{background:var(--primary);color:#000;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:6px;font-weight:700;font-size:12px}
+
+/* ─── KPI STRIP ─── */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden}
+.kpi-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.kpi-num{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1}
+.kpi-delta{font-family:'DM Mono',monospace;font-size:11px;margin-top:6px;display:flex;align-items:center;gap:4px}
+.kpi-delta.up{color:var(--primary)}
+.kpi-delta.down{color:var(--red)}
+.kpi-delta.flat{color:var(--text3)}
+.kpi.green .kpi-num{color:var(--primary)}
+.kpi.orange .kpi-num{color:var(--orange)}
+.kpi.blue .kpi-num{color:var(--blue)}
+.kpi.gold .kpi-num{color:var(--gold)}
+.kpi.purple .kpi-num{color:var(--purple)}
+.kpi-spark{position:absolute;right:12px;bottom:12px;height:24px;width:60px;opacity:.6}
+
+/* ─── PANEL ─── */
+.panels-2{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:14px}
+.panels-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.panel-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+.panel-link{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.panel-link:hover{color:var(--primary)}
+
+/* ─── LEADERBOARD ─── */
+.leaderboard{display:flex;flex-direction:column;gap:8px}
+.lb-row{display:grid;grid-template-columns:24px 32px 1fr auto auto;align-items:center;gap:12px;padding:10px 12px;background:var(--bg3);border-radius:8px;font-size:13px}
+.lb-row:nth-child(1){border:1px solid rgba(245,200,66,0.3);background:linear-gradient(90deg,rgba(245,200,66,0.06),transparent 60%)}
+.lb-rank{font-family:'Syne',sans-serif;font-weight:800;color:var(--text3)}
+.lb-row:nth-child(1) .lb-rank{color:var(--gold)}
+.lb-av{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px}
+.lb-name{font-weight:500;color:var(--text)}
+.lb-meta{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+.lb-stat{font-family:'Syne',sans-serif;font-weight:700;color:var(--primary)}
+.lb-bar{grid-column:3/-1;margin-top:4px;height:3px;background:var(--bg4);border-radius:2px;overflow:hidden}
+.lb-bar-fill{height:100%;background:var(--primary);border-radius:2px}
+
+/* ─── ACTIVITY FEED ─── */
+.feed{display:flex;flex-direction:column}
+.feed-item{display:grid;grid-template-columns:24px 1fr auto;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.feed-item:last-child{border-bottom:none}
+.feed-dot{width:8px;height:8px;border-radius:50%;margin-top:7px;flex-shrink:0}
+.feed-dot.demo{background:var(--purple)}
+.feed-dot.interest{background:var(--primary)}
+.feed-dot.call{background:var(--blue)}
+.feed-dot.noanswer{background:var(--text3)}
+.feed-text{font-size:12.5px;color:var(--text2);line-height:1.5}
+.feed-text strong{color:var(--text);font-weight:600}
+.feed-text .biz{color:var(--gold)}
+.feed-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);white-space:nowrap}
+
+/* ─── PIPELINE BARS ─── */
+.pipe-rows{display:flex;flex-direction:column;gap:10px}
+.pipe-row{display:grid;grid-template-columns:90px 1fr 36px;gap:12px;align-items:center;font-size:12px}
+.pipe-label{color:var(--text2)}
+.pipe-bar-bg{height:8px;background:var(--bg4);border-radius:4px;overflow:hidden}
+.pipe-bar-fill{height:100%;border-radius:4px;transition:width .4s}
+.pipe-count{font-family:'Syne',sans-serif;font-weight:700;text-align:right}
+
+/* ─── TABLE ─── */
+.tbl-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.tbl{width:100%;border-collapse:collapse}
+.tbl thead th{background:var(--bg3);padding:10px 14px;text-align:left;font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl tbody tr{border-bottom:1px solid var(--border);transition:background .12s}
+.tbl tbody tr:last-child{border-bottom:none}
+.tbl tbody tr:hover{background:rgba(255,255,255,0.02)}
+.tbl tbody td{padding:9px 14px;font-size:13px;color:var(--text2);vertical-align:middle}
+.tbl tbody td.name{color:var(--text);font-weight:500}
+.tbl-actions{display:flex;gap:4px}
+
+/* ─── BADGES ─── */
+.bg{display:inline-block;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.bg-t1{background:rgba(0,229,160,0.15);color:var(--primary);border:1px solid rgba(0,229,160,0.3)}
+.bg-t2{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,200,66,0.3)}
+.bg-t3{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+.bg-new{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(78,168,222,0.3)}
+.bg-int{background:rgba(0,229,160,0.15);color:var(--primary);border:1px solid rgba(0,229,160,0.3)}
+.bg-demo{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(167,139,250,0.3)}
+.bg-na{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+.bg-called{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,200,66,0.3)}
+.bg-nq{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,77,106,0.3)}
+.bg-live{background:rgba(255,77,106,0.15);color:var(--red);border:1px solid rgba(255,77,106,0.3);display:inline-flex;align-items:center;gap:5px}
+.bg-live::before{content:'';width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1.4s infinite}
+
+/* ─── ANNOTATION CALLOUT ─── */
+.anno{position:relative;margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.anno-card{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:6px;padding:14px 16px}
+.anno-card.orange{border-left-color:var(--orange)}
+.anno-card.gold{border-left-color:var(--gold)}
+.anno-card.purple{border-left-color:var(--purple)}
+.anno-card.blue{border-left-color:var(--blue)}
+.anno-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--primary);letter-spacing:.1em;margin-bottom:4px}
+.anno-card.orange .anno-num{color:var(--orange)}
+.anno-card.gold .anno-num{color:var(--gold)}
+.anno-card.purple .anno-num{color:var(--purple)}
+.anno-card.blue .anno-num{color:var(--blue)}
+.anno-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:6px}
+.anno-text{font-size:12px;color:var(--text2);line-height:1.55}
+.anno-text code{background:var(--bg4);padding:1px 6px;border-radius:3px;font-family:'DM Mono',monospace;font-size:11px;color:var(--primary)}
+
+/* ─── AGENT-SPECIFIC: NEXT CALL ─── */
+.next-call{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid rgba(0,229,160,0.25);border-radius:14px;padding:24px 28px;margin-bottom:14px;position:relative;overflow:hidden}
+.next-call::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,229,160,0.1) 0%,transparent 70%);pointer-events:none}
+.nc-grid{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;position:relative;z-index:1}
+.nc-up-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--primary);letter-spacing:.12em;margin-bottom:6px}
+.nc-biz{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;line-height:1.1;margin-bottom:8px}
+.nc-meta{display:flex;gap:18px;font-size:12px;color:var(--text2);margin-bottom:12px;flex-wrap:wrap}
+.nc-meta-item{display:flex;align-items:center;gap:5px}
+.nc-meta-item strong{color:var(--text);font-weight:600}
+.nc-hook{background:var(--bg4);border-left:3px solid var(--primary);padding:10px 14px;border-radius:6px;font-size:12px;color:var(--text);max-width:560px}
+.nc-hook .lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--primary);letter-spacing:.12em;margin-bottom:3px;display:block}
+.nc-call-btn{background:var(--primary);color:#000;border:none;border-radius:50%;width:88px;height:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;cursor:pointer;box-shadow:0 0 0 0 rgba(0,229,160,0.6);animation:phone-ring 2s infinite}
+@keyframes phone-ring{0%{box-shadow:0 0 0 0 rgba(0,229,160,0.4)}70%{box-shadow:0 0 0 18px rgba(0,229,160,0)}100%{box-shadow:0 0 0 0 rgba(0,229,160,0)}}
+.nc-icon{font-size:24px;margin-bottom:2px}
+.nc-label{font-size:9px;letter-spacing:.1em}
+.nc-skip{margin-top:10px;font-size:11px;color:var(--text3);text-align:center}
+
+/* ─── PHONE ROTATOR (agent) ─── */
+.phone-rot{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.pr-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.pr-nums{display:flex;gap:8px}
+.pr-num{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);position:relative;cursor:pointer}
+.pr-num.active{background:var(--primary-dim);border-color:rgba(0,229,160,0.4);color:var(--primary)}
+.pr-num.active::after{content:'';position:absolute;top:-3px;right:-3px;width:8px;height:8px;background:var(--primary);border-radius:50%}
+.pr-counter{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-top:2px;text-align:center;display:block}
+.pr-tip{margin-left:auto;font-size:11px;color:var(--text3)}
+
+/* ─── CALL INTERFACE ─── */
+.call-interface{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;overflow:hidden;display:grid;grid-template-columns:1fr 320px;height:380px}
+.ci-left{padding:24px;display:flex;flex-direction:column}
+.ci-status{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;color:var(--primary);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.ci-status::before{content:'';width:8px;height:8px;background:var(--primary);border-radius:50%;animation:pulse 1.2s infinite}
+.ci-biz{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px}
+.ci-num{font-family:'DM Mono',monospace;font-size:14px;color:var(--text2);margin-bottom:18px}
+.ci-timer{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--primary);margin-bottom:18px;font-variant-numeric:tabular-nums}
+.ci-controls{display:flex;gap:8px;margin-bottom:auto}
+.ci-ctrl{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text2);font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.ci-ctrl.danger{background:var(--red);color:#fff;border-color:var(--red)}
+.ci-script-wrap{margin-top:12px}
+.ci-script-tabs{display:flex;gap:4px;margin-bottom:8px}
+.ci-script-tab{padding:5px 10px;font-size:10px;background:var(--bg4);color:var(--text3);border-radius:5px;font-family:'DM Mono',monospace;letter-spacing:.06em;cursor:pointer}
+.ci-script-tab.active{background:var(--primary-dim);color:var(--primary)}
+.ci-script{background:var(--bg3);border-left:3px solid var(--primary);border-radius:6px;padding:10px 14px;font-size:12px;color:var(--text);line-height:1.55;font-style:italic}
+.ci-right{background:var(--bg);border-left:1px solid var(--border);padding:18px;display:flex;flex-direction:column;gap:10px}
+.ci-side-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.ci-side-info{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:10px}
+.ci-side-info-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;color:var(--text2)}
+.ci-side-info-row strong{color:var(--text);font-weight:500}
+.ci-outcomes-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:auto}
+.ci-out-btn{padding:8px 6px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;text-align:center;transition:all .12s}
+.ci-out-btn:hover{border-color:var(--border2);color:var(--text)}
+.ci-out-btn.hot{border-color:rgba(0,229,160,0.3);color:var(--primary)}
+.ci-out-btn.demo{border-color:rgba(167,139,250,0.3);color:var(--purple)}
+
+/* ─── BUILD CHECKLIST ─── */
+.checklist{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.day-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px}
+.day-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.day-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--primary);line-height:1;font-variant-numeric:tabular-nums}
+.day-info{flex:1}
+.day-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700}
+.day-sub{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.day-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);background:var(--bg3);padding:3px 10px;border-radius:4px}
+.day-tasks{display:flex;flex-direction:column;gap:8px}
+.day-task{display:flex;align-items:flex-start;gap:10px;font-size:12.5px;color:var(--text2);line-height:1.5}
+.day-task .ck{flex-shrink:0;width:14px;height:14px;border:1.5px solid var(--text3);border-radius:3px;margin-top:2px}
+.day-task code{background:var(--bg3);padding:1px 6px;border-radius:3px;font-family:'DM Mono',monospace;font-size:11px;color:var(--primary)}
+
+/* ─── DATA MODEL ─── */
+.api-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.api-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.api-card-head{background:var(--bg3);padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.api-method{font-family:'DM Mono',monospace;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px}
+.api-method.get{background:var(--blue-dim);color:var(--blue)}
+.api-method.post{background:var(--primary-dim);color:var(--primary)}
+.api-method.put{background:var(--orange-dim);color:var(--orange)}
+.api-method.del{background:var(--red-dim);color:var(--red)}
+.api-path{font-family:'DM Mono',monospace;font-size:12px;color:var(--text);flex:1}
+.api-card-body{padding:12px 16px}
+.api-desc{font-size:12px;color:var(--text2);margin-bottom:8px}
+.api-role{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.api-role .admin-only{color:var(--gold)}
+.api-role .both{color:var(--primary)}
+
+/* ─── TOGGLE ─── */
+.role-toggle{display:flex;background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:4px;margin:0 auto 32px;width:fit-content;position:sticky;top:20px;z-index:50;backdrop-filter:blur(10px)}
+.toggle-btn{padding:8px 24px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;background:transparent;color:var(--text3);border:none;border-radius:100px;cursor:pointer;transition:all .15s}
+.toggle-btn.active{background:var(--primary);color:#000}
+
+/* ─── FOOTER ─── */
+.pb-footer{padding:60px 0;text-align:center;color:var(--text3);font-size:12px;font-family:'DM Mono',monospace;letter-spacing:.06em}
+.pb-footer .pb-logo{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--primary);margin-bottom:8px;letter-spacing:.1em}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1100px){
+  .cover-title{font-size:64px}
+  .section-title{font-size:38px}
+  .role-grid{grid-template-columns:1fr}
+  .arch-flow{grid-template-columns:1fr;gap:8px}
+  .arch-arrow{transform:rotate(90deg);padding:6px 0}
+  .arch-stack{grid-template-columns:1fr 1fr}
+  .panels-2{grid-template-columns:1fr}
+  .panels-3{grid-template-columns:1fr}
+  .checklist{grid-template-columns:1fr}
+  .api-grid{grid-template-columns:1fr}
+  .anno{grid-template-columns:1fr}
+  .app-shell{height:auto}
+  .call-interface{grid-template-columns:1fr;height:auto}
+  .ci-right{border-left:none;border-top:1px solid var(--border)}
+}
+@media(max-width:680px){
+  .cover-title{font-size:42px}
+  .cover-stats{grid-template-columns:1fr 1fr}
+  .kpi-strip{grid-template-columns:1fr 1fr}
+  .app-sidebar{display:none}
+  .nc-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="playbook">
+
+<!-- ════════════════════ COVER ════════════════════ -->
+<section class="cover">
+  <div class="cover-inner">
+    <div class="cover-meta">
+      <span class="dot"></span>
+      <span>UI BUILD PLAYBOOK</span>
+      <span style="color:var(--text3)">/</span>
+      <span>v1.0 · MAY 2026</span>
+      <span style="color:var(--text3)">/</span>
+      <span>PURECODE AGENCY</span>
+    </div>
+    <div class="cover-tag">PureCode CRM</div>
+    <h1 class="cover-title">Two dashboards.<br>One <span class="accent">command center.</span></h1>
+    <p class="cover-sub">A complete visual specification for the team portal — admin view, agent view, data flow, and build sequence. Hand this to Claude Code and ship in under two weeks.</p>
+    <div class="cover-stats">
+      <div>
+        <div class="cover-stat-num">2</div>
+        <div class="cover-stat-label">Role Views</div>
+      </div>
+      <div>
+        <div class="cover-stat-num">11</div>
+        <div class="cover-stat-label">Core Screens</div>
+      </div>
+      <div>
+        <div class="cover-stat-num">$0</div>
+        <div class="cover-stat-label">Monthly Cost</div>
+      </div>
+      <div>
+        <div class="cover-stat-num">7d</div>
+        <div class="cover-stat-label">Build Window</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ ARCHITECTURE ════════════════════ -->
+<section class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-num">01 / SYSTEM</div>
+      <h2 class="section-title">The data <span class="accent">flow.</span></h2>
+    </div>
+    <p class="section-sub">JustCall handles dialing. GHL is the database. Your dashboard is the cockpit. Each tool does one thing — and they talk to each other through APIs and webhooks.</p>
+  </div>
+
+  <div class="arch">
+    <div class="arch-flow">
+      <div class="arch-node">
+        <span class="arch-node-icon">📞</span>
+        <div class="arch-node-label">Agent</div>
+        <div class="arch-node-sub">Clicks lead in dashboard</div>
+        <div class="arch-node-detail">Khalid sees a hot lead, clicks <strong>"Call Now"</strong> from his queue.</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node active">
+        <span class="arch-node-icon">☎️</span>
+        <div class="arch-node-label">JustCall</div>
+        <div class="arch-node-sub">Dials + records</div>
+        <div class="arch-node-detail">Click-to-call API rings the lead from Khalid's rotating number. Call is recorded.</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <span class="arch-node-icon">🗄️</span>
+        <div class="arch-node-label">GoHighLevel</div>
+        <div class="arch-node-sub">Stores everything</div>
+        <div class="arch-node-detail">Webhook fires. Call log, recording URL, duration, and outcome saved to the contact.</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <span class="arch-node-icon">📊</span>
+        <div class="arch-node-label">Your Dashboard</div>
+        <div class="arch-node-sub">Reads + displays</div>
+        <div class="arch-node-detail">Activity feed updates in real-time. Stats refresh. Admin sees it. Team sees the win.</div>
+      </div>
+    </div>
+
+    <div class="arch-stack">
+      <div class="arch-stack-item">
+        <div class="arch-stack-name">Frontend</div>
+        <div class="arch-stack-role">React + Vite + Tailwind</div>
+        <div class="arch-stack-cost">Free · Vercel hosting</div>
+      </div>
+      <div class="arch-stack-item">
+        <div class="arch-stack-name">Backend</div>
+        <div class="arch-stack-role">Node.js + Express on Vercel</div>
+        <div class="arch-stack-cost">Free tier · serverless</div>
+      </div>
+      <div class="arch-stack-item">
+        <div class="arch-stack-name">Auth</div>
+        <div class="arch-stack-role">Supabase Auth + JWT</div>
+        <div class="arch-stack-cost">Free · 50k users</div>
+      </div>
+      <div class="arch-stack-item">
+        <div class="arch-stack-name">Data</div>
+        <div class="arch-stack-role">GoHighLevel API (existing)</div>
+        <div class="arch-stack-cost">Already paid</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ ROLE COMPARISON ════════════════════ -->
+<section class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-num">02 / ROLES</div>
+      <h2 class="section-title">Who sees <span class="accent">what.</span></h2>
+    </div>
+    <p class="section-sub">Two roles for v1. Agent permissions are enforced server-side — even if someone tries to hack the URL, the backend refuses. The frontend just hides the menu items.</p>
+  </div>
+
+  <div class="role-grid">
+    <div class="role-card admin">
+      <div class="role-header">
+        <div class="role-icon admin">D</div>
+        <div>
+          <div class="role-name">Admin · David</div>
+          <div class="role-desc">Owner / Full Access</div>
+        </div>
+      </div>
+      <ul class="role-list">
+        <li><span class="check">✓</span> See <strong>all leads</strong> across every agent (250+ contacts)</li>
+        <li><span class="check">✓</span> <strong>Reassign leads</strong> between agents (drag, click, bulk)</li>
+        <li><span class="check">✓</span> Bulk-import lead lists (CSV → GHL contacts)</li>
+        <li><span class="check">✓</span> View <strong>every agent's stats</strong> side by side (calls, talk time, conversion)</li>
+        <li><span class="check">✓</span> Pull reports — daily, weekly, by agent, by vertical</li>
+        <li><span class="check">✓</span> Listen to <strong>every call recording</strong> from any agent</li>
+        <li><span class="check">✓</span> Manage agent accounts (create, disable, reset password)</li>
+        <li><span class="check">✓</span> See JustCall billing, number health, spam flags</li>
+        <li><span class="check">✓</span> Revenue + pipeline forecasting</li>
+      </ul>
+    </div>
+    <div class="role-card agent">
+      <div class="role-header">
+        <div class="role-icon agent">K</div>
+        <div>
+          <div class="role-name">Agent · Khalid</div>
+          <div class="role-desc">Sales Agent</div>
+        </div>
+      </div>
+      <ul class="role-list">
+        <li><span class="check">✓</span> See <strong>only assigned leads</strong> (his queue)</li>
+        <li><span class="check">✓</span> Click-to-call straight from a lead row</li>
+        <li><span class="check">✓</span> Log call outcomes + add notes the team can see</li>
+        <li><span class="check">✓</span> Rotate his <strong>3 phone numbers</strong> automatically</li>
+        <li><span class="check">✓</span> See <strong>own stats</strong> only (his calls, his demos)</li>
+        <li><span class="check">✓</span> See team feed of <strong>WINS only</strong> (demos + closes) for momentum</li>
+        <li><span class="x">✗</span> <strong>Cannot</strong> see other agents' lead lists</li>
+        <li><span class="x">✗</span> <strong>Cannot</strong> see admin reports, billing, or commissions</li>
+        <li><span class="x">✗</span> <strong>Cannot</strong> reassign leads or import contacts</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="anno">
+    <div class="anno-card">
+      <div class="anno-num">SECURITY · 01</div>
+      <div class="anno-title">RBAC enforced server-side</div>
+      <div class="anno-text">Every API call checks the JWT token's <code>role</code>. Agent token requesting <code>/api/admin/*</code> → <strong>403 Forbidden</strong>. Frontend hiding is cosmetic; backend is the wall.</div>
+    </div>
+    <div class="anno-card orange">
+      <div class="anno-num">UX · 02</div>
+      <div class="anno-title">Why "wins-only" team feed</div>
+      <div class="anno-text">Showing every no-answer demoralizes. Showing only demos booked + closes creates pressure without noise. <strong>Khalid sees Omar's win</strong> and calls harder.</div>
+    </div>
+    <div class="anno-card gold">
+      <div class="anno-num">SCALE · 03</div>
+      <div class="anno-title">Team Lead role comes later</div>
+      <div class="anno-text">Don't build a 3rd role until you have <strong>5+ agents</strong>. When you do, add <code>pod_id</code> to JWT and filter — 30-min change.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ ADMIN DASHBOARD MOCKUP ════════════════════ -->
+<section class="section" id="admin-section">
+  <div class="section-header">
+    <div>
+      <div class="section-num">03 / ADMIN VIEW</div>
+      <h2 class="section-title">Your <span class="accent">cockpit.</span></h2>
+    </div>
+    <p class="section-sub">Everything you need to know in one glance: who's performing, what's in the pipeline, what just happened, what's stuck.</p>
+  </div>
+
+  <div class="mockup-frame">
+    <div class="mockup-titlebar">
+      <div class="tb-dot r"></div><div class="tb-dot y"></div><div class="tb-dot g"></div>
+      <div class="tb-url"><span class="dot-live"></span>app.purecodeagency.com / dashboard</div>
+    </div>
+    <div class="app-shell" style="flex-direction:column">
+      <div class="app-topbar">
+        <div class="app-brand">PURECODE</div>
+        <div class="app-sep"></div>
+        <div class="app-page-title">Dashboard · Team Overview</div>
+        <div class="app-topbar-right">
+          <input class="search-mini" placeholder="🔍 Search leads, agents, calls..." readonly>
+          <button class="bell-btn">🔔<span class="bell-dot"></span></button>
+          <div class="user-chip"><div class="user-chip-av admin">D</div><span>David · Admin</span></div>
+        </div>
+      </div>
+      <div class="app-body">
+        <nav class="app-sidebar">
+          <div class="nav-section">Overview</div>
+          <div class="nav-item active"><span class="nav-icon">📊</span> Dashboard</div>
+          <div class="nav-item"><span class="nav-icon">⚡</span> Live Activity <span class="badge">3</span></div>
+          <div class="nav-section">Pipeline</div>
+          <div class="nav-item"><span class="nav-icon">📋</span> All Leads <span class="badge">412</span></div>
+          <div class="nav-item"><span class="nav-icon">🎯</span> Hot &amp; Demos <span class="badge">17</span></div>
+          <div class="nav-item"><span class="nav-icon">📥</span> Import Leads</div>
+          <div class="nav-section">Team</div>
+          <div class="nav-item"><span class="nav-icon">👥</span> Agents</div>
+          <div class="nav-item"><span class="nav-icon">📞</span> Call Recordings</div>
+          <div class="nav-item"><span class="nav-icon">🎯</span> Assign Leads</div>
+          <div class="nav-section">Reports</div>
+          <div class="nav-item"><span class="nav-icon">📈</span> Performance</div>
+          <div class="nav-item"><span class="nav-icon">💰</span> Revenue</div>
+          <div class="nav-section">Settings</div>
+          <div class="nav-item"><span class="nav-icon">⚙️</span> JustCall</div>
+          <div class="nav-item"><span class="nav-icon">🔧</span> Workspace</div>
+        </nav>
+
+        <div class="app-main">
+          <div class="app-page-head">
+            <div>
+              <div class="app-page-h1">Team Overview</div>
+              <div class="app-page-subtitle">Today · Monday May 4, 2026 · OC Roofing + Tennessee Towing campaigns</div>
+            </div>
+            <div class="app-page-actions">
+              <button class="btn btn-secondary"><span>📅</span> Today</button>
+              <button class="btn btn-secondary"><span>📥</span> Export</button>
+              <button class="btn btn-primary"><span>+</span> New Campaign</button>
+            </div>
+          </div>
+
+          <!-- KPI STRIP -->
+          <div class="kpi-strip">
+            <div class="kpi green">
+              <div class="kpi-label">📞 Calls Today</div>
+              <div class="kpi-num">147</div>
+              <div class="kpi-delta up">▲ 23 vs yesterday</div>
+            </div>
+            <div class="kpi orange">
+              <div class="kpi-label">🔥 Interested</div>
+              <div class="kpi-num">12</div>
+              <div class="kpi-delta up">▲ 8.2% conv rate</div>
+            </div>
+            <div class="kpi purple">
+              <div class="kpi-label">⭐ Demos Booked</div>
+              <div class="kpi-num">5</div>
+              <div class="kpi-delta up">▲ 2 from week avg</div>
+            </div>
+            <div class="kpi gold">
+              <div class="kpi-label">💰 Pipeline Value</div>
+              <div class="kpi-num">$8.4K</div>
+              <div class="kpi-delta flat">MRR potential</div>
+            </div>
+          </div>
+
+          <!-- TWO COLUMN: LEADERBOARD + LIVE FEED -->
+          <div class="panels-2">
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">🏆 Agent Leaderboard · Today</div>
+                <a class="panel-link">View all →</a>
+              </div>
+              <div class="leaderboard">
+                <div class="lb-row">
+                  <div class="lb-rank">1</div>
+                  <div class="lb-av" style="background:rgba(78,168,222,0.15);color:var(--blue);border:1px solid rgba(78,168,222,0.3)">K</div>
+                  <div>
+                    <div class="lb-name">Khalid</div>
+                    <div class="lb-meta">62 calls · 38m talk · 3 demos</div>
+                  </div>
+                  <div class="lb-stat">3 ⭐</div>
+                  <div class="bg bg-live">LIVE</div>
+                </div>
+                <div class="lb-row">
+                  <div class="lb-rank">2</div>
+                  <div class="lb-av" style="background:rgba(167,139,250,0.15);color:var(--purple);border:1px solid rgba(167,139,250,0.3)">O</div>
+                  <div>
+                    <div class="lb-name">Omar</div>
+                    <div class="lb-meta">51 calls · 24m talk · 1 demo</div>
+                  </div>
+                  <div class="lb-stat">1 ⭐</div>
+                  <div></div>
+                </div>
+                <div class="lb-row">
+                  <div class="lb-rank">3</div>
+                  <div class="lb-av" style="background:rgba(245,200,66,0.15);color:var(--gold);border:1px solid rgba(245,200,66,0.3)">S</div>
+                  <div>
+                    <div class="lb-name">Sara</div>
+                    <div class="lb-meta">34 calls · 19m talk · 1 demo</div>
+                  </div>
+                  <div class="lb-stat">1 ⭐</div>
+                  <div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">⚡ Live Activity</div>
+                <a class="panel-link">Full log →</a>
+              </div>
+              <div class="feed">
+                <div class="feed-item">
+                  <div class="feed-dot demo"></div>
+                  <div class="feed-text"><strong>Khalid</strong> booked a demo with <span class="biz">Hoyt Roofs Inc.</span> — Thursday 9am</div>
+                  <div class="feed-time">2m ago</div>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-dot interest"></div>
+                  <div class="feed-text"><strong>Omar</strong> got <span class="biz">Royal Roofing</span> interested — wants pricing</div>
+                  <div class="feed-time">11m ago</div>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-dot call"></div>
+                  <div class="feed-text"><strong>Sara</strong> called <span class="biz">Done Rite Roofing</span> — not qualified</div>
+                  <div class="feed-time">23m ago</div>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-dot interest"></div>
+                  <div class="feed-text"><strong>Khalid</strong> got <span class="biz">Guardian Roofs</span> warm — callback Tuesday</div>
+                  <div class="feed-time">38m ago</div>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-dot call"></div>
+                  <div class="feed-text"><strong>Omar</strong> 4 no-answers in a row — switching to TN list</div>
+                  <div class="feed-time">52m ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- THREE COLUMN: PIPELINE + CONVERSION + JUSTCALL -->
+          <div class="panels-3">
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">📊 Pipeline Status</div>
+              </div>
+              <div class="pipe-rows">
+                <div class="pipe-row"><div class="pipe-label">New</div><div class="pipe-bar-bg"><div class="pipe-bar-fill" style="width:78%;background:var(--blue)"></div></div><div class="pipe-count" style="color:var(--blue)">198</div></div>
+                <div class="pipe-row"><div class="pipe-label">No Answer</div><div class="pipe-bar-bg"><div class="pipe-bar-fill" style="width:42%;background:var(--text3)"></div></div><div class="pipe-count" style="color:var(--text3)">87</div></div>
+                <div class="pipe-row"><div class="pipe-label">Called</div><div class="pipe-bar-bg"><div class="pipe-bar-fill" style="width:34%;background:var(--gold)"></div></div><div class="pipe-count" style="color:var(--gold)">71</div></div>
+                <div class="pipe-row"><div class="pipe-label">Interested</div><div class="pipe-bar-bg"><div class="pipe-bar-fill" style="width:18%;background:var(--primary)"></div></div><div class="pipe-count" style="color:var(--primary)">31</div></div>
+                <div class="pipe-row"><div class="pipe-label">Demo Booked</div><div class="pipe-bar-bg"><div class="pipe-bar-fill" style="width:8%;background:var(--purple)"></div></div><div class="pipe-count" style="color:var(--purple)">17</div></div>
+                <div class="pipe-row"><div class="pipe-label">Closed</div><div class="pipe-bar-bg"><div class="pipe-bar-fill" style="width:4%;background:#00b87a"></div></div><div class="pipe-count" style="color:#00b87a">8</div></div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">📈 Conversion · 7d</div>
+              </div>
+              <div style="display:flex;align-items:flex-end;height:120px;gap:6px;margin-bottom:12px">
+                <div style="flex:1;height:42%;background:linear-gradient(0deg,var(--primary),rgba(0,229,160,0.3));border-radius:4px 4px 0 0"></div>
+                <div style="flex:1;height:55%;background:linear-gradient(0deg,var(--primary),rgba(0,229,160,0.3));border-radius:4px 4px 0 0"></div>
+                <div style="flex:1;height:38%;background:linear-gradient(0deg,var(--primary),rgba(0,229,160,0.3));border-radius:4px 4px 0 0"></div>
+                <div style="flex:1;height:62%;background:linear-gradient(0deg,var(--primary),rgba(0,229,160,0.3));border-radius:4px 4px 0 0"></div>
+                <div style="flex:1;height:48%;background:linear-gradient(0deg,var(--primary),rgba(0,229,160,0.3));border-radius:4px 4px 0 0"></div>
+                <div style="flex:1;height:78%;background:linear-gradient(0deg,var(--primary),rgba(0,229,160,0.3));border-radius:4px 4px 0 0"></div>
+                <div style="flex:1;height:88%;background:linear-gradient(0deg,var(--primary),rgba(0,229,160,0.4));border-radius:4px 4px 0 0;outline:1px solid var(--primary)"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.05em">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Today</span>
+              </div>
+              <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text2)">Avg conv rate</span><span style="color:var(--primary);font-weight:700;font-family:'DM Mono',monospace">8.4%</span></div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">☎️ JustCall Status</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+                  <div><div style="font-size:12px;color:var(--text)">9 numbers active</div><div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">3 per agent · OC + TN</div></div>
+                  <div class="bg bg-int">HEALTHY</div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+                  <div><div style="font-size:12px;color:var(--text)">Today's minutes</div><div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">81m / 1000m plan</div></div>
+                  <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--primary)">8%</div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+                  <div><div style="font-size:12px;color:var(--text)">Spam flags</div><div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">(657) 555-0103 — Khalid #3</div></div>
+                  <div class="bg bg-nq">1 FLAG</div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
+                  <div><div style="font-size:12px;color:var(--text)">Recordings stored</div><div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">147 today · 2.3 GB</div></div>
+                  <div class="bg bg-int">SYNCED</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LEADS TABLE PREVIEW -->
+          <div class="panel" style="margin-top:14px;padding:0">
+            <div class="panel-head" style="padding:18px 18px 0">
+              <div class="panel-title">📋 Recent Leads · Needs Attention</div>
+              <a class="panel-link">View all 412 →</a>
+            </div>
+            <div class="tbl-wrap" style="border:none;border-radius:0;background:transparent">
+              <table class="tbl">
+                <thead>
+                  <tr><th>Business</th><th>Phone</th><th>City</th><th>Type</th><th>Tier</th><th>Status</th><th>Agent</th><th>Last Touch</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="name">Hoyt Roofs Inc.</td>
+                    <td style="font-family:'DM Mono',monospace;color:var(--primary)">(714) 773-1820</td>
+                    <td>Anaheim</td><td>Roofing</td><td><span class="bg bg-t2">T2</span></td>
+                    <td><span class="bg bg-demo">⭐ Demo</span></td>
+                    <td><span style="display:inline-flex;gap:6px;align-items:center"><span class="lb-av" style="width:20px;height:20px;font-size:10px;background:rgba(78,168,222,0.15);color:var(--blue);border:1px solid rgba(78,168,222,0.3)">K</span> Khalid</span></td>
+                    <td>2m ago</td>
+                    <td><div class="tbl-actions"><button class="btn btn-secondary btn-xs">▶ Recording</button></div></td>
+                  </tr>
+                  <tr>
+                    <td class="name">Royal Roofing Construction</td>
+                    <td style="font-family:'DM Mono',monospace;color:var(--primary)">(714) 680-0015</td>
+                    <td>Placentia</td><td>Roofing</td><td><span class="bg bg-t1">T1</span></td>
+                    <td><span class="bg bg-int">🔥 Interested</span></td>
+                    <td><span style="display:inline-flex;gap:6px;align-items:center"><span class="lb-av" style="width:20px;height:20px;font-size:10px;background:rgba(167,139,250,0.15);color:var(--purple);border:1px solid rgba(167,139,250,0.3)">O</span> Omar</span></td>
+                    <td>11m ago</td>
+                    <td><div class="tbl-actions"><button class="btn btn-secondary btn-xs">📝 Notes</button></div></td>
+                  </tr>
+                  <tr>
+                    <td class="name">Guardian Roofs</td>
+                    <td style="font-family:'DM Mono',monospace;color:var(--primary)">(714) 633-3619</td>
+                    <td>Orange</td><td>Roofing</td><td><span class="bg bg-t1">T1</span></td>
+                    <td><span class="bg bg-int">🔥 Interested</span></td>
+                    <td><span style="display:inline-flex;gap:6px;align-items:center"><span class="lb-av" style="width:20px;height:20px;font-size:10px;background:rgba(78,168,222,0.15);color:var(--blue);border:1px solid rgba(78,168,222,0.3)">K</span> Khalid</span></td>
+                    <td>38m ago</td>
+                    <td><div class="tbl-actions"><button class="btn btn-secondary btn-xs">📝 Notes</button></div></td>
+                  </tr>
+                  <tr>
+                    <td class="name">Mike's Towing TN</td>
+                    <td style="font-family:'DM Mono',monospace;color:var(--primary)">(615) 555-0142</td>
+                    <td>Nashville</td><td>Towing</td><td><span class="bg bg-t1">T1</span></td>
+                    <td><span class="bg bg-na">No Answer ×3</span></td>
+                    <td><span style="color:var(--text3);font-style:italic">— unassigned</span></td>
+                    <td>Yesterday</td>
+                    <td><div class="tbl-actions"><button class="btn btn-primary btn-xs">+ Assign</button></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANNOTATIONS FOR ADMIN -->
+  <div class="anno">
+    <div class="anno-card gold">
+      <div class="anno-num">PANEL · A1</div>
+      <div class="anno-title">Leaderboard with LIVE indicator</div>
+      <div class="anno-text">When an agent is in an active call, their row pulses red. You always know who's on the phone right now without asking.</div>
+    </div>
+    <div class="anno-card purple">
+      <div class="anno-num">PANEL · A2</div>
+      <div class="anno-title">Live activity feed (your view)</div>
+      <div class="anno-text">Admin sees <strong>everything</strong> — every call, every outcome. Agents see only wins. Same data source, different filter.</div>
+    </div>
+    <div class="anno-card blue">
+      <div class="anno-num">PANEL · A3</div>
+      <div class="anno-title">JustCall status panel</div>
+      <div class="anno-text">Number health is critical for trades cold-calling. If a number gets flagged, you know <strong>before</strong> agents waste 50 calls on a dead line.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ AGENT DASHBOARD MOCKUP ════════════════════ -->
+<section class="section" id="agent-section">
+  <div class="section-header">
+    <div>
+      <div class="section-num">04 / AGENT VIEW</div>
+      <h2 class="section-title">Built to <span class="accent">dial.</span></h2>
+    </div>
+    <p class="section-sub">Zero friction. The agent's job is one button: call the next lead. Everything else gets out of the way. No reports. No menus they don't need. Just lead → call → log → next.</p>
+  </div>
+
+  <div class="mockup-frame">
+    <div class="mockup-titlebar">
+      <div class="tb-dot r"></div><div class="tb-dot y"></div><div class="tb-dot g"></div>
+      <div class="tb-url"><span class="dot-live"></span>app.purecodeagency.com / my-queue</div>
+    </div>
+    <div class="app-shell" style="flex-direction:column">
+      <div class="app-topbar">
+        <div class="app-brand">PURECODE</div>
+        <div class="app-sep"></div>
+        <div class="app-page-title">My Queue · 23 leads remaining</div>
+        <div class="app-topbar-right">
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text2);background:var(--bg3);padding:5px 12px;border-radius:100px;border:1px solid var(--border)">
+            <span style="width:6px;height:6px;background:var(--primary);border-radius:50%;animation:pulse 1.5s infinite"></span>
+            <span style="font-family:'DM Mono',monospace">62 / 80 today</span>
+          </div>
+          <button class="bell-btn">🔔<span class="bell-dot"></span></button>
+          <div class="user-chip"><div class="user-chip-av agent">K</div><span>Khalid</span></div>
+        </div>
+      </div>
+      <div class="app-body">
+        <nav class="app-sidebar">
+          <div class="nav-section">My Work</div>
+          <div class="nav-item active"><span class="nav-icon">🎯</span> My Queue <span class="badge">23</span></div>
+          <div class="nav-item"><span class="nav-icon">🔥</span> Hot Leads <span class="badge">4</span></div>
+          <div class="nav-item"><span class="nav-icon">📅</span> Callbacks <span class="badge">7</span></div>
+          <div class="nav-item"><span class="nav-icon">⭐</span> My Demos <span class="badge">3</span></div>
+          <div class="nav-section">My Stats</div>
+          <div class="nav-item"><span class="nav-icon">📊</span> Today</div>
+          <div class="nav-item"><span class="nav-icon">📞</span> My Numbers</div>
+          <div class="nav-item"><span class="nav-icon">📜</span> My Activity</div>
+          <div class="nav-section">Team</div>
+          <div class="nav-item"><span class="nav-icon">🏆</span> Wins Feed</div>
+          <div class="nav-section">Resources</div>
+          <div class="nav-item"><span class="nav-icon">📖</span> Scripts</div>
+          <div class="nav-item"><span class="nav-icon">💡</span> Objections</div>
+        </nav>
+
+        <div class="app-main">
+          <div class="app-page-head">
+            <div>
+              <div class="app-page-h1">My Queue · Khalid</div>
+              <div class="app-page-subtitle">62 of 80 daily target hit · 3 demos booked · keep pushing 🔥</div>
+            </div>
+            <div class="app-page-actions">
+              <button class="btn btn-secondary"><span>📅</span> Callbacks (7)</button>
+              <button class="btn btn-secondary"><span>📜</span> Scripts</button>
+            </div>
+          </div>
+
+          <!-- AGENT KPI STRIP -->
+          <div class="kpi-strip">
+            <div class="kpi green">
+              <div class="kpi-label">📞 Calls Today</div>
+              <div class="kpi-num">62</div>
+              <div class="kpi-delta up">▲ on target</div>
+            </div>
+            <div class="kpi orange">
+              <div class="kpi-label">🔥 Got Interested</div>
+              <div class="kpi-num">4</div>
+              <div class="kpi-delta up">6.4% rate</div>
+            </div>
+            <div class="kpi purple">
+              <div class="kpi-label">⭐ Demos Booked</div>
+              <div class="kpi-num">3</div>
+              <div class="kpi-delta up">▲ #1 today</div>
+            </div>
+            <div class="kpi blue">
+              <div class="kpi-label">⏱ Talk Time</div>
+              <div class="kpi-num">38m</div>
+              <div class="kpi-delta flat">avg 37s/call</div>
+            </div>
+          </div>
+
+          <!-- PHONE ROTATION BAR -->
+          <div class="phone-rot">
+            <div class="pr-label">📞 Your Numbers</div>
+            <div class="pr-nums">
+              <div class="pr-num">
+                (714) 555-0101
+                <span class="pr-counter">28/30</span>
+              </div>
+              <div class="pr-num active">
+                (949) 555-0102
+                <span class="pr-counter">12/30</span>
+              </div>
+              <div class="pr-num">
+                (657) 555-0103
+                <span class="pr-counter">⚠ flagged</span>
+              </div>
+            </div>
+            <div class="pr-tip">💡 #2 active · auto-switches at 30 calls</div>
+          </div>
+
+          <!-- THE BIG ONE: NEXT CALL CARD -->
+          <div class="next-call">
+            <div class="nc-grid">
+              <div>
+                <div class="nc-up-label">▸ NEXT IN QUEUE · TIER 1 · HOT 🔥</div>
+                <div class="nc-biz">Horizon Roofing</div>
+                <div class="nc-meta">
+                  <div class="nc-meta-item">📞 <strong>(714) 328-1967</strong></div>
+                  <div class="nc-meta-item">📍 Anaheim, CA</div>
+                  <div class="nc-meta-item">👤 Owner: <strong>Frank Garcia</strong></div>
+                  <div class="nc-meta-item">⭐ Google: <strong>4.5</strong></div>
+                </div>
+                <div class="nc-hook">
+                  <span class="lbl">★ DAVID'S HOOK ★</span>
+                  Google review: <em>"After 15 phone calls they forgot to schedule me."</em> Lead with that. Ask for Frank directly.
+                </div>
+              </div>
+              <div style="text-align:center">
+                <div class="nc-call-btn">
+                  <div class="nc-icon">📞</div>
+                  <div class="nc-label">CALL NOW</div>
+                </div>
+                <div class="nc-skip">Skip · Reschedule · Pass</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TWO COL: WINS FEED + MY UPCOMING -->
+          <div class="panels-2">
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">🏆 Team Wins Today</div>
+                <a class="panel-link">Just demos + closes →</a>
+              </div>
+              <div class="feed">
+                <div class="feed-item">
+                  <div class="feed-dot demo"></div>
+                  <div class="feed-text"><strong>You</strong> booked a demo with <span class="biz">Hoyt Roofs Inc.</span> 🔥</div>
+                  <div class="feed-time">2m ago</div>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-dot demo"></div>
+                  <div class="feed-text"><strong>Omar</strong> booked a demo with <span class="biz">Sunrise Towing TN</span></div>
+                  <div class="feed-time">1h ago</div>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-dot demo"></div>
+                  <div class="feed-text"><strong>Sara</strong> booked a demo with <span class="biz">All-Pro Auto</span></div>
+                  <div class="feed-time">2h ago</div>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-dot demo"></div>
+                  <div class="feed-text"><strong>You</strong> closed <span class="biz">Guardian Roofs</span> · $297/mo · Growth tier 💰</div>
+                  <div class="feed-time">Yesterday</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">📅 My Callbacks</div>
+                <a class="panel-link">View all 7 →</a>
+              </div>
+              <div class="feed">
+                <div class="feed-item">
+                  <div class="feed-dot interest"></div>
+                  <div class="feed-text"><span class="biz">Royal Roofing</span> — Frank · pricing follow-up<br><span style="color:var(--text3);font-size:11px">Today 3:30 PM CA time</span></div>
+                  <div><button class="btn btn-primary btn-xs">📞 Call</button></div>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-dot interest"></div>
+                  <div class="feed-text"><span class="biz">Guardian Roofs</span> — Steve · demo prep<br><span style="color:var(--text3);font-size:11px">Tomorrow 9:00 AM</span></div>
+                  <div><button class="btn btn-secondary btn-xs">View</button></div>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-dot call"></div>
+                  <div class="feed-text"><span class="biz">Haggerty Roofing</span> — left voicemail x2<br><span style="color:var(--text3);font-size:11px">Tomorrow 8:00 AM</span></div>
+                  <div><button class="btn btn-secondary btn-xs">View</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MY LEAD QUEUE TABLE -->
+          <div class="panel" style="padding:0">
+            <div class="panel-head" style="padding:18px 18px 0">
+              <div class="panel-title">📋 My Lead Queue · Up Next</div>
+              <a class="panel-link">23 remaining →</a>
+            </div>
+            <div class="tbl-wrap" style="border:none;border-radius:0;background:transparent">
+              <table class="tbl">
+                <thead><tr><th>#</th><th>Business</th><th>Phone</th><th>City</th><th>Tier</th><th>Last Status</th><th>Note</th><th></th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td style="font-family:'DM Mono',monospace;color:var(--primary);font-weight:700">01</td>
+                    <td class="name">Horizon Roofing</td>
+                    <td style="font-family:'DM Mono',monospace;color:var(--primary)">(714) 328-1967</td>
+                    <td>Anaheim</td><td><span class="bg bg-t1">T1</span></td>
+                    <td><span class="bg bg-new">New</span></td>
+                    <td style="font-style:italic;color:var(--text3)">★ Google review hook</td>
+                    <td><button class="btn-call btn-xs">📞 Call</button></td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:'DM Mono',monospace;color:var(--text3)">02</td>
+                    <td class="name">Sierra Roof Inc.</td>
+                    <td style="font-family:'DM Mono',monospace;color:var(--primary)">(714) 635-5071</td>
+                    <td>Anaheim</td><td><span class="bg bg-t2">T2</span></td>
+                    <td><span class="bg bg-new">New</span></td>
+                    <td style="color:var(--text3)">—</td>
+                    <td><button class="btn btn-secondary btn-xs">📞 Call</button></td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:'DM Mono',monospace;color:var(--text3)">03</td>
+                    <td class="name">Haggerty Roofing</td>
+                    <td style="font-family:'DM Mono',monospace;color:var(--primary)">(714) 583-0569</td>
+                    <td>Anaheim</td><td><span class="bg bg-t1">T1</span></td>
+                    <td><span class="bg bg-na">No Answer ×2</span></td>
+                    <td style="color:var(--text2);font-size:12px">VM left, retry 8am</td>
+                    <td><button class="btn btn-secondary btn-xs">📞 Call</button></td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:'DM Mono',monospace;color:var(--text3)">04</td>
+                    <td class="name">All Pro Roofing</td>
+                    <td style="font-family:'DM Mono',monospace;color:var(--primary)">(714) 220-2822</td>
+                    <td>Anaheim</td><td><span class="bg bg-t2">T2</span></td>
+                    <td><span class="bg bg-new">New</span></td>
+                    <td style="color:var(--text3)">—</td>
+                    <td><button class="btn btn-secondary btn-xs">📞 Call</button></td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:'DM Mono',monospace;color:var(--text3)">05</td>
+                    <td class="name">Major League Roofers</td>
+                    <td style="font-family:'DM Mono',monospace;color:var(--primary)">(888) 952-5444</td>
+                    <td>Anaheim</td><td><span class="bg bg-t2">T2</span></td>
+                    <td><span class="bg bg-new">New</span></td>
+                    <td style="color:var(--text3)">—</td>
+                    <td><button class="btn btn-secondary btn-xs">📞 Call</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANNOTATIONS FOR AGENT -->
+  <div class="anno">
+    <div class="anno-card">
+      <div class="anno-num">PANEL · B1</div>
+      <div class="anno-title">"Next Call" hero card</div>
+      <div class="anno-text">The single most important UI element. <strong>One giant green button.</strong> Pulsing animation. Hook line built in. Reduces friction to zero — agent doesn't have to think.</div>
+    </div>
+    <div class="anno-card orange">
+      <div class="anno-num">PANEL · B2</div>
+      <div class="anno-title">Auto-rotating phone numbers</div>
+      <div class="anno-text">Counters track usage. At 30 calls, system <strong>auto-switches</strong> to next number. Flagged numbers grayed out. Spam-resistance baked in.</div>
+    </div>
+    <div class="anno-card purple">
+      <div class="anno-num">PANEL · B3</div>
+      <div class="anno-title">Wins-only team feed</div>
+      <div class="anno-text">Khalid sees Omar booked a demo → calls harder. He <strong>doesn't see</strong> Omar's no-answers. No demoralizing noise. Pure momentum.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ ACTIVE CALL VIEW ════════════════════ -->
+<section class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-num">05 / IN-CALL UI</div>
+      <h2 class="section-title">During the <span class="accent">call.</span></h2>
+    </div>
+    <p class="section-sub">When an agent is on a call, this overlay appears. Script in front of them. Outcome buttons one click away. Notes auto-saved as they type.</p>
+  </div>
+
+  <div class="call-interface">
+    <div class="ci-left">
+      <div class="ci-status">● ON CALL · LIVE</div>
+      <div class="ci-biz">Horizon Roofing</div>
+      <div class="ci-num">(714) 328-1967 · Anaheim, CA</div>
+      <div class="ci-timer">02:14</div>
+      <div class="ci-controls">
+        <button class="ci-ctrl">🎤 Mute</button>
+        <button class="ci-ctrl">⏸ Hold</button>
+        <button class="ci-ctrl">📝 Note</button>
+        <button class="ci-ctrl danger">🛑 End Call</button>
+      </div>
+      <div class="ci-script-wrap">
+        <div class="ci-script-tabs">
+          <div class="ci-script-tab active">OPENER</div>
+          <div class="ci-script-tab">PITCH</div>
+          <div class="ci-script-tab">OBJECTIONS</div>
+          <div class="ci-script-tab">CLOSE</div>
+        </div>
+        <div class="ci-script">
+          "Hey Frank — this is Khalid with PureCode. I read your reviews on Google and one customer mentioned 15 phone calls before getting scheduled. I'm guessing missed calls are costing you jobs. We fix that with an AI receptionist that answers every call 24/7 and books straight to your calendar. Got 90 seconds?"
+        </div>
+      </div>
+    </div>
+    <div class="ci-right">
+      <div class="ci-side-label">LEAD INFO</div>
+      <div class="ci-side-info">
+        <div class="ci-side-info-row"><span>Owner</span><strong>Frank Garcia</strong></div>
+        <div class="ci-side-info-row"><span>Type</span><strong>Roofing</strong></div>
+        <div class="ci-side-info-row"><span>Tier</span><strong style="color:var(--primary)">T1 · Hot</strong></div>
+        <div class="ci-side-info-row"><span>Google</span><strong>4.5 ⭐</strong></div>
+        <div class="ci-side-info-row"><span>Last call</span><strong>—</strong></div>
+      </div>
+      <div class="ci-side-label">QUICK NOTE</div>
+      <textarea style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:8px;color:var(--text);font-size:12px;font-family:inherit;resize:none;min-height:60px;outline:none" placeholder="Type while you talk..."></textarea>
+      <div class="ci-side-label" style="margin-top:8px">LOG OUTCOME</div>
+      <div class="ci-outcomes-grid">
+        <button class="ci-out-btn">No Answer</button>
+        <button class="ci-out-btn">Voicemail</button>
+        <button class="ci-out-btn hot">🔥 Interested</button>
+        <button class="ci-out-btn demo">⭐ Demo</button>
+        <button class="ci-out-btn">Not Qualified</button>
+        <button class="ci-out-btn">Callback</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="anno">
+    <div class="anno-card blue">
+      <div class="anno-num">DESIGN · 04</div>
+      <div class="anno-title">Script tabs — opener / pitch / objections / close</div>
+      <div class="anno-text">Switch contexts mid-call without scrolling. Pulled from your <strong>cold call playbook</strong> file you already built. Lives in GHL custom fields.</div>
+    </div>
+    <div class="anno-card">
+      <div class="anno-num">DESIGN · 05</div>
+      <div class="anno-title">Log outcome ends the call</div>
+      <div class="anno-text">Click a colored outcome button → <strong>call ends, note saved, lead status updated, agent moves to next lead automatically.</strong> One-click flow.</div>
+    </div>
+    <div class="anno-card orange">
+      <div class="anno-num">DESIGN · 06</div>
+      <div class="anno-title">Recording auto-syncs to GHL</div>
+      <div class="anno-text">JustCall webhook fires when call ends → recording URL attached to GHL contact → admin can replay any call from the recordings page.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ API / DATA MODEL ════════════════════ -->
+<section class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-num">06 / API</div>
+      <h2 class="section-title">The endpoints <span class="accent">to build.</span></h2>
+    </div>
+    <p class="section-sub">10 endpoints. That's it. Each one is 10–20 lines wrapping a GHL or JustCall API call. Hand this list to Claude Code and start building.</p>
+  </div>
+
+  <div class="api-grid">
+    <div class="api-card">
+      <div class="api-card-head"><div class="api-method post">POST</div><div class="api-path">/api/auth/login</div></div>
+      <div class="api-card-body">
+        <div class="api-desc">Username + password → returns JWT with role.</div>
+        <div class="api-role">ROLE: <span class="both">PUBLIC</span> · returns role=admin or role=agent</div>
+      </div>
+    </div>
+    <div class="api-card">
+      <div class="api-card-head"><div class="api-method get">GET</div><div class="api-path">/api/leads?assigned=me</div></div>
+      <div class="api-card-body">
+        <div class="api-desc">Get leads for current user. Admin can pass <code>?assigned=agent1</code>; agents always see only their own.</div>
+        <div class="api-role">ROLE: <span class="both">BOTH · server-filtered</span></div>
+      </div>
+    </div>
+    <div class="api-card">
+      <div class="api-card-head"><div class="api-method post">POST</div><div class="api-path">/api/leads/:id/call</div></div>
+      <div class="api-card-body">
+        <div class="api-desc">Triggers JustCall click-to-call. Returns call session ID. Backend rotates the agent's number.</div>
+        <div class="api-role">ROLE: <span class="both">BOTH · agent's own leads only</span></div>
+      </div>
+    </div>
+    <div class="api-card">
+      <div class="api-card-head"><div class="api-method post">POST</div><div class="api-path">/api/leads/:id/note</div></div>
+      <div class="api-card-body">
+        <div class="api-desc">Save note + outcome. Updates GHL contact, fires team feed event if win.</div>
+        <div class="api-role">ROLE: <span class="both">BOTH · agent's own leads only</span></div>
+      </div>
+    </div>
+    <div class="api-card">
+      <div class="api-card-head"><div class="api-method put">PUT</div><div class="api-path">/api/leads/:id/assign</div></div>
+      <div class="api-card-body">
+        <div class="api-desc">Reassign lead to a different agent. Updates GHL custom field.</div>
+        <div class="api-role">ROLE: <span class="admin-only">ADMIN ONLY · 403 if agent</span></div>
+      </div>
+    </div>
+    <div class="api-card">
+      <div class="api-card-head"><div class="api-method post">POST</div><div class="api-path">/api/leads/bulk-assign</div></div>
+      <div class="api-card-body">
+        <div class="api-desc">Distribute N unassigned leads to an agent (with filter by tier/type).</div>
+        <div class="api-role">ROLE: <span class="admin-only">ADMIN ONLY</span></div>
+      </div>
+    </div>
+    <div class="api-card">
+      <div class="api-card-head"><div class="api-method get">GET</div><div class="api-path">/api/stats/agent/:id</div></div>
+      <div class="api-card-body">
+        <div class="api-desc">Calls, talk time, demos, conversion. Agent can only request their own ID.</div>
+        <div class="api-role">ROLE: <span class="both">BOTH · own only for agents</span></div>
+      </div>
+    </div>
+    <div class="api-card">
+      <div class="api-card-head"><div class="api-method get">GET</div><div class="api-path">/api/feed?type=wins</div></div>
+      <div class="api-card-body">
+        <div class="api-desc">Team activity feed. <code>?type=wins</code> for agent view, <code>?type=all</code> for admin.</div>
+        <div class="api-role">ROLE: <span class="both">BOTH · auto-filters by role</span></div>
+      </div>
+    </div>
+    <div class="api-card">
+      <div class="api-card-head"><div class="api-method post">POST</div><div class="api-path">/api/webhooks/justcall</div></div>
+      <div class="api-card-body">
+        <div class="api-desc">JustCall fires this when a call ends. Updates GHL with duration, recording URL, outcome.</div>
+        <div class="api-role">ROLE: <span class="both">WEBHOOK · signature verified</span></div>
+      </div>
+    </div>
+    <div class="api-card">
+      <div class="api-card-head"><div class="api-method get">GET</div><div class="api-path">/api/justcall/health</div></div>
+      <div class="api-card-body">
+        <div class="api-desc">Number status (active / flagged / spam) + minutes used today.</div>
+        <div class="api-role">ROLE: <span class="admin-only">ADMIN ONLY</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ BUILD SEQUENCE ════════════════════ -->
+<section class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-num">07 / BUILD</div>
+      <h2 class="section-title">Ship in <span class="accent">7 days.</span></h2>
+    </div>
+    <p class="section-sub">Solo, with Claude Code. Day-by-day plan. Check off each task. Don't skip ahead — each day's work depends on the previous day landing.</p>
+  </div>
+
+  <div class="checklist">
+    <div class="day-card">
+      <div class="day-head">
+        <div class="day-num">01</div>
+        <div class="day-info">
+          <div class="day-title">Backend skeleton + GHL wiring</div>
+          <div class="day-sub">The plumbing</div>
+        </div>
+        <div class="day-time">~6h</div>
+      </div>
+      <div class="day-tasks">
+        <div class="day-task"><div class="ck"></div><span>Create Vercel project + Node.js Express scaffold</span></div>
+        <div class="day-task"><div class="ck"></div><span>Wire <code>/api/leads</code> to your existing GHL MCP server pattern</span></div>
+        <div class="day-task"><div class="ck"></div><span>Test: <code>curl /api/leads</code> returns real GHL contacts</span></div>
+        <div class="day-task"><div class="ck"></div><span>Add <code>/api/leads/:id/note</code> — POST → GHL note</span></div>
+        <div class="day-task"><div class="ck"></div><span>Add custom GHL fields: <code>assigned_agent</code>, <code>tier</code>, <code>last_outcome</code></span></div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-head">
+        <div class="day-num">02</div>
+        <div class="day-info">
+          <div class="day-title">Auth + role system</div>
+          <div class="day-sub">Login + JWT + RBAC</div>
+        </div>
+        <div class="day-time">~5h</div>
+      </div>
+      <div class="day-tasks">
+        <div class="day-task"><div class="ck"></div><span>Set up Supabase project (free tier)</span></div>
+        <div class="day-task"><div class="ck"></div><span>Create <code>users</code> table: id, email, password, role, ghl_user_id</span></div>
+        <div class="day-task"><div class="ck"></div><span>Build <code>POST /api/auth/login</code> with bcrypt + JWT</span></div>
+        <div class="day-task"><div class="ck"></div><span>Add <code>requireAuth</code> + <code>requireAdmin</code> middleware</span></div>
+        <div class="day-task"><div class="ck"></div><span>Test: agent JWT calling <code>/api/admin/*</code> returns 403</span></div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-head">
+        <div class="day-num">03</div>
+        <div class="day-info">
+          <div class="day-title">Frontend shell + login</div>
+          <div class="day-sub">React + your existing CSS</div>
+        </div>
+        <div class="day-time">~5h</div>
+      </div>
+      <div class="day-tasks">
+        <div class="day-task"><div class="ck"></div><span>Vite + React project, copy CSS variables from prototype</span></div>
+        <div class="day-task"><div class="ck"></div><span>Login screen → calls <code>/api/auth/login</code> → stores JWT in cookie</span></div>
+        <div class="day-task"><div class="ck"></div><span>Protected routes: redirect to <code>/login</code> if no JWT</span></div>
+        <div class="day-task"><div class="ck"></div><span>Decode JWT role → conditionally render admin vs agent shell</span></div>
+        <div class="day-task"><div class="ck"></div><span>Topbar + sidebar with role-based menu items</span></div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-head">
+        <div class="day-num">04</div>
+        <div class="day-info">
+          <div class="day-title">Agent view: queue + click-to-call</div>
+          <div class="day-sub">The most important screen</div>
+        </div>
+        <div class="day-time">~7h</div>
+      </div>
+      <div class="day-tasks">
+        <div class="day-task"><div class="ck"></div><span>"My Queue" page — fetches <code>/api/leads?assigned=me</code></span></div>
+        <div class="day-task"><div class="ck"></div><span>"Next Call" hero card with hook display</span></div>
+        <div class="day-task"><div class="ck"></div><span>Wire JustCall click-to-call API on call button</span></div>
+        <div class="day-task"><div class="ck"></div><span>In-call overlay: timer, script tabs, outcome buttons</span></div>
+        <div class="day-task"><div class="ck"></div><span>Phone rotation logic: switch number every 30 calls</span></div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-head">
+        <div class="day-num">05</div>
+        <div class="day-info">
+          <div class="day-title">Admin view: stats + leaderboard</div>
+          <div class="day-sub">Your cockpit</div>
+        </div>
+        <div class="day-time">~6h</div>
+      </div>
+      <div class="day-tasks">
+        <div class="day-task"><div class="ck"></div><span>Admin dashboard: KPI strip, leaderboard, pipeline</span></div>
+        <div class="day-task"><div class="ck"></div><span>"All Leads" page with filters (tier, status, agent)</span></div>
+        <div class="day-task"><div class="ck"></div><span>Bulk assign modal — calls <code>/api/leads/bulk-assign</code></span></div>
+        <div class="day-task"><div class="ck"></div><span>JustCall status panel — number health + minutes</span></div>
+        <div class="day-task"><div class="ck"></div><span>Recording playback page (admin only)</span></div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-head">
+        <div class="day-num">06</div>
+        <div class="day-info">
+          <div class="day-title">Webhooks + real-time feed</div>
+          <div class="day-sub">Make it feel alive</div>
+        </div>
+        <div class="day-time">~5h</div>
+      </div>
+      <div class="day-tasks">
+        <div class="day-task"><div class="ck"></div><span>JustCall webhook → updates GHL contact on call end</span></div>
+        <div class="day-task"><div class="ck"></div><span>Verify webhook signature (security)</span></div>
+        <div class="day-task"><div class="ck"></div><span>Activity feed: poll every 10s OR Supabase realtime</span></div>
+        <div class="day-task"><div class="ck"></div><span>Filter wins-only feed for agents, all for admin</span></div>
+        <div class="day-task"><div class="ck"></div><span>Browser notification when teammate books a demo</span></div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-head">
+        <div class="day-num">07</div>
+        <div class="day-info">
+          <div class="day-title">Deploy + test with real data</div>
+          <div class="day-sub">Go live</div>
+        </div>
+        <div class="day-time">~4h</div>
+      </div>
+      <div class="day-tasks">
+        <div class="day-task"><div class="ck"></div><span>Deploy frontend + backend to Vercel</span></div>
+        <div class="day-task"><div class="ck"></div><span>Subdomain: <code>app.purecodeagency.com</code> via GoDaddy DNS</span></div>
+        <div class="day-task"><div class="ck"></div><span>Create real agent accounts (Khalid, Omar, Sara)</span></div>
+        <div class="day-task"><div class="ck"></div><span>Import 50 real leads, assign 15 to each agent</span></div>
+        <div class="day-task"><div class="ck"></div><span>Run a live test call end-to-end</span></div>
+      </div>
+    </div>
+
+    <div class="day-card" style="border-color:rgba(245,200,66,0.25)">
+      <div class="day-head">
+        <div class="day-num" style="color:var(--gold)">08+</div>
+        <div class="day-info">
+          <div class="day-title">Buffer + polish</div>
+          <div class="day-sub">Things will break — plan for it</div>
+        </div>
+        <div class="day-time">2-3d</div>
+      </div>
+      <div class="day-tasks">
+        <div class="day-task"><div class="ck"></div><span>Fix the 5–8 weird bugs that always show up</span></div>
+        <div class="day-task"><div class="ck"></div><span>Mobile responsive pass (agents may call from phones)</span></div>
+        <div class="day-task"><div class="ck"></div><span>Add CSV import for new lead lists</span></div>
+        <div class="day-task"><div class="ck"></div><span>Set up daily backup of GHL → Supabase</span></div>
+        <div class="day-task"><div class="ck"></div><span>Train Khalid, Omar, Sara on the new system (1 hour)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ HOW TO USE THIS PLAYBOOK ════════════════════ -->
+<section class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-num">08 / NEXT MOVE</div>
+      <h2 class="section-title">How to use <span class="accent">this doc.</span></h2>
+    </div>
+    <p class="section-sub">Three concrete things to do this week. In order.</p>
+  </div>
+
+  <div class="checklist">
+    <div class="day-card" style="border-color:rgba(0,229,160,0.3)">
+      <div class="day-head">
+        <div class="day-num">→</div>
+        <div class="day-info">
+          <div class="day-title">Step 1 · Verify JustCall integration</div>
+          <div class="day-sub">Today · 30 minutes</div>
+        </div>
+      </div>
+      <div class="day-tasks">
+        <div class="day-task"><div class="ck"></div><span>Log into JustCall · Integrations · GoHighLevel</span></div>
+        <div class="day-task"><div class="ck"></div><span>Make a test call from JustCall → confirm it logs to GHL contact with recording</span></div>
+        <div class="day-task"><div class="ck"></div><span>Confirm your plan includes <strong>API access + webhooks</strong> (upgrade if not)</span></div>
+        <div class="day-task"><div class="ck"></div><span>Note your JustCall API key — you'll need it on Day 1</span></div>
+      </div>
+    </div>
+
+    <div class="day-card" style="border-color:rgba(255,107,53,0.25)">
+      <div class="day-head">
+        <div class="day-num">→</div>
+        <div class="day-info">
+          <div class="day-title">Step 2 · Buy 9 phone numbers</div>
+          <div class="day-sub">This week · 1 hour</div>
+        </div>
+      </div>
+      <div class="day-tasks">
+        <div class="day-task"><div class="ck"></div><span>3 numbers per agent (Khalid · Omar · Sara) = 9 total</span></div>
+        <div class="day-task"><div class="ck"></div><span>Match area codes to your campaigns (714/949/657 for OC, 615/901/865 for TN)</span></div>
+        <div class="day-task"><div class="ck"></div><span>Assign each number to the right JustCall sub-user</span></div>
+        <div class="day-task"><div class="ck"></div><span>Save number → agent mapping in a doc — you'll seed this in Day 3</span></div>
+      </div>
+    </div>
+
+    <div class="day-card" style="border-color:rgba(167,139,250,0.25)">
+      <div class="day-head">
+        <div class="day-num">→</div>
+        <div class="day-info">
+          <div class="day-title">Step 3 · Open Claude Code, start Day 1</div>
+          <div class="day-sub">When ready · the build</div>
+        </div>
+      </div>
+      <div class="day-tasks">
+        <div class="day-task"><div class="ck"></div><span>Create new folder: <code>~/projects/purecode-crm</code></span></div>
+        <div class="day-task"><div class="ck"></div><span>Drop this playbook + your existing GHL MCP server file in</span></div>
+        <div class="day-task"><div class="ck"></div><span>Tell Claude Code: <em>"Read the playbook. We're starting Day 1. Build the backend skeleton."</em></span></div>
+        <div class="day-task"><div class="ck"></div><span>Stop at end of each day. Don't skip ahead.</span></div>
+      </div>
+    </div>
+
+    <div class="day-card" style="border-color:rgba(78,168,222,0.25)">
+      <div class="day-head">
+        <div class="day-num">★</div>
+        <div class="day-info">
+          <div class="day-title">When you get stuck</div>
+          <div class="day-sub">Always · expect this</div>
+        </div>
+      </div>
+      <div class="day-tasks">
+        <div class="day-task"><div class="ck"></div><span><strong>JustCall API issue?</strong> Their docs at developer.justcall.io · or DM their support, they're responsive</span></div>
+        <div class="day-task"><div class="ck"></div><span><strong>GHL API limit?</strong> You've hit this before — same MCP server pattern, just paginate</span></div>
+        <div class="day-task"><div class="ck"></div><span><strong>Auth weirdness?</strong> Search YouTube: <em>"JWT auth Node Express tutorial"</em></span></div>
+        <div class="day-task"><div class="ck"></div><span><strong>Stuck stuck?</strong> Come back here. Show me the error. I'll debug.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer class="pb-footer">
+  <div class="pb-logo">PURECODE AGENCY</div>
+  <div>UI BUILD PLAYBOOK · v1.0 · MAY 2026</div>
+  <div style="margin-top:4px;color:var(--text3)">For: David / Abdalla · DFW + Tennessee + Orange County campaigns</div>
+</footer>
+
+</div>
+
+</body>
+</html>

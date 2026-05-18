@@ -1,0 +1,37 @@
+{
+  "created": [],
+  "duplicates": [
+    {
+      "name": "Benefit Roofing",
+      "phone": "(800) 670-2551",
+      "id": "kkAJfgt2FjezqVo8jrnJ"
+    },
+    {
+      "name": "Bilt-Well Roofing",
+      "phone": "(323) 254-2888",
+      "id": "uEcUDNfsJ1v7lK9UqG53"
+    },
+    {
+      "name": "Costar Roofing inc",
+      "phone": "(818) 337-1212",
+      "id": "JUKhqq4FF3BytAimsIbd"
+    },
+    {
+      "name": "Treven Zael Roofing",
+      "phone": "(213) 232-9700",
+      "id": "53lfUqrd5N45FTtGXrgR"
+    },
+    {
+      "name": "Evo Roof Repair Los Angeles",
+      "phone": "(323) 593-2556",
+      "id": "JDSg4EUUJlcYhqPBMprG"
+    }
+  ],
+  "skipped": [
+    {
+      "name": "California Roofers",
+      "reason": "no phone"
+    }
+  ],
+  "errors": []
+}

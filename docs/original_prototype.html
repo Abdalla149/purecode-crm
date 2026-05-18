@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PureCode CRM — Team Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07080b;--bg2:#0e0f14;--bg3:#151619;--bg4:#1c1d23;--bg5:#23242c;
+  --primary:#00e5a0;--primary-dim:rgba(0,229,160,0.1);--primary-glow:rgba(0,229,160,0.15);
+  --orange:#ff6b35;--orange-dim:rgba(255,107,53,0.12);
+  --blue:#4ea8de;--blue-dim:rgba(78,168,222,0.12);
+  --purple:#a78bfa;--gold:#f5c842;--gold-dim:rgba(245,200,66,0.12);
+  --red:#ff4d6a;--red-dim:rgba(255,77,106,0.12);
+  --text:#edeae3;--text2:#8a8780;--text3:#4a4845;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);
+  --r:8px;
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:2px}
+button{cursor:pointer;font-family:inherit}
+input,select,textarea{font-family:inherit;font-size:14px}
+
+/* ── LOGIN ── */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);position:relative;overflow:hidden}
+#login-screen::before{content:'';position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(0,229,160,0.05) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.login-card{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:40px;width:380px;position:relative;z-index:1}
+.login-logo{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--primary);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.login-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--text2);margin-bottom:32px}
+.login-label{display:block;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.login-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:12px 14px;color:var(--text);outline:none;transition:border-color .15s;margin-bottom:16px}
+.login-input:focus{border-color:rgba(0,229,160,0.4)}
+.login-select{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:12px 14px;color:var(--text);outline:none;margin-bottom:24px;appearance:none;cursor:pointer}
+.login-select option{background:var(--bg3)}
+.login-btn{width:100%;background:var(--primary);color:#000;border:none;border-radius:var(--r);padding:13px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;letter-spacing:.04em;transition:opacity .15s}
+.login-btn:hover{opacity:.85}
+
+/* ── APP SHELL ── */
+#app{display:none;height:100vh;flex-direction:column}
+.topbar{height:52px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px;flex-shrink:0;z-index:50}
+.topbar-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:var(--primary);letter-spacing:.08em}
+.topbar-sep{width:1px;height:20px;background:var(--border);margin:0 4px}
+.topbar-page{font-size:13px;color:var(--text2);font-weight:500}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.topbar-user{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:5px 12px 5px 6px;font-size:12px;color:var(--text2)}
+.user-av{width:22px;height:22px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:10px;color:#000}
+.logout-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:11px;color:var(--text3);transition:all .15s}
+.logout-btn:hover{border-color:var(--border2);color:var(--text)}
+
+.body-area{display:flex;flex:1;overflow:hidden}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;padding:12px 0;flex-shrink:0}
+.nav-section{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);padding:16px 16px 6px}
+.nav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:8px 16px;background:transparent;border:none;color:var(--text2);font-size:13px;text-align:left;border-left:2px solid transparent;transition:all .12s;cursor:pointer}
+.nav-btn:hover{color:var(--text);background:rgba(255,255,255,0.02)}
+.nav-btn.active{color:var(--primary);background:var(--primary-dim);border-left-color:var(--primary)}
+.nav-icon{font-size:15px;width:20px;text-align:center}
+
+/* ── MAIN CONTENT ── */
+.main{flex:1;overflow-y:auto;padding:24px}
+.page{display:none}.page.active{display:block}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.page-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800}
+.page-sub{font-size:13px;color:var(--text2);margin-top:2px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r);font-size:12px;font-weight:600;border:none;transition:all .12s;cursor:pointer;font-family:inherit;letter-spacing:.02em}
+.btn-primary{background:var(--primary);color:#000}.btn-primary:hover{opacity:.85}
+.btn-secondary{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}.btn-secondary:hover{color:var(--text);border-color:var(--border2)}
+.btn-danger{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,77,106,0.25)}.btn-danger:hover{background:rgba(255,77,106,0.2)}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-xs{padding:3px 8px;font-size:11px;border-radius:5px}
+
+/* ── STATS GRID ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px}
+.stat-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1}
+.stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-top:4px}
+.stat-card.green .stat-num{color:var(--primary)}
+.stat-card.orange .stat-num{color:var(--orange)}
+.stat-card.blue .stat-num{color:var(--blue)}
+.stat-card.gold .stat-num{color:var(--gold)}
+
+/* ── FILTERS BAR ── */
+.filters-bar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.filter-input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 12px;color:var(--text);outline:none;font-size:13px;min-width:180px}
+.filter-input:focus{border-color:rgba(0,229,160,0.35)}
+.filter-select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 12px;color:var(--text);outline:none;font-size:13px;cursor:pointer;appearance:none;min-width:140px}
+.filter-select option{background:var(--bg3)}
+.filter-count{margin-left:auto;font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+
+/* ── TABLE ── */
+.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--bg3);padding:10px 14px;text-align:left;font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,0.02)}
+tbody td{padding:10px 14px;font-size:13px;color:var(--text2);vertical-align:middle}
+tbody td.name{color:var(--text);font-weight:500}
+
+/* ── BADGES ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:.05em;white-space:nowrap}
+.badge-t1{background:rgba(0,229,160,0.15);color:var(--primary);border:1px solid rgba(0,229,160,0.3)}
+.badge-t2{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,200,66,0.3)}
+.badge-t3{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+.badge-new{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(78,168,222,0.3)}
+.badge-called{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,200,66,0.3)}
+.badge-interested{background:rgba(0,229,160,0.15);color:var(--primary);border:1px solid rgba(0,229,160,0.3)}
+.badge-demo{background:rgba(167,139,250,0.15);color:var(--purple);border:1px solid rgba(167,139,250,0.3)}
+.badge-closed{background:rgba(0,229,160,0.25);color:#00b87a;border:1px solid rgba(0,184,122,0.4)}
+.badge-noanswer{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+.badge-notqualified{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,77,106,0.3)}
+.badge-warn{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,77,106,0.3)}
+
+/* ── NOTE PANEL (DRAWER) ── */
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;backdrop-filter:blur(3px)}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:480px;background:var(--bg2);border-left:1px solid var(--border2);z-index:201;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1)}
+.drawer.open{transform:translateX(0)}
+.drawer-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+.drawer-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px}
+.drawer-sub{font-size:12px;color:var(--text3);margin-top:3px}
+.drawer-close{background:var(--bg4);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2);cursor:pointer;flex-shrink:0}
+.drawer-body{flex:1;overflow-y:auto;padding:20px 24px}
+.drawer-footer{padding:16px 24px;border-top:1px solid var(--border);flex-shrink:0}
+
+.lead-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.li-item{background:var(--bg3);border-radius:6px;padding:10px 12px}
+.li-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+.li-val{font-size:13px;color:var(--text);font-weight:500}
+.li-val.phone{font-family:'DM Mono',monospace;color:var(--primary)}
+
+.notes-section{margin-top:4px}
+.notes-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.note-item{background:var(--bg3);border-radius:6px;padding:12px 14px;margin-bottom:8px;border-left:3px solid var(--border2)}
+.note-item.mine{border-left-color:var(--primary)}
+.note-meta{font-size:11px;color:var(--text3);margin-bottom:5px;display:flex;align-items:center;gap:8px}
+.note-agent{font-weight:600;color:var(--text2)}
+.note-text{font-size:13px;color:var(--text);line-height:1.6}
+.note-empty{font-size:13px;color:var(--text3);text-align:center;padding:24px 0;font-style:italic}
+
+.note-compose{display:flex;flex-direction:column;gap:10px}
+.note-textarea{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px;color:var(--text);outline:none;resize:none;font-size:13px;line-height:1.6;width:100%}
+.note-textarea:focus{border-color:rgba(0,229,160,0.35)}
+.note-bottom{display:flex;align-items:center;gap:10px}
+.outcome-select{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);outline:none;font-size:12px}
+
+/* ── PHONE NUMBERS SECTION ── */
+.phone-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:12px}
+.phone-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.phone-card-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px}
+.phone-badge{font-family:'DM Mono',monospace;font-size:13px;background:var(--primary-dim);color:var(--primary);border:1px solid rgba(0,229,160,0.3);padding:4px 12px;border-radius:100px}
+.phone-num-list{display:flex;flex-direction:column;gap:8px}
+.phone-num-item{display:flex;align-items:center;gap:10px;background:var(--bg3);border-radius:6px;padding:10px 12px}
+.phone-num-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;min-width:45px}
+.phone-num-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--text);flex:1}
+.phone-num-usage{font-size:11px;color:var(--text3);margin-left:auto}
+.phone-num-item.active-num{border:1px solid rgba(0,229,160,0.3);background:var(--primary-dim)}
+.phone-num-item.active-num .phone-num-label{color:var(--primary)}
+
+/* ── ASSIGN MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:300;backdrop-filter:blur(4px);align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:28px;width:420px;max-width:95vw}
+.modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:24px}
+.modal-label{display:block;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.modal-select{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 12px;color:var(--text);outline:none;margin-bottom:20px;font-size:13px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+
+/* ── AGENT CARDS (Admin) ── */
+.agent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.agent-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.agent-av{width:40px;height:40px;border-radius:10px;background:var(--primary-dim);border:1px solid rgba(0,229,160,0.3);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--primary);margin-bottom:12px}
+.agent-name{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:2px}
+.agent-role{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px}
+.agent-stat-row{display:flex;gap:8px}
+.agent-mini-stat{flex:1;background:var(--bg3);border-radius:6px;padding:8px 10px;text-align:center}
+.agent-mini-num{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--primary);line-height:1}
+.agent-mini-label{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* ── ACTIVITY FEED ── */
+.activity-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.activity-item:last-child{border-bottom:none}
+.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.activity-content{flex:1}
+.activity-text{font-size:13px;color:var(--text2);}
+.activity-text strong{color:var(--text)}
+.activity-time{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px}
+
+/* ── AGENT LEADS VIEW ── */
+.my-phone-bar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:20px}
+.mypb-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
+.mypb-numbers{display:flex;gap:8px}
+.mypb-num{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);cursor:pointer;transition:all .12s}
+.mypb-num:hover{border-color:var(--border2);color:var(--text)}
+.mypb-num.active-call{background:var(--primary-dim);border-color:rgba(0,229,160,0.4);color:var(--primary)}
+.mypb-tip{margin-left:auto;font-size:11px;color:var(--text3)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){.stats-grid{grid-template-columns:1fr 1fr}.agent-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.sidebar{display:none}.drawer{width:100%}.stats-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ LOGIN ══════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">PureCode Agency</div>
+    <div class="login-title">Team Portal</div>
+    <div class="login-sub">Sign in to access your workspace</div>
+    <label class="login-label">Login As</label>
+    <select class="login-select" id="login-role">
+      <option value="admin">David — Team Lead</option>
+      <option value="agent1">Agent 1 — Khalid</option>
+      <option value="agent2">Agent 2 — Omar</option>
+      <option value="agent3">Agent 3 — Sara</option>
+    </select>
+    <label class="login-label">Password</label>
+    <input class="login-input" type="password" id="login-pass" placeholder="Enter password" value="1234">
+    <div id="login-err" style="color:var(--red);font-size:12px;margin-bottom:12px;display:none">Wrong password</div>
+    <button class="login-btn" onclick="doLogin()">Sign In →</button>
+  </div>
+</div>
+
+<!-- ══════════════ APP ══════════════ -->
+<div id="app">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">PURECODE</div>
+    <div class="topbar-sep"></div>
+    <div class="topbar-page" id="topbar-page">Dashboard</div>
+    <div class="topbar-right">
+      <div class="topbar-user">
+        <div class="user-av" id="user-av">D</div>
+        <span id="user-name">David</span>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="body-area">
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar">
+      <div class="nav-section">Main</div>
+      <button class="nav-btn active" onclick="showPage('dashboard')" id="nav-dashboard"><span class="nav-icon">📊</span> Dashboard</button>
+      <button class="nav-btn" onclick="showPage('leads')" id="nav-leads"><span class="nav-icon">📋</span> <span id="nav-leads-label">All Leads</span></button>
+      <div class="nav-section" id="admin-nav-section">Admin</div>
+      <button class="nav-btn" onclick="showPage('agents')" id="nav-agents" style="display:none"><span class="nav-icon">👥</span> Agents</button>
+      <button class="nav-btn" onclick="showPage('assign')" id="nav-assign" style="display:none"><span class="nav-icon">🎯</span> Assign Leads</button>
+      <div class="nav-section">My Workspace</div>
+      <button class="nav-btn" onclick="showPage('myphones')" id="nav-myphones"><span class="nav-icon">📞</span> My Phone Numbers</button>
+      <button class="nav-btn" onclick="showPage('activity')" id="nav-activity"><span class="nav-icon">⚡</span> Activity Log</button>
+    </nav>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <div><div class="page-title" id="dash-title">Team Overview</div><div class="page-sub">Live performance — OC Roofing Campaign</div></div>
+          <div id="dash-header-btns"></div>
+        </div>
+        <div class="stats-grid" id="stats-grid"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:12px">Recent Activity</div>
+            <div class="table-wrap" style="padding:0">
+              <div style="padding:0 16px" id="activity-feed"></div>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:12px">Pipeline Status</div>
+            <div id="pipeline-chart"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── LEADS ── -->
+      <div class="page" id="page-leads">
+        <div class="page-header">
+          <div><div class="page-title" id="leads-page-title">All Leads</div><div class="page-sub" id="leads-page-sub">OC Roofing — 250 leads</div></div>
+          <div id="leads-header-action"></div>
+        </div>
+        <!-- Agent Phone Bar -->
+        <div class="my-phone-bar" id="agent-phone-bar" style="display:none">
+          <div><div class="mypb-label">Your Numbers</div><div class="mypb-numbers" id="agent-phone-nums"></div></div>
+          <div class="mypb-tip">Rotate numbers to avoid spam detection — switch every 30 calls</div>
+        </div>
+        <div class="filters-bar">
+          <input class="filter-input" id="search-input" placeholder="🔍  Search name, phone, owner..." oninput="renderLeads()">
+          <select class="filter-select" id="filter-type" onchange="renderLeads()">
+            <option value="">All Business Types</option>
+            <option value="Roofing">Roofing</option>
+            <option value="Car Care">Car Care / Auto</option>
+            <option value="HVAC">HVAC</option>
+            <option value="Plumbing">Plumbing</option>
+            <option value="Other">Other</option>
+          </select>
+          <select class="filter-select" id="filter-status" onchange="renderLeads()">
+            <option value="">All Statuses</option>
+            <option value="New">New</option>
+            <option value="No Answer">No Answer</option>
+            <option value="Called">Called</option>
+            <option value="Interested">Interested</option>
+            <option value="Demo Booked">Demo Booked</option>
+            <option value="Closed">Closed</option>
+            <option value="Not Qualified">Not Qualified</option>
+          </select>
+          <select class="filter-select" id="filter-tier" onchange="renderLeads()">
+            <option value="">All Tiers</option>
+            <option value="1">Tier 1 — Hot</option>
+            <option value="2">Tier 2 — Warm</option>
+            <option value="3">Tier 3 — Skip</option>
+          </select>
+          <select class="filter-select" id="filter-agent" onchange="renderLeads()" style="display:none">
+            <option value="">All Agents</option>
+            <option value="unassigned">Unassigned</option>
+            <option value="agent1">Khalid</option>
+            <option value="agent2">Omar</option>
+            <option value="agent3">Sara</option>
+          </select>
+          <span class="filter-count" id="filter-count">— leads</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Business</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>Owner</th>
+                <th>Tier</th>
+                <th>Status</th>
+                <th>Assigned</th>
+                <th>Notes</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="leads-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── AGENTS (admin only) ── -->
+      <div class="page" id="page-agents">
+        <div class="page-header">
+          <div><div class="page-title">Agents</div><div class="page-sub">Team performance overview</div></div>
+        </div>
+        <div class="agent-grid" id="agents-grid"></div>
+      </div>
+
+      <!-- ── ASSIGN (admin only) ── -->
+      <div class="page" id="page-assign">
+        <div class="page-header">
+          <div><div class="page-title">Assign Leads</div><div class="page-sub">Bulk assign unassigned leads to agents</div></div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:24px;max-width:500px">
+          <div style="margin-bottom:16px">
+            <label class="modal-label">Select Agent</label>
+            <select class="modal-select" id="bulk-agent">
+              <option value="agent1">Khalid</option>
+              <option value="agent2">Omar</option>
+              <option value="agent3">Sara</option>
+            </select>
+          </div>
+          <div style="margin-bottom:16px">
+            <label class="modal-label">Business Type Filter</label>
+            <select class="modal-select" id="bulk-type">
+              <option value="">All Types</option>
+              <option value="Roofing">Roofing Only</option>
+              <option value="Car Care">Car Care Only</option>
+            </select>
+          </div>
+          <div style="margin-bottom:16px">
+            <label class="modal-label">Tier Filter</label>
+            <select class="modal-select" id="bulk-tier">
+              <option value="">All Tiers</option>
+              <option value="1">Tier 1 Only</option>
+              <option value="2">Tier 2 Only</option>
+            </select>
+          </div>
+          <div style="margin-bottom:20px">
+            <label class="modal-label">Number of Leads to Assign</label>
+            <input type="number" class="modal-select" id="bulk-count" value="25" min="1" max="250">
+          </div>
+          <button class="btn btn-primary" onclick="bulkAssign()" style="width:100%">Assign Leads →</button>
+          <div id="bulk-result" style="margin-top:12px;font-size:13px;color:var(--primary);display:none"></div>
+        </div>
+      </div>
+
+      <!-- ── MY PHONES ── -->
+      <div class="page" id="page-myphones">
+        <div class="page-header">
+          <div><div class="page-title">My Phone Numbers</div><div class="page-sub">Rotate numbers to avoid spam detection — switch every 30 calls</div></div>
+        </div>
+        <div id="my-phones-content"></div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:16px;max-width:560px">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:12px">🔄 Number Rotation Strategy</div>
+          <ul style="list-style:none;font-size:13px;color:var(--text2);line-height:2.2">
+            <li>→ Use <strong style="color:var(--text)">Number 1</strong> for the first 30 calls of the day</li>
+            <li>→ Switch to <strong style="color:var(--text)">Number 2</strong> for the next 30 calls</li>
+            <li>→ Finish with <strong style="color:var(--text)">Number 3</strong> for the last block</li>
+            <li>→ On callbacks, <strong style="color:var(--text)">always use the number they saw before</strong></li>
+            <li>→ If a number gets flagged as spam — tell David immediately</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ── ACTIVITY ── -->
+      <div class="page" id="page-activity">
+        <div class="page-header">
+          <div><div class="page-title">Activity Log</div><div class="page-sub">All calls and notes — today's session</div></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Time</th><th>Agent</th><th>Business</th><th>Outcome</th><th>Note</th></tr></thead>
+            <tbody id="activity-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /body-area -->
+</div><!-- /app -->
+
+<!-- ══ NOTE DRAWER ══ -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="note-drawer">
+  <div class="drawer-header">
+    <div><div class="drawer-title" id="drawer-lead-name">—</div><div class="drawer-sub" id="drawer-lead-phone">—</div></div>
+    <div class="drawer-close" onclick="closeDrawer()">✕</div>
+  </div>
+  <div class="drawer-body">
+    <div class="lead-info-grid" id="drawer-info"></div>
+    <div style="margin-bottom:16px">
+      <label class="modal-label" style="margin-bottom:8px">Call Outcome</label>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="outcome-btns">
+        <button class="btn btn-secondary btn-sm" onclick="setOutcome(this,'No Answer')">No Answer</button>
+        <button class="btn btn-secondary btn-sm" onclick="setOutcome(this,'Called')">Called</button>
+        <button class="btn btn-secondary btn-sm" onclick="setOutcome(this,'Interested')">Interested 🔥</button>
+        <button class="btn btn-secondary btn-sm" onclick="setOutcome(this,'Demo Booked')">Demo Booked ⭐</button>
+        <button class="btn btn-secondary btn-sm" onclick="setOutcome(this,'Not Qualified')">Not Qualified</button>
+      </div>
+    </div>
+    <div class="notes-section">
+      <div class="notes-title">E-Desk Notes <span style="color:var(--text3);font-weight:400">(visible to all agents)</span></div>
+      <div id="notes-list"></div>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <div class="note-compose">
+      <textarea class="note-textarea" id="note-input" rows="3" placeholder="Leave a note for the team... e.g. 'Frank answered, said call back Thursday morning, sounds interested in $350 plan'"></textarea>
+      <button class="btn btn-primary" onclick="submitNote()" style="align-self:flex-end">Save Note + Log Call</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ASSIGN MODAL ══ -->
+<div class="modal-overlay" id="assign-modal">
+  <div class="modal">
+    <div class="modal-title">Assign Lead</div>
+    <div class="modal-sub" id="assign-modal-sub">Assign to an agent</div>
+    <label class="modal-label">Select Agent</label>
+    <select class="modal-select" id="assign-select">
+      <option value="">— Unassigned —</option>
+      <option value="agent1">Khalid</option>
+      <option value="agent2">Omar</option>
+      <option value="agent3">Sara</option>
+    </select>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeAssignModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmAssign()">Assign →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════ DATA ══════════════
+const PASSWORDS = {admin:'1234',agent1:'1234',agent2:'1234',agent3:'1234'};
+const AGENTS = {
+  agent1:{name:'Khalid',initials:'K',role:'Sales Agent',color:'#4ea8de'},
+  agent2:{name:'Omar',initials:'O',role:'Sales Agent',color:'#a78bfa'},
+  agent3:{name:'Sara',initials:'S',role:'Sales Agent',color:'#f5c842'},
+};
+const AGENT_PHONES = {
+  agent1:[{num:'(714) 555-0101',label:'#1',calls:0},{num:'(949) 555-0102',label:'#2',calls:0},{num:'(657) 555-0103',label:'#3',calls:0}],
+  agent2:[{num:'(714) 555-0201',label:'#1',calls:0},{num:'(949) 555-0202',label:'#2',calls:0},{num:'(657) 555-0203',label:'#3',calls:0}],
+  agent3:[{num:'(714) 555-0301',label:'#1',calls:0},{num:'(949) 555-0302',label:'#2',calls:0},{num:'(657) 555-0303',label:'#3',calls:0}],
+};
+
+const LEADS = [
+  {id:1,name:'Prestige Roofing',phone:'(714) 603-7103',city:'Anaheim',owner:'John Arellano',type:'Roofing',score:'4.8',tier:2,status:'New',assigned:'',notes:[],warning:''},
+  {id:2,name:'Horizon Roofing',phone:'(714) 328-1967',city:'Anaheim',owner:'Frank Garcia',type:'Roofing',score:'4.5',tier:1,status:'New',assigned:'agent1',notes:[{agent:'David',time:'2h ago',text:'★ PERFECT HOOK ★ — Google review: "After 15 phone calls they forgot to schedule me." Lead with that. Ask for Frank directly.'}],warning:''},
+  {id:3,name:'Sierra Roof Inc.',phone:'(714) 635-5071',city:'Anaheim',owner:'John Serrano',type:'Roofing',score:'5.0',tier:2,status:'New',assigned:'agent1',notes:[],warning:''},
+  {id:4,name:'Roof Rx',phone:'(310) 676-8888',city:'Anaheim',owner:'Clay Ramirez',type:'Roofing',score:'4.5',tier:2,status:'Called',assigned:'agent2',notes:[{agent:'Omar',time:'1h ago',text:'Answered. Said not interested. Didn\'t finish pitch. Call back Friday — try Opener B.'}],warning:''},
+  {id:5,name:'Royal Roof Co.',phone:'(714) 764-1100',city:'Anaheim',owner:'Tom Beattie',type:'Roofing',score:'5.0',tier:3,status:'New',assigned:'',notes:[],warning:'⚠️ License REVOKED Jan 2025 — verify before calling'},
+  {id:6,name:'ROOFCORP of CA',phone:'(714) 210-5993',city:'Anaheim',owner:'Corporate',type:'Roofing',score:'—',tier:3,status:'New',assigned:'',notes:[],warning:'Commercial/industrial only — low priority'},
+  {id:7,name:'American Roofing Co.',phone:'(714) 530-4311',city:'Anaheim',owner:'—',type:'Roofing',score:'—',tier:2,status:'New',assigned:'agent3',notes:[],warning:''},
+  {id:8,name:'All Pro Roofing',phone:'(714) 220-2822',city:'Anaheim',owner:'—',type:'Roofing',score:'—',tier:2,status:'New',assigned:'agent3',notes:[],warning:''},
+  {id:9,name:'Haggerty Roofing',phone:'(714) 583-0569',city:'Anaheim',owner:'—',type:'Roofing',score:'—',tier:1,status:'No Answer',assigned:'agent1',notes:[{agent:'Khalid',time:'3h ago',text:'No answer x2. Left voicemail. Will try again tomorrow 8am CA time.'}],warning:''},
+  {id:10,name:'RS Roofing',phone:'(415) 633-2195',city:'Anaheim',owner:'—',type:'Roofing',score:'—',tier:3,status:'New',assigned:'',notes:[],warning:'(415) area code — verify if still active in OC'},
+  {id:11,name:'Major League Roofers',phone:'(888) 952-5444',city:'Anaheim',owner:'—',type:'Roofing',score:'—',tier:2,status:'New',assigned:'agent2',notes:[],warning:''},
+  {id:12,name:'Barnett Roofing',phone:'(714) 724-1938',city:'Anaheim',owner:'—',type:'Roofing',score:'—',tier:2,status:'New',assigned:'agent2',notes:[],warning:''},
+  {id:13,name:'Top Roofing Services',phone:'(866) 828-1886',city:'Anaheim',owner:'Ever / Jose',type:'Roofing',score:'—',tier:2,status:'New',assigned:'agent3',notes:[],warning:''},
+  {id:14,name:'Guardian Roofs',phone:'(714) 633-3619',city:'Orange',owner:'Steve Sudduth',type:'Roofing',score:'4.8',tier:1,status:'New',assigned:'agent1',notes:[{agent:'David',time:'5h ago',text:'HomeAdvisor review mentions poor internal communication + scheduling breakdown. Perfect hook for AI pitch.'}],warning:''},
+  {id:15,name:'Royal Roofing Construction',phone:'(714) 680-0015',city:'Placentia',owner:'Jason Cimarusti',type:'Roofing',score:'—',tier:1,status:'Interested',assigned:'agent2',notes:[{agent:'Omar',time:'30m ago',text:'Spoke to Jason. Super interested. Said he misses calls "all the time." Wants to know pricing. Sending to David for demo call. FOLLOW UP ASAP.'}],warning:''},
+  {id:16,name:'All Surface Roofing OC',phone:'(714) 834-1462',city:'Anaheim',owner:'—',type:'Roofing',score:'—',tier:2,status:'New',assigned:'agent3',notes:[],warning:''},
+  {id:17,name:'Hoyt Roofs Inc.',phone:'(714) 773-1820',city:'Anaheim',owner:'—',type:'Roofing',score:'—',tier:2,status:'Demo Booked',assigned:'agent1',notes:[{agent:'Khalid',time:'1h ago',text:'DEMO BOOKED ⭐ — Thursday 9am CA time with Lucas. Owner very interested in $350 plan. Said "we miss at least 20 calls a week." Confirmed email: info@hoytroof.com'}],warning:''},
+  {id:18,name:'Done Rite Roofing',phone:'(562) 371-0535',city:'Anaheim',owner:'Isaac',type:'Roofing',score:'—',tier:2,status:'Not Qualified',assigned:'agent3',notes:[{agent:'Sara',time:'2h ago',text:'Isaac answers every call himself. Very hands-on. Said he doesn\'t need help. Not a fit right now.'}],warning:''},
+  {id:19,name:'OC Auto Spa',phone:'(714) 555-9010',city:'Irvine',owner:'Mike Chen',type:'Car Care',score:'4.3',tier:1,status:'New',assigned:'',notes:[],warning:''},
+  {id:20,name:'Pacific Car Care',phone:'(949) 555-8820',city:'Newport Beach',owner:'Tony Reyes',type:'Car Care',score:'4.6',tier:2,status:'New',assigned:'',notes:[],warning:''},
+];
+
+// ══════════════ STATE ══════════════
+let currentUser = null;
+let currentRole = null;
+let openLeadId = null;
+let assignLeadId = null;
+let selectedOutcome = null;
+const activityLog = [
+  {time:'10:42 AM',agent:'Khalid',business:'Hoyt Roofs Inc.',outcome:'Demo Booked',note:'Thursday 9am with Lucas'},
+  {time:'10:15 AM',agent:'Omar',business:'Royal Roofing Construction',outcome:'Interested',note:'Very interested — wants pricing'},
+  {time:'09:58 AM',agent:'Sara',business:'Done Rite Roofing',outcome:'Not Qualified',note:'Isaac answers all calls himself'},
+  {time:'09:30 AM',agent:'Khalid',business:'Haggerty Roofing',outcome:'No Answer',note:'Voicemail left x2'},
+  {time:'09:12 AM',agent:'Omar',business:'Roof Rx',outcome:'Called',note:'Not interested — try Opener B Friday'},
+];
+
+// ══════════════ AUTH ══════════════
+function doLogin(){
+  const role = document.getElementById('login-role').value;
+  const pass = document.getElementById('login-pass').value;
+  if(pass !== PASSWORDS[role]){document.getElementById('login-err').style.display='block';return;}
+  currentRole = role;
+  currentUser = role === 'admin' ? 'David' : AGENTS[role].name;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  initApp();
+}
+function doLogout(){
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-err').style.display = 'none';
+  currentRole = null; currentUser = null;
+}
+document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+
+// ══════════════ INIT ══════════════
+function initApp(){
+  document.getElementById('user-name').textContent = currentUser;
+  document.getElementById('user-av').textContent = currentUser[0];
+
+  if(currentRole === 'admin'){
+    document.getElementById('nav-agents').style.display = 'flex';
+    document.getElementById('nav-assign').style.display = 'flex';
+    document.getElementById('filter-agent').style.display = 'block';
+    document.getElementById('nav-leads-label').textContent = 'All Leads';
+  } else {
+    document.getElementById('admin-nav-section').style.display = 'none';
+    document.getElementById('nav-leads-label').textContent = 'My Leads';
+    document.getElementById('agent-phone-bar').style.display = 'flex';
+    renderAgentPhoneBar();
+  }
+  showPage('dashboard');
+}
+
+// ══════════════ NAV ══════════════
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const nb = document.getElementById('nav-'+id);
+  if(nb) nb.classList.add('active');
+  document.getElementById('topbar-page').textContent = id.charAt(0).toUpperCase()+id.slice(1).replace(/([A-Z])/g,' $1');
+  if(id==='dashboard') renderDashboard();
+  if(id==='leads') renderLeads();
+  if(id==='agents') renderAgents();
+  if(id==='myphones') renderMyPhones();
+  if(id==='activity') renderActivity();
+}
+
+// ══════════════ DASHBOARD ══════════════
+function renderDashboard(){
+  const allLeads = currentRole==='admin' ? LEADS : LEADS.filter(l=>l.assigned===currentRole);
+  const total = allLeads.length;
+  const demos = allLeads.filter(l=>l.status==='Demo Booked').length;
+  const interested = allLeads.filter(l=>l.status==='Interested').length;
+  const called = allLeads.filter(l=>['Called','No Answer','Interested','Demo Booked','Closed','Not Qualified'].includes(l.status)).length;
+
+  document.getElementById('dash-title').textContent = currentRole==='admin' ? 'Team Overview' : 'My Dashboard';
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-card green"><div class="stat-num">${demos}</div><div class="stat-label">Demos Booked</div></div>
+    <div class="stat-card orange"><div class="stat-num">${interested}</div><div class="stat-label">Interested</div></div>
+    <div class="stat-card blue"><div class="stat-num">${called}</div><div class="stat-label">Total Called</div></div>
+    <div class="stat-card gold"><div class="stat-num">${total}</div><div class="stat-label">${currentRole==='admin'?'Total Leads':'My Leads'}</div></div>
+  `;
+
+  // Activity feed
+  const feedHtml = activityLog.map(a=>`
+    <div class="activity-item">
+      <div class="activity-dot" style="background:${a.outcome==='Demo Booked'?'var(--primary)':a.outcome==='Interested'?'var(--orange)':'var(--bg5)'}"></div>
+      <div class="activity-content">
+        <div class="activity-text"><strong>${a.agent}</strong> → ${a.business} — <span class="${statusClass(a.outcome)}">${a.outcome}</span></div>
+        <div class="activity-time">${a.time} · "${a.note}"</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('activity-feed').innerHTML = feedHtml;
+
+  // Pipeline
+  const statuses = ['New','No Answer','Called','Interested','Demo Booked','Closed'];
+  const pipelineHtml = statuses.map(s=>{
+    const count = allLeads.filter(l=>l.status===s).length;
+    const pct = total ? Math.round(count/total*100) : 0;
+    return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="width:90px;font-size:12px;color:var(--text2)">${s}</div>
+      <div style="flex:1;background:var(--bg3);border-radius:3px;height:6px"><div style="width:${pct}%;background:var(--primary);height:6px;border-radius:3px;transition:width .5s"></div></div>
+      <div style="width:30px;text-align:right;font-family:'DM Mono',monospace;font-size:12px;color:var(--text3)">${count}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('pipeline-chart').innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px">${pipelineHtml}</div>`;
+}
+
+// ══════════════ LEADS TABLE ══════════════
+function renderLeads(){
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const typeF = document.getElementById('filter-type').value;
+  const statusF = document.getElementById('filter-status').value;
+  const tierF = document.getElementById('filter-tier').value;
+  const agentF = document.getElementById('filter-agent') ? document.getElementById('filter-agent').value : '';
+
+  let filtered = LEADS;
+  if(currentRole !== 'admin') filtered = filtered.filter(l=>l.assigned===currentRole);
+  if(search) filtered = filtered.filter(l=>(l.name+l.phone+l.owner+l.city).toLowerCase().includes(search));
+  if(typeF) filtered = filtered.filter(l=>l.type===typeF);
+  if(statusF) filtered = filtered.filter(l=>l.status===statusF);
+  if(tierF) filtered = filtered.filter(l=>String(l.tier)===tierF);
+  if(agentF==='unassigned') filtered = filtered.filter(l=>!l.assigned);
+  else if(agentF) filtered = filtered.filter(l=>l.assigned===agentF);
+
+  document.getElementById('filter-count').textContent = filtered.length+' leads';
+  document.getElementById('leads-page-title').textContent = currentRole==='admin'?'All Leads':'My Leads';
+  document.getElementById('leads-page-sub').textContent = filtered.length+' leads shown';
+
+  // Admin assign button
+  if(currentRole==='admin' && !document.querySelector('#leads-header-action button')){
+    document.getElementById('leads-header-action').innerHTML = `<button class="btn btn-primary" onclick="showPage('assign')">⚡ Bulk Assign</button>`;
+  }
+
+  const tbody = document.getElementById('leads-tbody');
+  tbody.innerHTML = filtered.map(l=>{
+    const ag = l.assigned ? AGENTS[l.assigned] : null;
+    const noteCount = l.notes.length;
+    const warnHtml = l.warning ? `<span class="badge badge-warn" title="${l.warning}">⚠️</span> ` : '';
+    return `<tr>
+      <td style="color:var(--text3);font-family:'DM Mono',monospace;font-size:11px">${l.id}</td>
+      <td class="name">${warnHtml}${l.name}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--primary)">${l.phone}</td>
+      <td>${l.city}</td>
+      <td style="color:var(--text2)">${l.owner}</td>
+      <td><span class="badge badge-t${l.tier}">T${l.tier}</span></td>
+      <td><span class="badge badge-${l.status.toLowerCase().replace(/ /g,'')}">${l.status}</span></td>
+      <td>${ag ? `<span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:18px;border-radius:50%;background:${ag.color}22;color:${ag.color};border:1px solid ${ag.color}44;font-family:'Syne',sans-serif;font-weight:700;font-size:9px;display:flex;align-items:center;justify-content:center">${ag.initials}</span><span style="font-size:12px;color:var(--text2)">${ag.name}</span></span>` : '<span style="color:var(--text3);font-size:12px">—</span>'}</td>
+      <td><button class="btn btn-secondary btn-xs" onclick="openDrawer(${l.id})" style="${noteCount>0?'color:var(--primary);border-color:rgba(0,229,160,0.3)':''}">
+        ${noteCount>0?`📝 ${noteCount}`:'+ Note'}
+      </button></td>
+      <td style="display:flex;gap:6px;align-items:center">
+        ${currentRole==='admin'?`<button class="btn btn-secondary btn-xs" onclick="openAssignModal(${l.id})">Assign</button>`:''}
+        <button class="btn btn-secondary btn-xs" onclick="openDrawer(${l.id})">Open →</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function statusClass(s){
+  const m={New:'badge badge-new',Called:'badge badge-called',Interested:'badge badge-interested','Demo Booked':'badge badge-demo',Closed:'badge badge-closed','No Answer':'badge badge-noanswer','Not Qualified':'badge badge-notqualified'};
+  return m[s]||'';
+}
+
+// ══════════════ DRAWER ══════════════
+function openDrawer(id){
+  const l = LEADS.find(x=>x.id===id);
+  if(!l) return;
+  openLeadId = id;
+  selectedOutcome = null;
+  document.getElementById('drawer-lead-name').textContent = l.name;
+  document.getElementById('drawer-lead-phone').textContent = l.phone+' · '+l.city;
+  document.getElementById('drawer-info').innerHTML = `
+    <div class="li-item"><div class="li-label">Owner</div><div class="li-val">${l.owner}</div></div>
+    <div class="li-item"><div class="li-label">Phone</div><div class="li-val phone">${l.phone}</div></div>
+    <div class="li-item"><div class="li-label">Type</div><div class="li-val">${l.type}</div></div>
+    <div class="li-item"><div class="li-label">Google Score</div><div class="li-val">${l.score||'—'}</div></div>
+    <div class="li-item"><div class="li-label">Tier</div><div class="li-val"><span class="badge badge-t${l.tier}">Tier ${l.tier}</span></div></div>
+    <div class="li-item"><div class="li-label">Status</div><div class="li-val"><span class="badge badge-${l.status.toLowerCase().replace(/ /g,'')}">${l.status}</span></div></div>
+    ${l.warning?`<div class="li-item" style="grid-column:1/-1;background:var(--red-dim)"><div class="li-label" style="color:var(--red)">Warning</div><div class="li-val" style="color:var(--red);font-size:12px">${l.warning}</div></div>`:''}
+  `;
+  renderNotes(id);
+  // Reset outcome buttons
+  document.querySelectorAll('#outcome-btns button').forEach(b=>b.classList.remove('btn-primary'));
+  document.getElementById('note-input').value = '';
+  document.getElementById('drawer-overlay').style.display = 'block';
+  setTimeout(()=>document.getElementById('note-drawer').classList.add('open'),10);
+}
+
+function closeDrawer(){
+  document.getElementById('note-drawer').classList.remove('open');
+  setTimeout(()=>{document.getElementById('drawer-overlay').style.display='none';},250);
+  openLeadId = null;
+}
+
+function renderNotes(id){
+  const l = LEADS.find(x=>x.id===id);
+  const container = document.getElementById('notes-list');
+  if(!l.notes.length){
+    container.innerHTML = '<div class="note-empty">No notes yet — be the first to log a call</div>';
+    return;
+  }
+  container.innerHTML = l.notes.map(n=>`
+    <div class="note-item ${n.agent===currentUser?'mine':''}">
+      <div class="note-meta"><span class="note-agent">${n.agent}</span>·<span>${n.time}</span></div>
+      <div class="note-text">${n.text}</div>
+    </div>`).join('');
+}
+
+function setOutcome(btn, outcome){
+  selectedOutcome = outcome;
+  document.querySelectorAll('#outcome-btns button').forEach(b=>b.classList.remove('btn-primary'));
+  btn.classList.add('btn-primary');
+}
+
+function submitNote(){
+  const text = document.getElementById('note-input').value.trim();
+  if(!text && !selectedOutcome) return;
+  const l = LEADS.find(x=>x.id===openLeadId);
+  if(!l) return;
+  if(text) l.notes.unshift({agent:currentUser,time:'just now',text});
+  if(selectedOutcome) l.status = selectedOutcome;
+  const now = new Date();
+  activityLog.unshift({time:now.getHours()+':'+String(now.getMinutes()).padStart(2,'0'),agent:currentUser,business:l.name,outcome:selectedOutcome||'Note added',note:text.substring(0,50)+(text.length>50?'…':'')});
+  renderNotes(openLeadId);
+  document.getElementById('note-input').value = '';
+  selectedOutcome = null;
+  document.querySelectorAll('#outcome-btns button').forEach(b=>b.classList.remove('btn-primary'));
+  // Flash feedback
+  const btn = document.querySelector('.drawer-footer .btn-primary');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Saved';
+  btn.style.background = '#00b87a';
+  setTimeout(()=>{btn.textContent=orig;btn.style.background='';},1500);
+  renderLeads();
+}
+
+// ══════════════ ASSIGN MODAL ══════════════
+function openAssignModal(id){
+  assignLeadId = id;
+  const l = LEADS.find(x=>x.id===id);
+  document.getElementById('assign-modal-sub').textContent = 'Assign "'+l.name+'" to:';
+  document.getElementById('assign-select').value = l.assigned||'';
+  document.getElementById('assign-modal').classList.add('open');
+}
+function closeAssignModal(){document.getElementById('assign-modal').classList.remove('open');assignLeadId=null;}
+function confirmAssign(){
+  if(!assignLeadId) return;
+  const l = LEADS.find(x=>x.id===assignLeadId);
+  l.assigned = document.getElementById('assign-select').value;
+  closeAssignModal();
+  renderLeads();
+}
+
+// ══════════════ BULK ASSIGN ══════════════
+function bulkAssign(){
+  const agent = document.getElementById('bulk-agent').value;
+  const type = document.getElementById('bulk-type').value;
+  const tier = document.getElementById('bulk-tier').value;
+  const count = parseInt(document.getElementById('bulk-count').value)||25;
+  let pool = LEADS.filter(l=>!l.assigned);
+  if(type) pool = pool.filter(l=>l.type===type);
+  if(tier) pool = pool.filter(l=>String(l.tier)===tier);
+  const toAssign = pool.slice(0,count);
+  toAssign.forEach(l=>l.assigned=agent);
+  const res = document.getElementById('bulk-result');
+  res.style.display = 'block';
+  res.textContent = `✓ Assigned ${toAssign.length} leads to ${AGENTS[agent].name}`;
+}
+
+// ══════════════ AGENTS ══════════════
+function renderAgents(){
+  const grid = document.getElementById('agents-grid');
+  grid.innerHTML = Object.entries(AGENTS).map(([id,ag])=>{
+    const myLeads = LEADS.filter(l=>l.assigned===id);
+    const demos = myLeads.filter(l=>l.status==='Demo Booked').length;
+    const interested = myLeads.filter(l=>l.status==='Interested').length;
+    return `<div class="agent-card">
+      <div class="agent-av" style="color:${ag.color};background:${ag.color}15;border-color:${ag.color}33">${ag.initials}</div>
+      <div class="agent-name">${ag.name}</div>
+      <div class="agent-role">${ag.role}</div>
+      <div class="agent-stat-row">
+        <div class="agent-mini-stat"><div class="agent-mini-num">${myLeads.length}</div><div class="agent-mini-label">Leads</div></div>
+        <div class="agent-mini-stat"><div class="agent-mini-num" style="color:var(--orange)">${interested}</div><div class="agent-mini-label">Interested</div></div>
+        <div class="agent-mini-stat"><div class="agent-mini-num" style="color:var(--purple)">${demos}</div><div class="agent-mini-label">Demos</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════ MY PHONES ══════════════
+function renderAgentPhoneBar(){
+  if(currentRole==='admin') return;
+  const phones = AGENT_PHONES[currentRole];
+  const container = document.getElementById('agent-phone-nums');
+  container.innerHTML = phones.map((p,i)=>`<div class="mypb-num ${i===0?'active-call':''}" onclick="setActivePhone(this)">${p.num}</div>`).join('');
+}
+function setActivePhone(el){
+  document.querySelectorAll('.mypb-num').forEach(e=>e.classList.remove('active-call'));
+  el.classList.add('active-call');
+}
+
+function renderMyPhones(){
+  const role = currentRole==='admin' ? null : currentRole;
+  const content = document.getElementById('my-phones-content');
+  if(currentRole==='admin'){
+    content.innerHTML = Object.entries(AGENTS).map(([id,ag])=>{
+      const phones = AGENT_PHONES[id];
+      return `<div class="phone-card">
+        <div class="phone-card-header">
+          <div class="phone-card-name">${ag.name}</div>
+          <div class="phone-badge">3 Numbers</div>
+        </div>
+        <div class="phone-num-list">${phones.map((p,i)=>`
+          <div class="phone-num-item ${i===0?'active-num':''}">
+            <div class="phone-num-label">${p.label}</div>
+            <div class="phone-num-val">${p.num}</div>
+            <div class="phone-num-usage">${i===0?'Active':'Standby'}</div>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    const phones = AGENT_PHONES[currentRole];
+    content.innerHTML = `<div class="phone-card" style="max-width:420px">
+      <div class="phone-card-header">
+        <div class="phone-card-name">Your Calling Numbers</div>
+        <div class="phone-badge">3 Numbers</div>
+      </div>
+      <div class="phone-num-list">${phones.map((p,i)=>`
+        <div class="phone-num-item ${i===0?'active-num':''}">
+          <div class="phone-num-label">${p.label}</div>
+          <div class="phone-num-val">${p.num}</div>
+          <div class="phone-num-usage">${['Use first 30 calls','Use next 30 calls','Use last block'][i]}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+}
+
+// ══════════════ ACTIVITY ══════════════
+function renderActivity(){
+  document.getElementById('activity-tbody').innerHTML = activityLog.map(a=>`
+    <tr>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)">${a.time}</td>
+      <td style="color:var(--text);font-weight:500">${a.agent}</td>
+      <td>${a.business}</td>
+      <td><span class="badge badge-${a.outcome.toLowerCase().replace(/ /g,'')}">${a.outcome}</span></td>
+      <td style="color:var(--text3);font-size:12px">${a.note}</td>
+    </tr>`).join('');
+}
+</script>
+</body>
+</html>
