@@ -33,7 +33,14 @@
       "Bash(export PATH=\"$HOME/.local/bin:$PATH\")",
       "Bash(~/.local/bin/vercel --version)",
       "Bash(railway --version)",
-      "Bash(~/.local/bin/railway --version)"
+      "Bash(~/.local/bin/railway --version)",
+      "Bash(grep \"server/\\\\.env$\")",
+      "Bash(git commit *)",
+      "Bash(railway whoami *)",
+      "Bash(vercel whoami *)",
+      "Bash(git add *)",
+      "Bash(~/.local/bin/vercel *)",
+      "Bash(gh auth *)"
     ]
   }
 }
