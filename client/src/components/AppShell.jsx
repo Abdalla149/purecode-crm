@@ -2,6 +2,7 @@ import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, UserCheck, BarChart2,
   List, Flame, Phone, TrendingUp, LogOut,
+  Star, Activity, Hash,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSidebarCounts } from '../context/SidebarCounts';
@@ -13,29 +14,38 @@ const ADMIN_NAV = [
   { to: '/reports',    label: 'Reports',    Icon: BarChart2 },
 ];
 
-const AGENT_NAV_MAIN = [
+const AGENT_NAV_WORK = [
   { to: '/my-queue',   label: 'My Queue',   Icon: List },
   { to: '/hot-leads',  label: 'Hot Leads',  Icon: Flame },
+  { to: '/my-demos',   label: 'My Demos',   Icon: Star },
   { to: '/callbacks',  label: 'Callbacks',  Icon: Phone },
-  { to: '/my-stats',   label: 'My Stats',   Icon: TrendingUp },
+];
+
+const AGENT_NAV_STATS = [
+  { to: '/my-stats',    label: 'My Stats',    Icon: TrendingUp },
+  { to: '/my-numbers',  label: 'My Numbers',  Icon: Hash },
+  { to: '/my-activity', label: 'My Activity', Icon: Activity },
 ];
 
 const AGENT_NAV_RESOURCES = [
-  { to: '/scripts',              label: '📖 Scripts & Objections' },
+  { to: '/scripts',                label: '📖 Scripts & Objections' },
   { to: '/scripts?tab=objections', label: '💡 Quick Objections' },
 ];
 
 const PAGE_TITLES = {
-  '/dashboard': 'Dashboard',
-  '/all-leads': 'All Leads',
-  '/agents':    'Agents',
-  '/reports':   'Reports',
-  '/my-queue':  'My Queue',
-  '/hot-leads': 'Hot Leads',
-  '/callbacks': 'Callbacks',
-  '/my-stats':  'My Stats',
-  '/scripts':   'Scripts & Objections',
-  '/resources': 'Scripts & Objections',
+  '/dashboard':    'Dashboard',
+  '/all-leads':    'All Leads',
+  '/agents':       'Agents',
+  '/reports':      'Reports',
+  '/my-queue':     'My Queue',
+  '/hot-leads':    'Hot Leads',
+  '/my-demos':     'My Demos',
+  '/callbacks':    'Callbacks',
+  '/my-stats':     'My Stats',
+  '/my-numbers':   'My Numbers',
+  '/my-activity':  'My Activity',
+  '/scripts':      'Scripts & Objections',
+  '/resources':    'Scripts & Objections',
 };
 
 export default function AppShell() {
@@ -43,7 +53,7 @@ export default function AppShell() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const navItems = user?.role === 'admin' ? ADMIN_NAV : AGENT_NAV_MAIN;
+  const navItems = ADMIN_NAV;
   const { counts } = useSidebarCounts();
   const pageTitle = PAGE_TITLES[location.pathname] ?? '';
   const initials = user?.name?.charAt(0).toUpperCase() ?? '?';
@@ -81,30 +91,38 @@ export default function AppShell() {
       <div className="app-body">
         {/* ── Sidebar ── */}
         <nav className="app-sidebar">
-          <div className="nav-section">Main</div>
-          {navItems.map(({ to, label, Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
-            >
-              <span className="nav-icon"><Icon size={13} /></span>
-              {label}
-              {counts[to] > 0 && (
-                <span className="badge">{counts[to]}</span>
-              )}
-            </NavLink>
-          ))}
-
-          {user?.role === 'agent' && (
+          {user?.role === 'admin' ? (
             <>
+              <div className="nav-section">Overview</div>
+              {navItems.map(({ to, label, Icon }) => (
+                <NavLink key={to} to={to} className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+                  <span className="nav-icon"><Icon size={13} /></span>
+                  {label}
+                </NavLink>
+              ))}
+            </>
+          ) : (
+            <>
+              <div className="nav-section">My Work</div>
+              {AGENT_NAV_WORK.map(({ to, label, Icon }) => (
+                <NavLink key={to} to={to} className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+                  <span className="nav-icon"><Icon size={13} /></span>
+                  {label}
+                  {counts[to] > 0 && <span className="badge">{counts[to]}</span>}
+                </NavLink>
+              ))}
+
+              <div className="nav-section" style={{ marginTop: 12 }}>My Stats</div>
+              {AGENT_NAV_STATS.map(({ to, label, Icon }) => (
+                <NavLink key={to} to={to} className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+                  <span className="nav-icon"><Icon size={13} /></span>
+                  {label}
+                </NavLink>
+              ))}
+
               <div className="nav-section" style={{ marginTop: 12 }}>Resources</div>
               {AGENT_NAV_RESOURCES.map(({ to, label }) => (
-                <NavLink
-                  key={to}
-                  to={to}
-                  className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
-                >
+                <NavLink key={to} to={to} className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
                   {label}
                 </NavLink>
               ))}

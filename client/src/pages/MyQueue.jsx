@@ -90,6 +90,7 @@ export default function MyQueue() {
   const [saving, setSaving]           = useState(false);
   const [callCounts, setCallCounts]   = useState(loadCallCounts);
   const [selectedLead, setSelectedLead] = useState(null);
+  const [agentKpi, setAgentKpi]       = useState(null);
 
   const phoneNumbers = user?.phoneNumbers || [];
 
@@ -109,10 +110,14 @@ export default function MyQueue() {
 
   async function fetchStats() {
     try {
-      const { data } = await api.get('/stats/me');
-      setStats(data.stats);
+      const [meRes, kpiRes] = await Promise.allSettled([
+        api.get('/stats/me'),
+        api.get('/stats/agent/me'),
+      ]);
+      if (meRes.status === 'fulfilled')  setStats(meRes.value.data.stats);
+      if (kpiRes.status === 'fulfilled') setAgentKpi(kpiRes.value.data.stats);
     } catch {
-      // Non-critical — stats panel just stays empty
+      // Non-critical — stats panels just stay empty
     }
   }
 
@@ -313,6 +318,30 @@ export default function MyQueue() {
           </div>
         </div>
       )}
+
+      {/* ── Agent KPI strip (GHL-sourced) ── */}
+      <div className="kpi-strip" style={{ marginTop: 12 }}>
+        <div className="kpi green">
+          <div className="kpi-label">📞 Calls Today</div>
+          <div className="kpi-num">{agentKpi?.callsToday ?? '—'}</div>
+          <div className="kpi-delta flat">total contacted</div>
+        </div>
+        <div className="kpi orange">
+          <div className="kpi-label">🔥 Interested</div>
+          <div className="kpi-num">{agentKpi?.interested ?? '—'}</div>
+          <div className="kpi-delta flat">warm leads</div>
+        </div>
+        <div className="kpi purple">
+          <div className="kpi-label">⭐ Demos Booked</div>
+          <div className="kpi-num">{agentKpi?.demosBooked ?? '—'}</div>
+          <div className="kpi-delta flat">scheduled</div>
+        </div>
+        <div className="kpi blue">
+          <div className="kpi-label">⏱ Talk Time</div>
+          <div className="kpi-num">{agentKpi?.talkTime ?? 0}</div>
+          <div className="kpi-delta flat">minutes</div>
+        </div>
+      </div>
 
       {/* ── Next Call hero card ── */}
       {queueDone ? (

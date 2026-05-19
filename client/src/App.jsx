@@ -18,6 +18,9 @@ import HotLeads from './pages/HotLeads';
 import Callbacks from './pages/Callbacks';
 import MyStats from './pages/MyStats';
 import Resources from './pages/Resources';
+import MyDemos from './pages/MyDemos';
+import MyActivity from './pages/MyActivity';
+import MyNumbers from './pages/MyNumbers';
 
 function RootRedirect() {
   const { token, user } = useAuth();
@@ -45,12 +48,15 @@ export default function App() {
       {/* Agent section (all authenticated users) */}
       <Route element={<ProtectedRoute />}>
         <Route element={<RealtimeFeedProvider><AppShell /></RealtimeFeedProvider>}>
-          <Route path="/my-queue"   element={<MyQueue />} />
-          <Route path="/hot-leads"  element={<HotLeads />} />
-          <Route path="/callbacks"  element={<Callbacks />} />
-          <Route path="/my-stats"   element={<MyStats />} />
-          <Route path="/scripts"    element={<Resources />} />
-          <Route path="/resources"  element={<Resources />} />
+          <Route path="/my-queue"    element={<MyQueue />} />
+          <Route path="/hot-leads"   element={<HotLeads />} />
+          <Route path="/my-demos"    element={<MyDemos />} />
+          <Route path="/callbacks"   element={<Callbacks />} />
+          <Route path="/my-stats"    element={<MyStats />} />
+          <Route path="/my-numbers"  element={<MyNumbers />} />
+          <Route path="/my-activity" element={<MyActivity />} />
+          <Route path="/scripts"     element={<Resources />} />
+          <Route path="/resources"   element={<Resources />} />
         </Route>
       </Route>
 

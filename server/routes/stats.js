@@ -83,6 +83,32 @@ router.get('/agents', requireAdmin, async (req, res) => {
   }
 });
 
+// GET /api/stats/agent/me — agent's own detailed KPI stats
+// Must be defined BEFORE /agent/:agentId so "me" isn't caught as a param
+router.get('/agent/me', async (req, res) => {
+  try {
+    const agentGhlId = req.user.ghlUserId;
+    if (!agentGhlId) {
+      return res.json({ stats: { callsToday: 0, interested: 0, demosBooked: 0, talkTime: 0 } });
+    }
+    const leads = await ghl.getLeads({ assignedAgent: agentGhlId, limit: 100 });
+    const s = computeStats(leads);
+    res.json({
+      stats: {
+        // callsToday = all leads with any outcome (proxy for total contacted)
+        callsToday:  s.called + s.noAnswer + s.voicemail + s.callback +
+                     s.interested + s.demosBooked + s.closed + s.notQualified,
+        interested:  s.interested,
+        demosBooked: s.demosBooked,
+        talkTime:    0, // populated once calling service is connected
+      },
+    });
+  } catch (err) {
+    console.error('[STATS/AGENT/ME]', err.message);
+    res.status(500).json({ error: 'Could not load stats' });
+  }
+});
+
 // GET /api/stats/agent/:agentId — admin only, single agent by GHL user ID
 router.get('/agent/:agentId', requireAdmin, async (req, res) => {
   try {
