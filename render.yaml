@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: purecode-crm-api
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm install --prefix server
+    startCommand: node server/index.js
+    healthCheckPath: /api/health
+
+    envVars:
+      # Non-sensitive — baked in here
+      - key: NODE_ENV
+        value: production
+      - key: GHL_BASE_URL
+        value: https://services.leadconnectorhq.com
+      - key: JUSTCALL_BASE_URL
+        value: https://api.justcall.io/v1
+      - key: JWT_EXPIRES_IN
+        value: 24h
+      - key: FRONTEND_URL
+        value: https://app.purecodeagency.com
+
+      # Sensitive — Render dashboard will prompt you to fill these in
+      - key: GHL_API_KEY
+        sync: false
+      - key: GHL_LOCATION_ID
+        sync: false
+      - key: JUSTCALL_API_KEY
+        sync: false
+      - key: JUSTCALL_API_SECRET
+        sync: false
+      - key: JWT_SECRET
+        sync: false
