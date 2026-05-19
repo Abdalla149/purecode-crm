@@ -22,6 +22,7 @@ import MyDemos from './pages/MyDemos';
 import MyActivity from './pages/MyActivity';
 import MyNumbers from './pages/MyNumbers';
 import Recordings from './pages/Recordings';
+import Import from './pages/Import';
 
 function RootRedirect() {
   const { token, user } = useAuth();
@@ -44,6 +45,7 @@ export default function App() {
           <Route path="/agents"     element={<Agents />} />
           <Route path="/reports"     element={<Reports />} />
           <Route path="/recordings" element={<Recordings />} />
+          <Route path="/import"     element={<Import />} />
         </Route>
       </Route>
 

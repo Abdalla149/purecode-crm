@@ -194,4 +194,39 @@ router.post('/bulk-assign', requireAdmin, async (req, res) => {
 });
 
 
+// ═══════════ POST /api/leads/import ═══════════
+// Admin only — bulk import leads from CSV upload
+router.post('/import', requireAdmin, async (req, res) => {
+  const { leads = [], assignment = {} } = req.body;
+
+  if (!Array.isArray(leads) || leads.length === 0) {
+    return res.status(400).json({ error: 'No leads provided' });
+  }
+
+  let imported = 0;
+  let skipped  = 0;
+
+  // Process in batches of 5 to stay within rate limits
+  const BATCH = 5;
+  for (let i = 0; i < leads.length; i += BATCH) {
+    const batch = leads.slice(i, i + BATCH);
+    const results = await Promise.allSettled(
+      batch.map(async (lead) => {
+        if (!lead.phone) return 'skipped';
+        const existing = await ghl.findContactByPhone(lead.phone);
+        if (existing) return 'skipped';
+        await ghl.createContact(lead, assignment);
+        return 'imported';
+      })
+    );
+    results.forEach(r => {
+      if (r.status === 'fulfilled' && r.value === 'imported') imported++;
+      else skipped++;
+    });
+  }
+
+  res.json({ imported, skipped });
+});
+
+
 export default router;

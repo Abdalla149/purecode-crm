@@ -209,6 +209,64 @@ function mapContactToLead(contact) {
 /**
  * Get stats for an agent or the whole team
  */
+/**
+ * Find a contact by exact phone number — used for duplicate detection on import
+ */
+export async function findContactByPhone(phone) {
+  const LOCATION_ID = process.env.GHL_LOCATION_ID;
+  const digits = (phone || '').replace(/\D/g, '');
+  if (!digits) return null;
+  try {
+    const data = await ghlRequest(
+      `/contacts/?locationId=${LOCATION_ID}&limit=5&query=${encodeURIComponent(digits)}`
+    );
+    const contacts = data.contacts || [];
+    return contacts.find(c => c.phone && c.phone.replace(/\D/g, '') === digits) || null;
+  } catch {
+    return null; // treat lookup failure as no-duplicate so we don't lose the lead
+  }
+}
+
+/**
+ * Create a new contact (lead) in GHL — used by the CSV import flow
+ */
+export async function createContact(lead, assignment = {}) {
+  const LOCATION_ID = process.env.GHL_LOCATION_ID;
+
+  const googleScore = lead.rating && lead.reviews
+    ? `${lead.rating} (${lead.reviews} reviews)`
+    : lead.rating || '';
+
+  const customFields = [
+    { id: '2XL9Hj5BS4M4UHgAkNNs', value: 'New' }, // last_outcome
+  ];
+  if (assignment.businessType) {
+    customFields.push({ id: 'x8DJVqauQaM35a8XQJap', value: assignment.businessType });
+  }
+  if (assignment.tier) {
+    customFields.push({ id: 'bMRRvfMDR7XSxJqob0hA', value: String(assignment.tier) });
+  }
+  if (googleScore) {
+    customFields.push({ id: 'RFj1VlGRDeRor1RXCPfR', value: googleScore });
+  }
+
+  return ghlRequest('/contacts/', {
+    method: 'POST',
+    body: JSON.stringify({
+      locationId:  LOCATION_ID,
+      companyName: lead.name,
+      firstName:   lead.name,
+      phone:       lead.phone || '',
+      city:        lead.city  || '',
+      state:       lead.state || '',
+      website:     lead.website || '',
+      assignedTo:  assignment.agentId || '',
+      tags:        assignment.campaign ? [assignment.campaign] : [],
+      customFields,
+    }),
+  });
+}
+
 export async function getAgentStats(agentId = null) {
   const leads = await getLeads(agentId ? { assignedAgent: agentId } : {});
   
@@ -232,4 +290,6 @@ export default {
   getNotes,
   bulkAssign,
   getAgentStats,
+  findContactByPhone,
+  createContact,
 };
