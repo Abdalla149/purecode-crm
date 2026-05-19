@@ -119,4 +119,31 @@ router.get('/agent/:agentId', requireAdmin, async (req, res) => {
   }
 });
 
+// GET /api/stats/conversion — 7-day demo booking trend (admin only)
+router.get('/conversion', requireAdmin, async (req, res) => {
+  try {
+    const leads = await ghl.getLeads({ limit: 100 });
+    const demoLeads = leads.filter(l => l.status === 'Demo Booked');
+
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const label = i === 0 ? 'Today' : d.toLocaleDateString('en-US', { weekday: 'short' });
+      const count = demoLeads.filter(l => l.dateAdded && l.dateAdded.startsWith(dateStr)).length;
+      days.push({ day: label, date: dateStr, count });
+    }
+
+    const totalLeads = leads.length || 1;
+    const totalDemos = demoLeads.length;
+    const conversionRate = parseFloat(((totalDemos / totalLeads) * 100).toFixed(1));
+
+    res.json({ days, conversionRate, totalDemos });
+  } catch (err) {
+    console.error('[STATS/CONVERSION]', err.message);
+    res.status(500).json({ error: 'Could not load conversion data' });
+  }
+});
+
 export default router;

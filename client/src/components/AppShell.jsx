@@ -2,16 +2,17 @@ import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, UserCheck, BarChart2,
   List, Flame, Phone, TrendingUp, LogOut,
-  Star, Activity, Hash,
+  Star, Activity, Hash, Mic,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSidebarCounts } from '../context/SidebarCounts';
 
 const ADMIN_NAV = [
-  { to: '/dashboard',  label: 'Dashboard', Icon: LayoutDashboard },
-  { to: '/all-leads',  label: 'All Leads',  Icon: Users },
-  { to: '/agents',     label: 'Agents',     Icon: UserCheck },
-  { to: '/reports',    label: 'Reports',    Icon: BarChart2 },
+  { to: '/dashboard',   label: 'Dashboard',   Icon: LayoutDashboard },
+  { to: '/all-leads',   label: 'All Leads',   Icon: Users },
+  { to: '/agents',      label: 'Agents',      Icon: UserCheck },
+  { to: '/reports',     label: 'Reports',     Icon: BarChart2 },
+  { to: '/recordings',  label: 'Recordings',  Icon: Mic },
 ];
 
 const AGENT_NAV_WORK = [
@@ -37,6 +38,7 @@ const PAGE_TITLES = {
   '/all-leads':    'All Leads',
   '/agents':       'Agents',
   '/reports':      'Reports',
+  '/recordings':   'Recordings',
   '/my-queue':     'My Queue',
   '/hot-leads':    'Hot Leads',
   '/my-demos':     'My Demos',

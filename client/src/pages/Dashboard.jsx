@@ -138,21 +138,152 @@ function timeAgo(iso) {
   return `${Math.floor(diff / 3600)}h ago`;
 }
 
+function ConversionChart({ data }) {
+  if (!data) {
+    return (
+      <div className="panel" style={{ flex: 1 }}>
+        <div className="panel-head">
+          <div className="panel-title">7-Day Conversions</div>
+        </div>
+        <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text3)', fontSize: 12 }}>
+          Loading…
+        </div>
+      </div>
+    );
+  }
+
+  const { days, conversionRate, totalDemos } = data;
+  const maxCount = Math.max(...days.map(d => d.count), 1);
+  const CHART_H = 120;
+
+  return (
+    <div className="panel" style={{ flex: 1 }}>
+      <div className="panel-head">
+        <div className="panel-title">7-Day Conversions</div>
+        <span style={{ fontSize: 11, color: 'var(--primary)', fontFamily: "'DM Mono', monospace", fontWeight: 600 }}>
+          {conversionRate}% avg rate
+        </span>
+      </div>
+
+      {/* Bars */}
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: CHART_H, marginBottom: 6 }}>
+        {days.map(({ day, count }) => {
+          const barH = Math.max(4, Math.round((count / maxCount) * CHART_H));
+          return (
+            <div key={day} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+              {count > 0 && (
+                <div style={{ fontSize: 10, color: 'var(--primary)', fontWeight: 700, fontFamily: "'DM Mono', monospace" }}>
+                  {count}
+                </div>
+              )}
+              <div style={{
+                width: '100%',
+                height: barH,
+                background: count > 0
+                  ? 'linear-gradient(to top, var(--primary), rgba(0,229,160,0.25))'
+                  : 'var(--bg4)',
+                borderRadius: '3px 3px 0 0',
+                transition: 'height 0.5s ease',
+                flexShrink: 0,
+              }} />
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Day labels */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
+        {days.map(({ day }) => (
+          <div key={day} style={{ flex: 1, textAlign: 'center', fontSize: 10, color: 'var(--text3)' }}>
+            {day}
+          </div>
+        ))}
+      </div>
+
+      <div style={{ paddingTop: 10, borderTop: '1px solid var(--border)', fontSize: 11, color: 'var(--text3)' }}>
+        Avg conversion rate:{' '}
+        <span style={{ color: 'var(--primary)', fontWeight: 600 }}>{conversionRate}%</span>
+        {' · '}{totalDemos} demo{totalDemos !== 1 ? 's' : ''} total
+      </div>
+    </div>
+  );
+}
+
+function PhoneStatusPanel({ health, recordingsCount }) {
+  const connected = health?.connected === true;
+  const numbers = health?.numbers || [];
+
+  if (!connected) {
+    return (
+      <div className="panel" style={{ width: 280, flexShrink: 0 }}>
+        <div className="panel-head">
+          <div className="panel-title">Phone Status</div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 0', gap: 8 }}>
+          <Radio size={20} color="var(--text3)" />
+          <div style={{ fontSize: 12, color: 'var(--text3)', textAlign: 'center', lineHeight: 1.5 }}>
+            Phone system not connected
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const activeNumbers = numbers.filter(n => n.status === 'active').length;
+  const flaggedNumbers = numbers.filter(n => n.status === 'spam-flagged' || n.status === 'suspended');
+
+  return (
+    <div className="panel" style={{ width: 280, flexShrink: 0 }}>
+      <div className="panel-head">
+        <div className="panel-title">Phone Status</div>
+        <span style={{ fontSize: 10, color: 'var(--primary)', fontWeight: 600 }}>connected</span>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
+        {[
+          { label: 'Active Numbers', val: activeNumbers, color: 'var(--primary)' },
+          { label: 'Minutes Today',  val: '—',            color: 'var(--text2)' },
+          { label: 'Flagged',        val: flaggedNumbers.length, color: flaggedNumbers.length > 0 ? 'var(--orange)' : 'var(--text2)' },
+          { label: 'Recordings',     val: recordingsCount ?? '—', color: 'var(--blue)' },
+        ].map(({ label, val, color }) => (
+          <div key={label} style={{ background: 'var(--bg3)', borderRadius: 6, padding: '8px 10px' }}>
+            <div style={{ fontSize: 18, fontWeight: 700, color, fontFamily: "'Syne', sans-serif", lineHeight: 1 }}>{val}</div>
+            <div style={{ fontSize: 10, color: 'var(--text3)', marginTop: 2 }}>{label}</div>
+          </div>
+        ))}
+      </div>
+
+      {flaggedNumbers.length > 0 && (
+        <div style={{
+          background: 'var(--orange-dim)', borderRadius: 6, padding: '8px 10px',
+          fontSize: 11, color: 'var(--orange)', lineHeight: 1.5,
+        }}>
+          ⚠ {flaggedNumbers.length} number{flaggedNumbers.length !== 1 ? 's' : ''} flagged
+          <div style={{ fontSize: 10, color: 'var(--orange)', marginTop: 2, fontFamily: "'DM Mono', monospace" }}>
+            {flaggedNumbers.map(n => n.number || n.friendlyName).join(', ')}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Dashboard() {
-  const [teamStats, setTeamStats]   = useState(null);
-  const [agentStats, setAgentStats] = useState([]);
-  const [feed, setFeed]             = useState([]);
-  const [loading, setLoading]       = useState(true);
-  const [lastRefresh, setLastRefresh] = useState(null);
+  const [teamStats, setTeamStats]         = useState(null);
+  const [agentStats, setAgentStats]       = useState([]);
+  const [feed, setFeed]                   = useState([]);
+  const [conversionData, setConversionData] = useState(null);
+  const [jcHealth, setJcHealth]           = useState(null);
+  const [recordingsCount, setRecordingsCount] = useState(null);
+  const [loading, setLoading]             = useState(true);
+  const [lastRefresh, setLastRefresh]     = useState(null);
 
   const { liveEvents, connected } = useRealtimeFeed();
 
-  // Merge SSE live events into the feed as they arrive
   useEffect(() => {
     if (liveEvents.length === 0) return;
     setFeed(prev => {
       const merged = [...liveEvents, ...prev];
-      // Dedupe by id, keep newest 50
       const seen = new Set();
       return merged.filter(e => { if (seen.has(e.id)) return false; seen.add(e.id); return true; }).slice(0, 50);
     });
@@ -160,20 +291,39 @@ export default function Dashboard() {
 
   const loadAll = useCallback(async () => {
     try {
-      const [teamRes, agentsRes, feedRes] = await Promise.all([
+      const [teamR, agentsR, feedR, convR, jcHealthR, jcRecR] = await Promise.allSettled([
         api.get('/stats/team'),
         api.get('/stats/agents'),
         api.get('/feed?limit=30'),
+        api.get('/stats/conversion'),
+        api.get('/justcall/health'),
+        api.get('/justcall/recordings'),
       ]);
-      setTeamStats(teamRes.data.stats);
-      setAgentStats(agentsRes.data.agents || []);
-      // Merge polled feed without overwriting live events already shown
-      setFeed(prev => {
-        const polled = feedRes.data.feed || [];
-        const merged = [...prev, ...polled];
-        const seen = new Set();
-        return merged.filter(e => { if (seen.has(e.id)) return false; seen.add(e.id); return true; }).slice(0, 50);
-      });
+
+      if (teamR.status === 'fulfilled')   setTeamStats(teamR.value.data.stats);
+      if (agentsR.status === 'fulfilled') setAgentStats(agentsR.value.data.agents || []);
+
+      if (feedR.status === 'fulfilled') {
+        setFeed(prev => {
+          const polled = feedR.value.data.feed || [];
+          const merged = [...prev, ...polled];
+          const seen = new Set();
+          return merged.filter(e => { if (seen.has(e.id)) return false; seen.add(e.id); return true; }).slice(0, 50);
+        });
+      }
+
+      if (convR.status === 'fulfilled')   setConversionData(convR.value.data);
+
+      if (jcHealthR.status === 'fulfilled') {
+        setJcHealth(jcHealthR.value.data);
+      } else {
+        setJcHealth({ numbers: [], connected: false });
+      }
+
+      if (jcRecR.status === 'fulfilled') {
+        setRecordingsCount(jcRecR.value.data.recordings?.length ?? 0);
+      }
+
       setLastRefresh(new Date());
     } catch (err) {
       console.error('Dashboard load error', err);
@@ -260,6 +410,12 @@ export default function Dashboard() {
             agentStats.map(agent => <AgentCard key={agent.id} agent={agent} />)
           )}
         </div>
+      </div>
+
+      {/* Conversion Chart + Phone Status row */}
+      <div style={{ display: 'flex', gap: 16, marginBottom: 20, alignItems: 'stretch' }}>
+        <ConversionChart data={conversionData} />
+        <PhoneStatusPanel health={jcHealth} recordingsCount={recordingsCount} />
       </div>
 
       {/* Bottom row: Pipeline + Feed */}
