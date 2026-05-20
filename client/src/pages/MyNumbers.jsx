@@ -85,7 +85,7 @@ export default function MyNumbers() {
           })}
 
           {/* Switch Number button */}
-          {phoneNumbers.length > 1 && (
+          {phoneNumbers.length >= 1 && (
             <div style={{ marginTop: 8 }}>
               {confirmed ? (
                 <div style={{
