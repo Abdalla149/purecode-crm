@@ -33,7 +33,7 @@ export default function MyNumbers() {
       <div className="page-head">
         <div>
           <h1 className="page-h1">My Numbers · {user?.name}</h1>
-          <p className="page-subtitle">Manage your active outbound number</p>
+          <p className="page-subtitle">Switch your active number anytime</p>
         </div>
       </div>
 
