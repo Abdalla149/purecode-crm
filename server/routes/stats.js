@@ -8,10 +8,10 @@ router.use(requireAuth);
 
 // Known agents with their GHL user IDs (mirrors auth.js USERS)
 const AGENT_LIST = [
-  { id: 'agent_lucas', name: 'Lucas', ghlUserId: '' },
-  { id: 'agent_harry', name: 'Harry', ghlUserId: '' },
-  { id: 'agent_jim',   name: 'Jim',   ghlUserId: '' },
-  { id: 'agent_bruce', name: 'Bruce', ghlUserId: '' },
+  { id: 'agent_lucas', name: 'Lucas', ghlUserId: '7c0sDQ3oEzttlQfa3jAA' },
+  { id: 'agent_harry', name: 'Harry', ghlUserId: 'EFYhirIwNFKAY04HjbbK' },
+  { id: 'agent_jim',   name: 'Jim',   ghlUserId: 'CUqipGSIfqu2o7bcWroN' },
+  { id: 'agent_bruce', name: 'Bruce', ghlUserId: 'hHYQ1Yk7EZhxjjFYYGln' },
 ];
 
 function computeStats(leads) {
