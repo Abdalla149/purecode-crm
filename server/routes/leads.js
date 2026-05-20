@@ -197,35 +197,48 @@ router.post('/bulk-assign', requireAdmin, async (req, res) => {
 // ═══════════ POST /api/leads/import ═══════════
 // Admin only — bulk import leads from CSV upload
 router.post('/import', requireAdmin, async (req, res) => {
-  const { leads = [], assignment = {} } = req.body;
+  try {
+    const { leads = [], assignment = {} } = req.body;
 
-  if (!Array.isArray(leads) || leads.length === 0) {
-    return res.status(400).json({ error: 'No leads provided' });
+    if (!Array.isArray(leads) || leads.length === 0) {
+      return res.status(400).json({ error: 'No leads provided' });
+    }
+
+    let imported  = 0;
+    let skipped   = 0;
+    let firstError = null;
+
+    // Process in batches of 5 to stay within rate limits
+    const BATCH = 5;
+    for (let i = 0; i < leads.length; i += BATCH) {
+      const batch = leads.slice(i, i + BATCH);
+      const results = await Promise.allSettled(
+        batch.map(async (lead) => {
+          if (!lead.phone) return 'skipped';
+          const existing = await ghl.findContactByPhone(lead.phone);
+          if (existing) return 'skipped';
+          await ghl.createContact(lead, assignment);
+          return 'imported';
+        })
+      );
+      results.forEach(r => {
+        if (r.status === 'fulfilled' && r.value === 'imported') {
+          imported++;
+        } else {
+          skipped++;
+          if (r.status === 'rejected' && !firstError) {
+            firstError = r.reason?.message || 'Unknown error';
+            console.error('[IMPORT] First lead failure:', firstError);
+          }
+        }
+      });
+    }
+
+    res.json({ imported, skipped, firstError });
+  } catch (err) {
+    console.error('[IMPORT ERROR]', err);
+    res.status(500).json({ error: 'Import failed — contact David', detail: err.message });
   }
-
-  let imported = 0;
-  let skipped  = 0;
-
-  // Process in batches of 5 to stay within rate limits
-  const BATCH = 5;
-  for (let i = 0; i < leads.length; i += BATCH) {
-    const batch = leads.slice(i, i + BATCH);
-    const results = await Promise.allSettled(
-      batch.map(async (lead) => {
-        if (!lead.phone) return 'skipped';
-        const existing = await ghl.findContactByPhone(lead.phone);
-        if (existing) return 'skipped';
-        await ghl.createContact(lead, assignment);
-        return 'imported';
-      })
-    );
-    results.forEach(r => {
-      if (r.status === 'fulfilled' && r.value === 'imported') imported++;
-      else skipped++;
-    });
-  }
-
-  res.json({ imported, skipped });
 });
 
 

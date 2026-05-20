@@ -228,11 +228,23 @@ export async function findContactByPhone(phone) {
 }
 
 /**
+ * Normalize any phone format to E.164 (+1XXXXXXXXXX for US numbers)
+ */
+function toE164(phone) {
+  const digits = (phone || '').replace(/\D/g, '');
+  if (!digits) return '';
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+  return `+${digits}`;
+}
+
+/**
  * Create a new contact (lead) in GHL — used by the CSV import flow
  */
 export async function createContact(lead, assignment = {}) {
   const LOCATION_ID = process.env.GHL_LOCATION_ID;
 
+  const phone = toE164(lead.phone);
   const googleScore = lead.rating && lead.reviews
     ? `${lead.rating} (${lead.reviews} reviews)`
     : lead.rating || '';
@@ -250,21 +262,21 @@ export async function createContact(lead, assignment = {}) {
     customFields.push({ id: 'RFj1VlGRDeRor1RXCPfR', value: googleScore });
   }
 
-  return ghlRequest('/contacts/', {
-    method: 'POST',
-    body: JSON.stringify({
-      locationId:  LOCATION_ID,
-      companyName: lead.name,
-      firstName:   lead.name,
-      phone:       lead.phone || '',
-      city:        lead.city  || '',
-      state:       lead.state || '',
-      website:     lead.website || '',
-      assignedTo:  assignment.agentId || '',
-      tags:        assignment.campaign ? [assignment.campaign] : [],
-      customFields,
-    }),
-  });
+  const body = {
+    locationId:  LOCATION_ID,
+    companyName: lead.name,
+    firstName:   lead.name,
+    phone,
+    city:        lead.city    || '',
+    state:       lead.state   || '',
+    website:     lead.website || '',
+    assignedTo:  assignment.agentId || '',
+    tags:        assignment.campaign ? [assignment.campaign] : [],
+    customFields,
+  };
+
+  console.log('[IMPORT] Creating contact:', lead.name, phone, '→ assignedTo:', assignment.agentId || '(unassigned)');
+  return ghlRequest('/contacts/', { method: 'POST', body: JSON.stringify(body) });
 }
 
 export async function getAgentStats(agentId = null) {

@@ -171,7 +171,9 @@ export default function Import() {
         setImporting(false);
         setBanner({
           text: `${data.imported} lead${data.imported !== 1 ? 's' : ''} assigned to ${selectedAgentName}`,
-          sub: data.skipped > 0 ? `${data.skipped} skipped (duplicates)` : null,
+          sub: data.skipped > 0
+            ? `${data.skipped} skipped${data.firstError ? ` — first error: ${data.firstError}` : ' (duplicates/errors)'}`
+            : null,
         });
       }, 400);
     } catch {
