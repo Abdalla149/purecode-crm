@@ -211,7 +211,8 @@ function ConversionChart({ data }) {
 
 function PhoneStatusPanel({ health, recordingsCount }) {
   const connected = health?.connected === true;
-  const numbers = health?.numbers || [];
+  const numbers   = health?.numbers || [];
+  const dbg       = health?.debug;
 
   if (!connected) {
     return (
@@ -219,12 +220,33 @@ function PhoneStatusPanel({ health, recordingsCount }) {
         <div className="panel-head">
           <div className="panel-title">Phone Status</div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 0', gap: 8 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px 0 8px', gap: 6 }}>
           <Radio size={20} color="var(--text3)" />
           <div style={{ fontSize: 12, color: 'var(--text3)', textAlign: 'center', lineHeight: 1.5 }}>
-            Phone system not connected
+            {dbg?.reason || 'Phone system not connected'}
           </div>
         </div>
+        {/* Debug block — shows raw API error so admin can diagnose without tailing logs */}
+        {dbg && (dbg.error || dbg.rawBody) && (
+          <div style={{
+            margin: '8px 0 4px', padding: '8px 10px',
+            background: 'var(--bg3)', borderRadius: 6,
+            fontSize: 10, color: 'var(--text3)',
+            fontFamily: "'DM Mono', monospace", lineHeight: 1.6,
+            wordBreak: 'break-all', overflowWrap: 'break-word',
+          }}>
+            {dbg.statusCode && <div style={{ color: 'var(--orange)', marginBottom: 2 }}>HTTP {dbg.statusCode}</div>}
+            {dbg.error && <div>{dbg.error}</div>}
+            {dbg.rawBody && (
+              <div style={{ marginTop: 4, color: 'var(--text3)', opacity: 0.8 }}>
+                {dbg.rawBody.length > 200 ? dbg.rawBody.slice(0, 200) + '…' : dbg.rawBody}
+              </div>
+            )}
+            <div style={{ marginTop: 4, color: 'var(--text3)', opacity: 0.6 }}>
+              key={dbg.keyPresent ? '✓' : '✗'} secret={dbg.secretPresent ? '✓' : '✗'}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -315,8 +337,11 @@ export default function Dashboard() {
       if (convR.status === 'fulfilled')   setConversionData(convR.value.data);
 
       if (jcHealthR.status === 'fulfilled') {
+        console.debug('[Dashboard] phone-health response:', jcHealthR.value.data);
         setJcHealth(jcHealthR.value.data);
       } else {
+        // rejected = HTTP error (e.g. 401 from our server — token missing/expired)
+        console.error('[Dashboard] phone-health error:', jcHealthR.reason?.message);
         setJcHealth({ numbers: [], connected: false });
       }
 
