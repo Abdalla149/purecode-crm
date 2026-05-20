@@ -7,18 +7,16 @@
 // JustCall API docs: https://developer.justcall.io/
 // ═══════════════════════════════════════════════════════
 
-// v2 API — Basic auth with base64-encoded key:secret
-const JC_BASE   = process.env.JUSTCALL_BASE_URL || 'https://api.justcall.io/v2';
-const JC_KEY    = process.env.JUSTCALL_API_KEY;
-const JC_SECRET = process.env.JUSTCALL_API_SECRET;
-
+// v1 API — read env vars inside each call so they're never frozen at import time
 function jcAuthHeader() {
-  const credentials = Buffer.from(`${JC_KEY}:${JC_SECRET}`).toString('base64');
-  return `Basic ${credentials}`;
+  const key    = process.env.JUSTCALL_API_KEY;
+  const secret = process.env.JUSTCALL_API_SECRET;
+  return `Bearer ${key}:${secret}`;
 }
 
 async function jcRequest(endpoint, options = {}) {
-  const url = `${JC_BASE}${endpoint}`;
+  const base = process.env.JUSTCALL_BASE_URL || 'https://api.justcall.io/v1';
+  const url  = `${base}${endpoint}`;
 
   const res = await fetch(url, {
     ...options,
@@ -110,7 +108,7 @@ export async function getCallLogs({ agentId, startDate, endDate, limit = 50 }) {
  * Admin-only — shows spam flags, usage, etc
  */
 export async function getNumberHealth() {
-  const data = await jcRequest('/phone-numbers');
+  const data = await jcRequest('/phones');
   
   return (data.data || []).map(num => ({
     id: num.id,
