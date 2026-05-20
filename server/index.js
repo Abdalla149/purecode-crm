@@ -1,6 +1,7 @@
 // ═══════════════════════════════════════════════════════
 // PURECODE CRM — Server Entry
 // ═══════════════════════════════════════════════════════
+
 // This is the backend. It sits between your React frontend
 // and GHL/JustCall APIs. Agents never see GHL — they see
 // "PureCode" everywhere. This server handles:
