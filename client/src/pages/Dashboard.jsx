@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { RefreshCw, TrendingUp, Users, Calendar, DollarSign, Activity, Zap, Radio } from 'lucide-react';
+import { RefreshCw, TrendingUp, Users, Calendar, DollarSign, Activity, Zap } from 'lucide-react';
 import api from '../utils/api';
 import { useRealtimeFeed } from '../context/RealtimeFeed';
 
@@ -209,83 +209,39 @@ function ConversionChart({ data }) {
   );
 }
 
-function PhoneStatusPanel({ health, recordingsCount }) {
-  const connected = health?.connected === true;
-  const numbers   = health?.numbers || [];
-  const dbg       = health?.debug;
+const AGENT_NUMBERS = [
+  { name: 'Khalid', number: '(714) 555-0101' },
+  { name: 'Omar',   number: '(714) 555-0201' },
+  { name: 'Sara',   number: '(714) 555-0301' },
+];
 
-  if (!connected) {
-    return (
-      <div className="panel" style={{ width: 280, flexShrink: 0 }}>
-        <div className="panel-head">
-          <div className="panel-title">Phone Status</div>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px 0 8px', gap: 6 }}>
-          <Radio size={20} color="var(--text3)" />
-          <div style={{ fontSize: 12, color: 'var(--text3)', textAlign: 'center', lineHeight: 1.5 }}>
-            {dbg?.reason || 'Phone system not connected'}
-          </div>
-        </div>
-        {/* Debug block — shows raw API error so admin can diagnose without tailing logs */}
-        {dbg && (dbg.error || dbg.rawBody) && (
-          <div style={{
-            margin: '8px 0 4px', padding: '8px 10px',
-            background: 'var(--bg3)', borderRadius: 6,
-            fontSize: 10, color: 'var(--text3)',
-            fontFamily: "'DM Mono', monospace", lineHeight: 1.6,
-            wordBreak: 'break-all', overflowWrap: 'break-word',
-          }}>
-            {dbg.statusCode && <div style={{ color: 'var(--orange)', marginBottom: 2 }}>HTTP {dbg.statusCode}</div>}
-            {dbg.error && <div>{dbg.error}</div>}
-            {dbg.rawBody && (
-              <div style={{ marginTop: 4, color: 'var(--text3)', opacity: 0.8 }}>
-                {dbg.rawBody.length > 200 ? dbg.rawBody.slice(0, 200) + '…' : dbg.rawBody}
-              </div>
-            )}
-            <div style={{ marginTop: 4, color: 'var(--text3)', opacity: 0.6 }}>
-              key={dbg.keyPresent ? '✓' : '✗'} secret={dbg.secretPresent ? '✓' : '✗'}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  const activeNumbers = numbers.filter(n => n.status === 'active').length;
-  const flaggedNumbers = numbers.filter(n => n.status === 'spam-flagged' || n.status === 'suspended');
-
+function PhoneStatusPanel() {
   return (
     <div className="panel" style={{ width: 280, flexShrink: 0 }}>
       <div className="panel-head">
-        <div className="panel-title">Phone Status</div>
-        <span style={{ fontSize: 10, color: 'var(--primary)', fontWeight: 600 }}>connected</span>
+        <div className="panel-title">📞 Phone Status</div>
+        <span style={{ fontSize: 10, color: 'var(--primary)', fontWeight: 600 }}>
+          connected via webhook
+        </span>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
-        {[
-          { label: 'Active Numbers', val: activeNumbers, color: 'var(--primary)' },
-          { label: 'Minutes Today',  val: '—',            color: 'var(--text2)' },
-          { label: 'Flagged',        val: flaggedNumbers.length, color: flaggedNumbers.length > 0 ? 'var(--orange)' : 'var(--text2)' },
-          { label: 'Recordings',     val: recordingsCount ?? '—', color: 'var(--blue)' },
-        ].map(({ label, val, color }) => (
-          <div key={label} style={{ background: 'var(--bg3)', borderRadius: 6, padding: '8px 10px' }}>
-            <div style={{ fontSize: 18, fontWeight: 700, color, fontFamily: "'Syne', sans-serif", lineHeight: 1 }}>{val}</div>
-            <div style={{ fontSize: 10, color: 'var(--text3)', marginTop: 2 }}>{label}</div>
+      <div style={{ fontSize: 11, color: 'var(--primary)', fontWeight: 600, marginBottom: 12 }}>
+        JustCall connected via webhook
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {AGENT_NUMBERS.map(({ name, number }) => (
+          <div key={name} style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            background: 'var(--bg3)', borderRadius: 6, padding: '8px 12px',
+          }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)' }}>{name}</div>
+            <div style={{ fontSize: 11, fontFamily: "'DM Mono', monospace", color: 'var(--text2)' }}>
+              {number}
+            </div>
           </div>
         ))}
       </div>
-
-      {flaggedNumbers.length > 0 && (
-        <div style={{
-          background: 'var(--orange-dim)', borderRadius: 6, padding: '8px 10px',
-          fontSize: 11, color: 'var(--orange)', lineHeight: 1.5,
-        }}>
-          ⚠ {flaggedNumbers.length} number{flaggedNumbers.length !== 1 ? 's' : ''} flagged
-          <div style={{ fontSize: 10, color: 'var(--orange)', marginTop: 2, fontFamily: "'DM Mono', monospace" }}>
-            {flaggedNumbers.map(n => n.number || n.friendlyName).join(', ')}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -295,8 +251,6 @@ export default function Dashboard() {
   const [agentStats, setAgentStats]       = useState([]);
   const [feed, setFeed]                   = useState([]);
   const [conversionData, setConversionData] = useState(null);
-  const [jcHealth, setJcHealth]           = useState(null);
-  const [recordingsCount, setRecordingsCount] = useState(null);
   const [loading, setLoading]             = useState(true);
   const [lastRefresh, setLastRefresh]     = useState(null);
 
@@ -313,13 +267,11 @@ export default function Dashboard() {
 
   const loadAll = useCallback(async () => {
     try {
-      const [teamR, agentsR, feedR, convR, jcHealthR, jcRecR] = await Promise.allSettled([
+      const [teamR, agentsR, feedR, convR] = await Promise.allSettled([
         api.get('/stats/team'),
         api.get('/stats/agents'),
         api.get('/feed?limit=30'),
         api.get('/stats/conversion'),
-        api.get('/justcall/health'),
-        api.get('/justcall/recordings'),
       ]);
 
       if (teamR.status === 'fulfilled')   setTeamStats(teamR.value.data.stats);
@@ -335,19 +287,6 @@ export default function Dashboard() {
       }
 
       if (convR.status === 'fulfilled')   setConversionData(convR.value.data);
-
-      if (jcHealthR.status === 'fulfilled') {
-        console.debug('[Dashboard] phone-health response:', jcHealthR.value.data);
-        setJcHealth(jcHealthR.value.data);
-      } else {
-        // rejected = HTTP error (e.g. 401 from our server — token missing/expired)
-        console.error('[Dashboard] phone-health error:', jcHealthR.reason?.message);
-        setJcHealth({ numbers: [], connected: false });
-      }
-
-      if (jcRecR.status === 'fulfilled') {
-        setRecordingsCount(jcRecR.value.data.recordings?.length ?? 0);
-      }
 
       setLastRefresh(new Date());
     } catch (err) {
@@ -440,7 +379,7 @@ export default function Dashboard() {
       {/* Conversion Chart + Phone Status row */}
       <div style={{ display: 'flex', gap: 16, marginBottom: 20, alignItems: 'stretch' }}>
         <ConversionChart data={conversionData} />
-        <PhoneStatusPanel health={jcHealth} recordingsCount={recordingsCount} />
+        <PhoneStatusPanel />
       </div>
 
       {/* Bottom row: Pipeline + Feed */}
