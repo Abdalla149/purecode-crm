@@ -7,9 +7,15 @@
 // JustCall API docs: https://developer.justcall.io/
 // ═══════════════════════════════════════════════════════
 
-const JC_BASE = process.env.JUSTCALL_BASE_URL || 'https://api.justcall.io/v1';
-const JC_KEY = process.env.JUSTCALL_API_KEY;
+// v2 API — Basic auth with base64-encoded key:secret
+const JC_BASE   = process.env.JUSTCALL_BASE_URL || 'https://api.justcall.io/v2';
+const JC_KEY    = process.env.JUSTCALL_API_KEY;
 const JC_SECRET = process.env.JUSTCALL_API_SECRET;
+
+function jcAuthHeader() {
+  const credentials = Buffer.from(`${JC_KEY}:${JC_SECRET}`).toString('base64');
+  return `Basic ${credentials}`;
+}
 
 async function jcRequest(endpoint, options = {}) {
   const url = `${JC_BASE}${endpoint}`;
@@ -17,20 +23,29 @@ async function jcRequest(endpoint, options = {}) {
   const res = await fetch(url, {
     ...options,
     headers: {
-      'Authorization': `${JC_KEY}:${JC_SECRET}`,
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      ...options.headers
-    }
+      'Authorization': jcAuthHeader(),
+      'Content-Type':  'application/json',
+      'Accept':        'application/json',
+      ...options.headers,
+    },
   });
 
+  const rawText = await res.text();
+  // Always log so Render logs show exactly what the API returned
+  console.log(`[JUSTCALL] ${options.method || 'GET'} ${endpoint} → ${res.status} | ${rawText.slice(0, 600)}`);
+
   if (!res.ok) {
-    const errBody = await res.text();
-    console.error(`[JUSTCALL ERROR] ${options.method || 'GET'} ${endpoint} → ${res.status}`, errBody);
-    throw new Error(`Calling service error (${res.status})`); // Generic — never say "JustCall"
+    const err = new Error(`Calling service error (${res.status})`);
+    err.statusCode = res.status;
+    err.rawBody    = rawText;
+    throw err;
   }
 
-  return res.json();
+  try {
+    return JSON.parse(rawText);
+  } catch {
+    throw new Error(`Non-JSON response: ${rawText.slice(0, 200)}`);
+  }
 }
 
 

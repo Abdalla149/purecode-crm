@@ -8,15 +8,31 @@ router.use(requireAuth);
 
 // GET /api/justcall/health — admin only
 router.get('/health', requireAdmin, async (req, res) => {
-  if (!process.env.JUSTCALL_API_KEY) {
-    return res.json({ numbers: [], connected: false });
+  const keyPresent    = !!process.env.JUSTCALL_API_KEY;
+  const secretPresent = !!process.env.JUSTCALL_API_SECRET;
+
+  if (!keyPresent) {
+    return res.json({
+      numbers: [], connected: false,
+      debug: { reason: 'JUSTCALL_API_KEY env var not set', keyPresent, secretPresent },
+    });
   }
+
   try {
     const numbers = await justcall.getNumberHealth();
-    res.json({ numbers, connected: true });
+    res.json({ numbers, connected: true, debug: { keyPresent, secretPresent, count: numbers.length } });
   } catch (err) {
     console.error('[JUSTCALL/HEALTH]', err.message);
-    res.json({ numbers: [], connected: false });
+    res.json({
+      numbers: [], connected: false,
+      debug: {
+        error:      err.message,
+        statusCode: err.statusCode || null,
+        rawBody:    err.rawBody    || null,
+        keyPresent,
+        secretPresent,
+      },
+    });
   }
 });
 
