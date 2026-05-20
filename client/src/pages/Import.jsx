@@ -3,9 +3,10 @@ import { Upload, CheckSquare, Square, RefreshCw } from 'lucide-react';
 import api from '../utils/api';
 
 const AGENTS = [
-  { id: 'mwhEdKvuwIUFFujKry9y', name: 'Khalid' },
-  { id: '3zHvVi4Kee0XV8Y8A4aI', name: 'Omar' },
-  { id: '9OcAH0DjAFvzWChwnxKq', name: 'Sara' },
+  { id: '', name: 'Lucas' },
+  { id: '', name: 'Harry' },
+  { id: '', name: 'Jim' },
+  { id: '', name: 'Bruce' },
 ];
 
 const BUSINESS_TYPES = ['Roofing', 'HVAC', 'Plumbing', 'Towing', 'Auto Repair'];

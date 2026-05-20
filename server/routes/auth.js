@@ -28,45 +28,51 @@ const USERS = [
     justcallNumbers: [],
   },
   {
-    id: 'agent_khalid',
-    username: 'khalid',
-    passwordHash: '$2a$10$b8MlvE2ccVGnM6Lcuv/4i.TfefzOgmK5BwOKH1cR9m/rVUzQiCnVm',
+    id: 'agent_lucas',
+    username: 'lucas',
+    passwordHash: '$2a$10$gWfKPfcYkNJa/2/7HBl15uVXIQrqUszU/ZH2b415vnpuoQE4S3tba',
     role: 'agent',
-    name: 'Khalid',
-    ghlUserId: 'mwhEdKvuwIUFFujKry9y',
-    agentId: 'jc_khalid_id',   // ← Replace with real JustCall agent ID
+    name: 'Lucas',
+    ghlUserId: '',
+    agentId: 'jc_lucas_id',
     justcallNumbers: [
-      { id: 'n1', number: '(714) 555-0101', label: '#1' },
-      { id: 'n2', number: '(949) 555-0102', label: '#2' },
-      { id: 'n3', number: '(657) 555-0103', label: '#3' },
+      { id: 'ln1', number: '+18314803557', label: '#1' },
     ]
   },
   {
-    id: 'agent_omar',
-    username: 'omar',
-    passwordHash: '$2a$10$X1SWRNBlZppa8Qe8y1AsWek.ActWGB6FOXz/AFVZJuu4tLvNsrKpq',
+    id: 'agent_harry',
+    username: 'harry',
+    passwordHash: '$2a$10$otXCrgayWdMhyoqH5j1JYOoQjmjNBvR02tER9DGkD7NrYqk3U5Ypq',
     role: 'agent',
-    name: 'Omar',
-    ghlUserId: '3zHvVi4Kee0XV8Y8A4aI',
-    agentId: 'jc_omar_id',     // ← Replace with real JustCall agent ID
+    name: 'Harry',
+    ghlUserId: '',
+    agentId: 'jc_harry_id',
     justcallNumbers: [
-      { id: 'n4', number: '(714) 555-0201', label: '#1' },
-      { id: 'n5', number: '(949) 555-0202', label: '#2' },
-      { id: 'n6', number: '(657) 555-0203', label: '#3' },
+      { id: 'hn1', number: '+18312312281', label: '#1' },
     ]
   },
   {
-    id: 'agent_sara',
-    username: 'sara',
-    passwordHash: '$2a$10$gFXlqrvFS1EcmmQH0mvigeUIeyFJJXF4LfL6QNHAOwr233Ck.BGkO',
+    id: 'agent_jim',
+    username: 'jim',
+    passwordHash: '$2a$10$xbNf2DxsfD/UdKRNb7osAelvdhqi9UCtG7/haWdRYlzIB3DxT3Lcq',
     role: 'agent',
-    name: 'Sara',
-    ghlUserId: '9OcAH0DjAFvzWChwnxKq',
-    agentId: 'jc_sara_id',     // ← Replace with real JustCall agent ID
+    name: 'Jim',
+    ghlUserId: '',
+    agentId: 'jc_jim_id',
     justcallNumbers: [
-      { id: 'n7', number: '(714) 555-0301', label: '#1' },
-      { id: 'n8', number: '(949) 555-0302', label: '#2' },
-      { id: 'n9', number: '(657) 555-0303', label: '#3' },
+      { id: 'jn1', number: '+18313370742', label: '#1' },
+    ]
+  },
+  {
+    id: 'agent_bruce',
+    username: 'bruce',
+    passwordHash: '$2a$10$jD4ig7DMhiTuQHC09h8IqeIdvCSEo3nb5Yf32h2ag74AdRT3.TLf2',
+    role: 'agent',
+    name: 'Bruce',
+    ghlUserId: '',
+    agentId: 'jc_bruce_id',
+    justcallNumbers: [
+      { id: 'bn1', number: '+18314014983', label: '#1' },
     ]
   }
 ];

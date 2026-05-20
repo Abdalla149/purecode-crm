@@ -5,9 +5,10 @@ const GHL_KEY     = process.env.GHL_API_KEY;
 const LOCATION_ID = process.env.GHL_LOCATION_ID;
 
 const AGENTS = [
-  { name: 'Khalid', id: 'mwhEdKvuwIUFFujKry9y', quota: 34 },
-  { name: 'Omar',   id: '3zHvVi4Kee0XV8Y8A4aI', quota: 33 },
-  { name: 'Sara',   id: '9OcAH0DjAFvzWChwnxKq', quota: 33 },
+  { name: 'Lucas', id: '', quota: 25 },
+  { name: 'Harry', id: '', quota: 25 },
+  { name: 'Jim',   id: '', quota: 25 },
+  { name: 'Bruce', id: '', quota: 25 },
 ];
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }

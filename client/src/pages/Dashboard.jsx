@@ -210,9 +210,10 @@ function ConversionChart({ data }) {
 }
 
 const AGENT_NUMBERS = [
-  { name: 'Khalid', number: '(714) 555-0101' },
-  { name: 'Omar',   number: '(714) 555-0201' },
-  { name: 'Sara',   number: '(714) 555-0301' },
+  { name: 'Lucas', number: '+1 (831) 480-3557' },
+  { name: 'Harry', number: '+1 (831) 231-2281' },
+  { name: 'Jim',   number: '+1 (831) 337-0742' },
+  { name: 'Bruce', number: '+1 (831) 401-4983' },
 ];
 
 function PhoneStatusPanel() {
