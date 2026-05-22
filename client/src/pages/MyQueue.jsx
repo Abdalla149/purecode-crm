@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Phone, SkipForward, RefreshCw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useDialer } from '../context/DialerContext';
 import api from '../utils/api';
 import InCallOverlay from '../components/InCallOverlay';
 import LeadPanel from '../components/LeadPanel';
@@ -80,6 +81,7 @@ function StatusBadge({ status }) {
 // ── Main Component ───────────────────────────────────────────
 export default function MyQueue() {
   const { user } = useAuth();
+  const dialer = useDialer();
 
   const [leads, setLeads]             = useState([]);
   const [loading, setLoading]         = useState(true);
@@ -159,12 +161,7 @@ export default function MyQueue() {
       saveCallCounts(newCounts);
     }
 
-    // Fire JustCall in the background — don't block the overlay
-    api.post(`/leads/${lead.id}/call`, { agentNumbers: phoneNumbers })
-      .catch(err => {
-        // JustCall not connected yet — calling continues manually
-        console.log('[CALL] Dialing service offline:', err?.response?.data?.error);
-      });
+    dialer?.dialNumber(lead.phone, lead);
 
     setActiveCall({ lead });
   }

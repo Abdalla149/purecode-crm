@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useDialer } from '../context/DialerContext';
 import api from '../utils/api';
 
 const CALL_LIMIT = 30;
@@ -26,6 +27,7 @@ export function getActiveNumber(phoneNumbers, callCounts) {
 
 export function useCallQueue() {
   const { user } = useAuth();
+  const dialer = useDialer();
   const phoneNumbers = user?.phoneNumbers || [];
   const [activeCall, setActiveCall]   = useState(null);
   const [saving, setSaving]           = useState(false);
@@ -49,7 +51,7 @@ export function useCallQueue() {
       setCallCounts(updated);
       saveCallCounts(updated);
     }
-    api.post(`/leads/${lead.id}/call`, { agentNumbers: phoneNumbers }).catch(() => {});
+    dialer?.dialNumber(lead.phone, lead);
     setActiveCall({ lead });
   }
 

@@ -6,6 +6,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSidebarCounts } from '../context/SidebarCounts';
+import { DialerProvider } from '../context/DialerContext';
+import JustCallDialer from './JustCallDialer';
 
 const ADMIN_NAV = [
   { to: '/dashboard',   label: 'Dashboard',   Icon: LayoutDashboard },
@@ -68,6 +70,7 @@ export default function AppShell() {
   }
 
   return (
+    <DialerProvider>
     <div className="app-shell">
       {/* ── Topbar ── */}
       <header className="app-topbar">
@@ -139,6 +142,10 @@ export default function AppShell() {
           <Outlet />
         </main>
       </div>
+
+      {/* ── JustCall dialer panel (agent-only, fixed right side) ── */}
+      <JustCallDialer />
     </div>
+    </DialerProvider>
   );
 }
