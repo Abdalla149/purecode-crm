@@ -48,15 +48,14 @@ export function useCallQueue() {
   function handleStartCall(lead) {
     if (!lead) return;
 
-    // Guard: dialer SDK must be loaded and agent must be logged in
     const status = dialer?.dialNumber(lead.phone, lead);
 
     if (status === 'not-ready') {
-      showWarning('Dialer is loading — wait a moment then try again');
+      showWarning('Dialer is loading — try again in a moment');
       return;
     }
     if (status === 'not-logged-in') {
-      showWarning('Log into the dialer panel first');
+      showWarning('Log into the dialer to place calls');
       return;
     }
     if (status === 'no-phone') {
@@ -68,7 +67,7 @@ export function useCallQueue() {
       return;
     }
 
-    // 'dialed' — call is ringing, open the in-call overlay
+    // 'dialed' — call sent, open in-call overlay
     setDialWarning(null);
 
     if (activeNumber) {

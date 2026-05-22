@@ -1,24 +1,23 @@
 import { useEffect } from 'react';
-import { Phone, ChevronRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useDialer } from '../context/DialerContext';
 import api from '../utils/api';
 
+/**
+ * Invisible SDK host for agents.
+ *
+ * Before login:  shows a fullscreen modal so the agent can authenticate inside
+ *                the JustCall iframe. The modal disappears the moment onLogin fires.
+ *
+ * After login:   the iframe container moves off-screen (still in DOM so postMessage
+ *                continues to work) — zero visible UI. CALL NOW triggers calls directly.
+ */
 export default function JustCallDialer() {
   const { user } = useAuth();
   const ctx = useDialer();
 
-  // Panel open/close is owned by context so CALL NOW can force-open it
-  const open       = ctx?.panelOpen  ?? false;
-  const isLoggedIn = ctx?.isLoggedIn ?? false;
-
-  function togglePanel() {
-    ctx?.setPanelOpen(v => !v);
-  }
-
   useEffect(() => {
     if (user?.role !== 'agent' || !ctx) return;
-
     let mounted = true;
 
     import('@justcall/justcall-dialer-sdk').then(({ JustCallDialer: SDK }) => {
@@ -41,7 +40,7 @@ export default function JustCallDialer() {
             callSid:  payload?.call_sid || '',
           });
         } catch {
-          // Non-critical — agent files outcome separately via overlay
+          // Non-critical — agent files outcome via overlay
         }
         ctx.activeLeadRef.current = null;
       });
@@ -57,105 +56,67 @@ export default function JustCallDialer() {
 
   if (user?.role !== 'agent') return null;
 
-  return (
-    <div style={{
-      position:   'fixed',
-      top:        '50%',
-      right:      0,
-      transform:  `translateY(-50%) translateX(${open ? '0px' : '385px'})`,
-      transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-      display:    'flex',
-      zIndex:     1000,
-    }}>
-      {/* ── Toggle tab ── */}
+  const isLoggedIn = ctx?.isLoggedIn ?? false;
+
+  // ── After login: iframe moves completely off-screen ──
+  if (isLoggedIn) {
+    return (
       <div
-        onClick={togglePanel}
+        id="justcall-dialer"
         style={{
-          width:          36,
-          height:         120,
-          background:     'var(--bg2)',
-          border:         '1px solid var(--border)',
-          borderRight:    'none',
-          borderRadius:   '8px 0 0 8px',
-          display:        'flex',
-          flexDirection:  'column',
-          alignItems:     'center',
-          justifyContent: 'center',
-          cursor:         'pointer',
-          gap:            6,
-          flexShrink:     0,
-          userSelect:     'none',
+          position:  'fixed',
+          top:       '-9999px',
+          left:      '-9999px',
+          width:     385,
+          height:    665,
+          overflow:  'hidden',
+          pointerEvents: 'none',
         }}
-      >
-        <div style={{
-          width:        8,
-          height:       8,
-          borderRadius: '50%',
-          background:   isLoggedIn ? 'var(--primary)' : 'var(--text3)',
-          flexShrink:   0,
-        }} />
-        <span style={{
-          writingMode:     'vertical-rl',
-          textOrientation: 'mixed',
-          transform:       'rotate(180deg)',
-          fontSize:        10,
-          fontWeight:      700,
-          letterSpacing:   '0.12em',
-          color:           'var(--text2)',
-          fontFamily:      "'DM Mono', monospace",
+      />
+    );
+  }
+
+  // ── Before login: fullscreen modal with iframe centered ──
+  return (
+    <>
+      {/* Dark backdrop */}
+      <div style={{
+        position:  'fixed',
+        inset:     0,
+        background: 'rgba(5, 8, 18, 0.92)',
+        zIndex:    9998,
+        display:   'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 0,
+      }}>
+        <p style={{
+          color:        'var(--text2)',
+          fontSize:     14,
+          fontWeight:   600,
+          letterSpacing: '0.04em',
+          marginBottom: 20,
+          textAlign:    'center',
         }}>
-          DIALER
-        </span>
-        <ChevronRight
-          size={12}
-          color="var(--text3)"
+          Log in to activate calling
+        </p>
+
+        {/* Iframe container — centered above backdrop */}
+        <div
+          id="justcall-dialer"
           style={{
-            transform:  open ? 'rotate(0deg)' : 'rotate(180deg)',
-            transition: 'transform 0.2s',
+            width:        385,
+            height:       665,
+            borderRadius: 12,
+            overflow:     'hidden',
+            border:       '1px solid var(--border)',
+            background:   'var(--bg1)',
+            zIndex:       9999,
+            position:     'relative',
           }}
         />
       </div>
-
-      {/* ── Dialer panel ── */}
-      <div style={{
-        width:       385,
-        height:      665,
-        background:  'var(--bg1)',
-        border:      '1px solid var(--border)',
-        borderRight: 'none',
-        position:    'relative',
-        overflow:    'hidden',
-        flexShrink:  0,
-      }}>
-        {/* SDK injects its iframe here — always in DOM so it loads even when panel is closed */}
-        <div id="justcall-dialer" style={{ width: '100%', height: '100%' }} />
-
-        {/* Login prompt overlay — pointer-events:none so agent can still click into iframe */}
-        {!isLoggedIn && (
-          <div style={{
-            position:       'absolute',
-            inset:          0,
-            background:     'rgba(10, 14, 26, 0.75)',
-            display:        'flex',
-            flexDirection:  'column',
-            alignItems:     'center',
-            justifyContent: 'center',
-            gap:            12,
-            pointerEvents:  'none',
-          }}>
-            <Phone size={28} color="var(--text3)" />
-            <p style={{
-              color:     'var(--text2)',
-              fontSize:  13,
-              textAlign: 'center',
-              margin:    0,
-              padding:   '0 24px',
-            }}>
-              Log in to start calling
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
+    </>
   );
 }

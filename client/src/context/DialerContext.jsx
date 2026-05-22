@@ -2,44 +2,41 @@ import { createContext, useContext, useRef, useState } from 'react';
 
 const DialerCtx = createContext(null);
 
+function toE164(phone) {
+  const digits = (phone || '').replace(/\D/g, '');
+  if (!digits) return '';
+  if (digits.length === 10)                         return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+  return `+${digits}`;
+}
+
 export function DialerProvider({ children }) {
   const dialerRef     = useRef(null);
   const activeLeadRef = useRef(null);
   const [isReady,    setIsReady]    = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [panelOpen,  setPanelOpen]  = useState(false);
 
   function setDialer(d) {
     dialerRef.current = d;
   }
 
-  function openPanel() {
-    setPanelOpen(true);
-  }
-
   /**
    * Returns:
-   *   'dialed'         — call sent to SDK successfully
-   *   'not-ready'      — SDK iframe not loaded yet
-   *   'not-logged-in'  — agent not authenticated in dialer
-   *   'no-phone'       — phone number is empty
-   *   'error'          — SDK threw unexpectedly
+   *   'dialed'        — SDK received the number, call is ringing
+   *   'not-ready'     — SDK iframe not finished loading
+   *   'not-logged-in' — agent hasn't authenticated in the dialer
+   *   'no-phone'      — phone field is empty
+   *   'error'         — SDK threw unexpectedly
    */
   function dialNumber(phone, lead = null) {
-    if (!phone) return 'no-phone';
-
-    if (!isReady) {
-      setPanelOpen(true);
-      return 'not-ready';
-    }
-    if (!isLoggedIn) {
-      setPanelOpen(true);
-      return 'not-logged-in';
-    }
+    const e164 = toE164(phone);
+    if (!e164) return 'no-phone';
+    if (!isReady)    return 'not-ready';
+    if (!isLoggedIn) return 'not-logged-in';
 
     activeLeadRef.current = lead;
     try {
-      dialerRef.current.dialNumber(phone);
+      dialerRef.current.dialNumber(e164);
       return 'dialed';
     } catch {
       return 'error';
@@ -52,8 +49,6 @@ export function DialerProvider({ children }) {
       activeLeadRef,
       isReady,    setIsReady,
       isLoggedIn, setIsLoggedIn,
-      panelOpen,  setPanelOpen,
-      openPanel,
       setDialer,
       dialNumber,
     }}>

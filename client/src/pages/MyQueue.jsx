@@ -158,11 +158,11 @@ export default function MyQueue() {
     const status = dialer?.dialNumber(lead.phone, lead);
 
     if (status === 'not-ready') {
-      showDialWarning('Dialer is loading — wait a moment then try again');
+      showDialWarning('Dialer is loading — try again in a moment');
       return;
     }
     if (status === 'not-logged-in') {
-      showDialWarning('Log into the dialer panel first');
+      showDialWarning('Log into the dialer to place calls');
       return;
     }
     if (status === 'no-phone') {
