@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Phone, SkipForward, RefreshCw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useDialer } from '../context/DialerContext';
 import api from '../utils/api';
 import InCallOverlay from '../components/InCallOverlay';
 import LeadPanel from '../components/LeadPanel';
@@ -80,6 +81,7 @@ function StatusBadge({ status }) {
 // ── Main Component ───────────────────────────────────────────
 export default function MyQueue() {
   const { user } = useAuth();
+  const dialer = useDialer();
 
   const [leads, setLeads]             = useState([]);
   const [dialWarning, setDialWarning] = useState(null);
@@ -152,14 +154,29 @@ export default function MyQueue() {
 
   // ── Call handlers ──────────────────────────────────────────
   function handleStartCall(lead) {
-    if (!lead?.phone) {
+    if (!lead) return;
+
+    const status = dialer?.dialNumber(lead.phone, lead);
+
+    if (status === 'not-ready') {
+      showDialWarning('Dialer is loading — try again in a moment');
+      return;
+    }
+    if (status === 'not-logged-in') {
+      showDialWarning('Log in to activate calling');
+      return;
+    }
+    if (status === 'no-phone') {
       showDialWarning('This lead has no phone number');
       return;
     }
+    if (status === 'error') {
+      showDialWarning('Could not place call — try again');
+      return;
+    }
 
-    // Show in-call overlay immediately
+    // 'dialed' — call is ringing, open overlay
     setDialWarning(null);
-    setActiveCall({ lead });
 
     if (activeNumber) {
       const newCounts = {
@@ -174,13 +191,7 @@ export default function MyQueue() {
       saveCallCounts(newCounts);
     }
 
-    // Fire REST API call — agent's phone rings on their desktop/mobile app
-    api.post('/calls/dial', {
-      leadPhone: lead.phone,
-      leadName:  lead.name || lead.companyName || '',
-    }).catch(err => {
-      console.error('[DIAL]', err?.response?.data?.error || err.message);
-    });
+    setActiveCall({ lead });
   }
 
   async function handleOutcome(outcome, noteText) {

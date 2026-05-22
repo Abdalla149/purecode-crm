@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useDialer } from '../context/DialerContext';
 import api from '../utils/api';
 
 const CALL_LIMIT = 30;
@@ -26,6 +27,7 @@ export function getActiveNumber(phoneNumbers, callCounts) {
 
 export function useCallQueue() {
   const { user } = useAuth();
+  const dialer = useDialer();
   const phoneNumbers = user?.phoneNumbers || [];
   const [activeCall,  setActiveCall]  = useState(null);
   const [saving,      setSaving]      = useState(false);
@@ -44,14 +46,29 @@ export function useCallQueue() {
   }
 
   function handleStartCall(lead) {
-    if (!lead?.phone) {
+    if (!lead) return;
+
+    const status = dialer?.dialNumber(lead.phone, lead);
+
+    if (status === 'not-ready') {
+      showWarning('Dialer is loading — try again in a moment');
+      return;
+    }
+    if (status === 'not-logged-in') {
+      showWarning('Log in to activate calling');
+      return;
+    }
+    if (status === 'no-phone') {
       showWarning('This lead has no phone number');
       return;
     }
+    if (status === 'error') {
+      showWarning('Could not place call — try again');
+      return;
+    }
 
-    // Show overlay immediately — call fires in background
+    // 'dialed' — call is ringing, open overlay
     setDialWarning(null);
-    setActiveCall({ lead });
 
     if (activeNumber) {
       const updated = {
@@ -66,14 +83,7 @@ export function useCallQueue() {
       saveCallCounts(updated);
     }
 
-    // Fire REST API call — agent's phone rings on their desktop/mobile app
-    api.post('/calls/dial', {
-      leadPhone: lead.phone,
-      leadName:  lead.name || lead.companyName || '',
-    }).catch(err => {
-      console.error('[DIAL]', err?.response?.data?.error || err.message);
-      // Overlay stays open — agent can still file an outcome manually
-    });
+    setActiveCall({ lead });
   }
 
   async function handleOutcome(outcome, noteText, onSuccess) {
