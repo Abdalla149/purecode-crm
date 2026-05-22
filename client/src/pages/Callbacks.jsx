@@ -29,6 +29,7 @@ export default function Callbacks() {
   const {
     activeCall, saving,
     handleStartCall, handleOutcome,
+    dialWarning,
   } = useCallQueue();
 
   // ── Fetch leads ────────────────────────────────────────────
@@ -150,6 +151,25 @@ export default function Callbacks() {
             setSelectedLead(null);
           }}
         />
+      )}
+
+      {dialWarning && (
+        <div style={{
+          background:   'rgba(245,158,11,0.12)',
+          border:       '1px solid rgba(245,158,11,0.35)',
+          borderRadius: 8,
+          padding:      '10px 16px',
+          color:        'var(--gold)',
+          fontSize:     13,
+          fontWeight:   600,
+          marginBottom: 12,
+          display:      'flex',
+          alignItems:   'center',
+          gap:          8,
+        }}>
+          <Phone size={14} />
+          {dialWarning}
+        </div>
       )}
 
       {/* ── Page header ── */}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Phone, SkipForward, RefreshCw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useDialer } from '../context/DialerContext';
@@ -83,7 +83,15 @@ export default function MyQueue() {
   const { user } = useAuth();
   const dialer = useDialer();
 
-  const [leads, setLeads]             = useState([]);
+  const [leads, setLeads]               = useState([]);
+  const [dialWarning, setDialWarning]   = useState(null);
+  const warnTimer = useRef(null);
+
+  function showDialWarning(msg) {
+    setDialWarning(msg);
+    clearTimeout(warnTimer.current);
+    warnTimer.current = setTimeout(() => setDialWarning(null), 4000);
+  }
   const [loading, setLoading]         = useState(true);
   const [error, setError]             = useState(null);
   const [stats, setStats]             = useState(null);
@@ -147,7 +155,28 @@ export default function MyQueue() {
   function handleStartCall(lead) {
     if (!lead) return;
 
-    // Increment call counter for the active number
+    const status = dialer?.dialNumber(lead.phone, lead);
+
+    if (status === 'not-ready') {
+      showDialWarning('Dialer is loading — wait a moment then try again');
+      return;
+    }
+    if (status === 'not-logged-in') {
+      showDialWarning('Log into the dialer panel first');
+      return;
+    }
+    if (status === 'no-phone') {
+      showDialWarning('This lead has no phone number');
+      return;
+    }
+    if (status === 'error') {
+      showDialWarning('Could not place call — try again');
+      return;
+    }
+
+    // 'dialed' — open overlay and increment counter
+    setDialWarning(null);
+
     if (activeNumber) {
       const newCounts = {
         ...callCounts,
@@ -160,8 +189,6 @@ export default function MyQueue() {
       setCallCounts(newCounts);
       saveCallCounts(newCounts);
     }
-
-    dialer?.dialNumber(lead.phone, lead);
 
     setActiveCall({ lead });
   }
@@ -339,6 +366,26 @@ export default function MyQueue() {
           <div className="kpi-delta flat">minutes</div>
         </div>
       </div>
+
+      {/* ── Dialer warning banner ── */}
+      {dialWarning && (
+        <div style={{
+          background:  'rgba(245,158,11,0.12)',
+          border:      '1px solid rgba(245,158,11,0.35)',
+          borderRadius: 8,
+          padding:     '10px 16px',
+          color:       'var(--gold)',
+          fontSize:    13,
+          fontWeight:  600,
+          marginBottom: 12,
+          display:     'flex',
+          alignItems:  'center',
+          gap:         8,
+        }}>
+          <Phone size={14} />
+          {dialWarning}
+        </div>
+      )}
 
       {/* ── Next Call hero card ── */}
       {queueDone ? (

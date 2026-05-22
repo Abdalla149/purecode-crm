@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Phone, ChevronRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useDialer } from '../context/DialerContext';
@@ -7,7 +7,14 @@ import api from '../utils/api';
 export default function JustCallDialer() {
   const { user } = useAuth();
   const ctx = useDialer();
-  const [open, setOpen] = useState(false);
+
+  // Panel open/close is owned by context so CALL NOW can force-open it
+  const open       = ctx?.panelOpen  ?? false;
+  const isLoggedIn = ctx?.isLoggedIn ?? false;
+
+  function togglePanel() {
+    ctx?.setPanelOpen(v => !v);
+  }
 
   useEffect(() => {
     if (user?.role !== 'agent' || !ctx) return;
@@ -30,11 +37,11 @@ export default function JustCallDialer() {
         try {
           await api.post('/calls/log', {
             leadId:   lead.id,
-            duration: payload?.duration  || 0,
-            callSid:  payload?.call_sid  || '',
+            duration: payload?.duration || 0,
+            callSid:  payload?.call_sid || '',
           });
         } catch {
-          // Non-critical — agent files outcome separately
+          // Non-critical — agent files outcome separately via overlay
         }
         ctx.activeLeadRef.current = null;
       });
@@ -50,8 +57,6 @@ export default function JustCallDialer() {
 
   if (user?.role !== 'agent') return null;
 
-  const isLoggedIn = ctx?.isLoggedIn ?? false;
-
   return (
     <div style={{
       position:   'fixed',
@@ -64,7 +69,7 @@ export default function JustCallDialer() {
     }}>
       {/* ── Toggle tab ── */}
       <div
-        onClick={() => setOpen(v => !v)}
+        onClick={togglePanel}
         style={{
           width:          36,
           height:         120,
@@ -113,24 +118,24 @@ export default function JustCallDialer() {
 
       {/* ── Dialer panel ── */}
       <div style={{
-        width:      385,
-        height:     665,
-        background: 'var(--bg1)',
-        border:     '1px solid var(--border)',
+        width:       385,
+        height:      665,
+        background:  'var(--bg1)',
+        border:      '1px solid var(--border)',
         borderRight: 'none',
-        position:   'relative',
-        overflow:   'hidden',
-        flexShrink: 0,
+        position:    'relative',
+        overflow:    'hidden',
+        flexShrink:  0,
       }}>
-        {/* SDK injects its iframe here */}
+        {/* SDK injects its iframe here — always in DOM so it loads even when panel is closed */}
         <div id="justcall-dialer" style={{ width: '100%', height: '100%' }} />
 
-        {/* Login overlay — shown until agent authenticates in the iframe */}
+        {/* Login prompt overlay — pointer-events:none so agent can still click into iframe */}
         {!isLoggedIn && (
           <div style={{
             position:       'absolute',
             inset:          0,
-            background:     'rgba(10, 14, 26, 0.88)',
+            background:     'rgba(10, 14, 26, 0.75)',
             display:        'flex',
             flexDirection:  'column',
             alignItems:     'center',

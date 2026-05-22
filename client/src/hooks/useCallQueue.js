@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useDialer } from '../context/DialerContext';
 import api from '../utils/api';
@@ -29,16 +29,48 @@ export function useCallQueue() {
   const { user } = useAuth();
   const dialer = useDialer();
   const phoneNumbers = user?.phoneNumbers || [];
-  const [activeCall, setActiveCall]   = useState(null);
-  const [saving, setSaving]           = useState(false);
-  const [callCounts, setCallCounts]   = useState(loadCallCounts);
+  const [activeCall,  setActiveCall]  = useState(null);
+  const [saving,      setSaving]      = useState(false);
+  const [callCounts,  setCallCounts]  = useState(loadCallCounts);
+  const [dialWarning, setDialWarning] = useState(null);
+  const warnTimer = useRef(null);
 
   const activeNumber = phoneNumbers.length > 0
     ? getActiveNumber(phoneNumbers, callCounts)
     : null;
 
+  function showWarning(msg) {
+    setDialWarning(msg);
+    clearTimeout(warnTimer.current);
+    warnTimer.current = setTimeout(() => setDialWarning(null), 4000);
+  }
+
   function handleStartCall(lead) {
     if (!lead) return;
+
+    // Guard: dialer SDK must be loaded and agent must be logged in
+    const status = dialer?.dialNumber(lead.phone, lead);
+
+    if (status === 'not-ready') {
+      showWarning('Dialer is loading — wait a moment then try again');
+      return;
+    }
+    if (status === 'not-logged-in') {
+      showWarning('Log into the dialer panel first');
+      return;
+    }
+    if (status === 'no-phone') {
+      showWarning('This lead has no phone number');
+      return;
+    }
+    if (status === 'error') {
+      showWarning('Could not place call — try again');
+      return;
+    }
+
+    // 'dialed' — call is ringing, open the in-call overlay
+    setDialWarning(null);
+
     if (activeNumber) {
       const updated = {
         ...callCounts,
@@ -51,7 +83,7 @@ export function useCallQueue() {
       setCallCounts(updated);
       saveCallCounts(updated);
     }
-    dialer?.dialNumber(lead.phone, lead);
+
     setActiveCall({ lead });
   }
 
@@ -77,7 +109,8 @@ export function useCallQueue() {
     callCounts,
     phoneNumbers,
     activeNumber,
-    totalCalls: callCounts.callsToday || 0,
+    totalCalls:  callCounts.callsToday || 0,
+    dialWarning,
     handleStartCall,
     handleOutcome,
     closeCall: () => setActiveCall(null),
