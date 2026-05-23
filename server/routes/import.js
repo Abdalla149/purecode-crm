@@ -107,6 +107,7 @@ async function processImportJob(jobId, leads, assignment) {
     job.status      = 'complete';
     job.completedAt = new Date().toISOString();
     console.log(`[IMPORT ${jobId}] ✓ Complete — imported:${job.imported} updated:${job.updated} skipped:${job.skipped} errors:${job.errors.length}`);
+    ghl.clearContactCache(); // force fresh fetch so agents see new leads immediately
   } catch (err) {
     job.status     = 'failed';
     job.fatalError = err.message;

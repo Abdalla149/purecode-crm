@@ -38,6 +38,7 @@ router.get('/', async (req, res) => {
     }
 
     const leads = await ghl.getLeads(filters);
+    console.log(`[QUEUE] ${req.user.name} (${req.user.role}) → ${leads.length} leads${filters.assignedAgent ? ` assigned to ${filters.assignedAgent}` : ''}`);
     res.json({ leads, total: leads.length });
   } catch (err) {
     console.error('[LEADS GET ERROR]', err);

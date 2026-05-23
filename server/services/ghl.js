@@ -59,38 +59,81 @@ async function ghlRequest(endpoint, options = {}) {
 
 // ═══════════ CONTACTS / LEADS ═══════════
 
+// ── Contact list cache — avoids re-fetching all pages on every agent queue load ──
+// Invalidated after imports and bulk-assigns. TTL guards against stale data.
+let _contactCache    = null;
+let _contactCacheAt  = 0;
+const CONTACT_CACHE_TTL = 30_000; // 30 seconds
+
+export function clearContactCache() {
+  _contactCache   = null;
+  _contactCacheAt = 0;
+  console.log('[GHL] contact cache cleared');
+}
+
 /**
- * Get all contacts (leads), optionally filtered
- * GHL returns paginated results — this handles it
+ * Fetch ALL contacts for this location, paginating through every page.
+ * GHL v2 cursor pagination: pass startAfter (epoch ms) + startAfterId on each
+ * subsequent request. Cache non-search results for 30 s.
  */
-export async function getLeads({ assignedAgent, status, tier, type, search, limit = 100 } = {}) {
+async function fetchAllContacts(search) {
+  if (!search && _contactCache && Date.now() - _contactCacheAt < CONTACT_CACHE_TTL) {
+    console.log(`[GHL] contacts: cache hit (${_contactCache.length} contacts)`);
+    return _contactCache;
+  }
+
   const LOCATION_ID = process.env.GHL_LOCATION_ID;
-  let endpoint = `/contacts/?locationId=${LOCATION_ID}&limit=${limit}`;
-  
-  if (search) {
-    endpoint += `&query=${encodeURIComponent(search)}`;
+  const PAGE_LIMIT  = 100;
+  const MAX_PAGES   = 60; // safety cap — 6 000 contacts
+
+  let all          = [];
+  let pages        = 0;
+  let startAfter   = null;
+  let startAfterId = null;
+
+  while (pages < MAX_PAGES) {
+    let endpoint = `/contacts/?locationId=${LOCATION_ID}&limit=${PAGE_LIMIT}`;
+    if (search)       endpoint += `&query=${encodeURIComponent(search)}`;
+    if (startAfter)   endpoint += `&startAfter=${startAfter}`;
+    if (startAfterId) endpoint += `&startAfterId=${encodeURIComponent(startAfterId)}`;
+
+    const data     = await ghlRequest(endpoint);
+    const contacts = data.contacts || [];
+    pages++;
+    all.push(...contacts);
+
+    if (contacts.length < PAGE_LIMIT) break; // last page
+
+    // Prefer cursor from meta; fall back to deriving from the last contact
+    const meta   = data.meta || {};
+    startAfter   = meta.startAfter   ?? new Date(contacts[contacts.length - 1].dateAdded || 0).getTime();
+    startAfterId = meta.startAfterId ?? contacts[contacts.length - 1].id;
   }
 
-  const data = await ghlRequest(endpoint);
-  let contacts = data.contacts || [];
+  console.log(`[GHL] contacts: fetched ${all.length} across ${pages} page(s)${search ? ` (search="${search}")` : ''}`);
 
-  // Map GHL contact fields → our clean lead format
-  let leads = contacts.map(mapContactToLead);
-
-  // Apply filters that GHL API doesn't support natively
-  if (assignedAgent) {
-    leads = leads.filter(l => l.assignedAgent === assignedAgent);
-  }
-  if (status) {
-    leads = leads.filter(l => l.status === status);
-  }
-  if (tier) {
-    leads = leads.filter(l => String(l.tier) === String(tier));
-  }
-  if (type) {
-    leads = leads.filter(l => l.businessType === type);
+  if (!search) {
+    _contactCache   = all;
+    _contactCacheAt = Date.now();
   }
 
+  return all;
+}
+
+/**
+ * Get leads, optionally filtered. Paginates through all GHL pages automatically.
+ */
+export async function getLeads({ assignedAgent, status, tier, type, search } = {}) {
+  const allContacts = await fetchAllContacts(search || '');
+
+  let leads = allContacts.map(mapContactToLead);
+
+  if (assignedAgent) leads = leads.filter(l => l.assignedAgent === assignedAgent);
+  if (status)        leads = leads.filter(l => l.status === status);
+  if (tier)          leads = leads.filter(l => String(l.tier) === String(tier));
+  if (type)          leads = leads.filter(l => l.businessType === type);
+
+  console.log(`[GHL] getLeads → ${leads.length} leads${assignedAgent ? ` (agent ${assignedAgent})` : ''}`);
   return leads;
 }
 
@@ -373,4 +416,5 @@ export default {
   updateExistingContact,
   createContact,
   addTags,
+  clearContactCache,
 };
