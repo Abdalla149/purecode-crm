@@ -1,3 +1,11 @@
+export function toE164(phone) {
+  const digits = (phone || '').replace(/\D/g, '');
+  if (!digits) return '';
+  if (digits.length === 10)                           return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+  return `+${digits}`;
+}
+
 export function parseGoogleScore(raw) {
   if (!raw) return null;
   const m = String(raw).match(/^([\d.]+)\s*\((\d+)\s*reviews?\)?/i);

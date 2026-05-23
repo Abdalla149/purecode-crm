@@ -1,13 +1,43 @@
+import { useState } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, UserCheck, BarChart2,
   List, Flame, Phone, TrendingUp, LogOut,
-  Star, Activity, Hash, Mic, Upload,
+  Star, Activity, Hash, Mic, Upload, X,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSidebarCounts } from '../context/SidebarCounts';
-import { DialerProvider } from '../context/DialerContext';
-import JustCallDialer from './JustCallDialer';
+
+const EXTENSION_URL = 'https://chromewebstore.google.com/detail/justcall-click-to-call-fo/ahiickjmnblnnhjcomiegpdikaboegda';
+
+function ExtensionBanner() {
+  const [hidden, setHidden] = useState(
+    () => localStorage.getItem('justcall_extension_installed') === 'true'
+  );
+
+  if (hidden) return null;
+
+  function dismiss() {
+    localStorage.setItem('justcall_extension_installed', 'true');
+    setHidden(true);
+  }
+
+  return (
+    <div className="extension-banner">
+      <span>
+        Install the{' '}
+        <a href={EXTENSION_URL} target="_blank" rel="noreferrer">
+          Click-to-Call Chrome Extension
+        </a>
+        {' '}to enable calling from the CRM.
+      </span>
+      <div className="extension-banner-actions">
+        <button className="btn btn-sm btn-primary" onClick={dismiss}>I&apos;ve installed it</button>
+        <button className="extension-banner-close" onClick={dismiss} aria-label="Dismiss"><X size={13} /></button>
+      </div>
+    </div>
+  );
+}
 
 const ADMIN_NAV = [
   { to: '/dashboard',   label: 'Dashboard',   Icon: LayoutDashboard },
@@ -70,7 +100,6 @@ export default function AppShell() {
   }
 
   return (
-    <DialerProvider>
     <div className="app-shell">
       {/* ── Topbar ── */}
       <header className="app-topbar">
@@ -139,13 +168,10 @@ export default function AppShell() {
 
         {/* ── Page content ── */}
         <main className="app-main">
+          {user?.role !== 'admin' && <ExtensionBanner />}
           <Outlet />
         </main>
       </div>
-
-      {/* Hidden SDK iframe + one-time login modal (agent-only) */}
-      <JustCallDialer />
     </div>
-    </DialerProvider>
   );
 }

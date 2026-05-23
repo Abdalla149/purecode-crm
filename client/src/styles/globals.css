@@ -1260,6 +1260,49 @@ button { cursor: pointer; }
   margin-top: 4px;
 }
 
+/* ─── EXTENSION BANNER ─── */
+.extension-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(0, 229, 160, 0.07);
+  border: 1px solid rgba(0, 229, 160, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.extension-banner a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.extension-banner a:hover { text-decoration: underline; }
+
+.extension-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.extension-banner-close {
+  background: none;
+  border: none;
+  color: var(--text3);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.extension-banner-close:hover { color: var(--text2); }
+
 /* ─── RESPONSIVE ─── */
 @media (max-width: 900px) {
   .kpi-strip { grid-template-columns: 1fr 1fr; }
