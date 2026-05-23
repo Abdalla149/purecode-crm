@@ -204,36 +204,45 @@ router.post('/import', requireAdmin, async (req, res) => {
       return res.status(400).json({ error: 'No leads provided' });
     }
 
-    let imported  = 0;
-    let skipped   = 0;
+    let imported   = 0;
+    let skipped    = 0;
     let firstError = null;
 
-    // Process in batches of 5 to stay within rate limits
-    const BATCH = 5;
-    for (let i = 0; i < leads.length; i += BATCH) {
-      const batch = leads.slice(i, i + BATCH);
-      const results = await Promise.allSettled(
-        batch.map(async (lead) => {
-          if (!lead.phone) return 'skipped';
-          const existing = await ghl.findContactByPhone(lead.phone);
-          if (existing) return 'skipped';
-          await ghl.createContact(lead, assignment);
-          return 'imported';
-        })
-      );
-      results.forEach(r => {
-        if (r.status === 'fulfilled' && r.value === 'imported') {
-          imported++;
-        } else {
+    console.log(`[IMPORT] Starting import of ${leads.length} leads`);
+    console.log(`[IMPORT] Assignment:`, JSON.stringify(assignment));
+
+    for (let i = 0; i < leads.length; i++) {
+      const lead = leads[i];
+
+      // 200ms delay between requests to avoid rate limits
+      if (i > 0) await new Promise(r => setTimeout(r, 200));
+
+      // Skip leads with no phone
+      if (!lead.phone) {
+        console.log(`[IMPORT] [${i + 1}/${leads.length}] Skipped (no phone): ${lead.name || 'unnamed'}`);
+        skipped++;
+        continue;
+      }
+
+      try {
+        const existing = await ghl.findContactByPhone(lead.phone);
+        if (existing) {
+          console.log(`[IMPORT] [${i + 1}/${leads.length}] Skipped (duplicate): ${lead.name} ${lead.phone}`);
           skipped++;
-          if (r.status === 'rejected' && !firstError) {
-            firstError = r.reason?.message || 'Unknown error';
-            console.error('[IMPORT] First lead failure:', firstError);
-          }
+          continue;
         }
-      });
+
+        await ghl.createContact(lead, assignment);
+        console.log(`[IMPORT] [${i + 1}/${leads.length}] Imported: ${lead.name} ${lead.phone}`);
+        imported++;
+      } catch (err) {
+        console.error(`[IMPORT] [${i + 1}/${leads.length}] FAILED: ${lead.name} ${lead.phone} | ${err.message}`);
+        skipped++;
+        if (!firstError) firstError = err.message;
+      }
     }
 
+    console.log(`[IMPORT] Done — imported: ${imported}, skipped: ${skipped}`);
     res.json({ imported, skipped, firstError });
   } catch (err) {
     console.error('[IMPORT ERROR]', err);

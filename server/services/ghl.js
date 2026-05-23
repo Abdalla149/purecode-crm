@@ -27,7 +27,14 @@ async function ghlRequest(endpoint, options = {}) {
   if (!res.ok) {
     const errBody = await res.text();
     console.error(`[GHL ERROR] ${options.method || 'GET'} ${endpoint} → ${res.status}`, errBody);
-    throw new Error(`CRM request failed (${res.status})`); // Generic — never say "GHL"
+    let errMsg = `status ${res.status}`;
+    try {
+      const parsed = JSON.parse(errBody);
+      errMsg = parsed.message || parsed.msg || parsed.error || errBody || errMsg;
+    } catch {
+      if (errBody) errMsg = errBody;
+    }
+    throw new Error(`CRM request failed (${res.status}): ${errMsg}`);
   }
 
   return res.json();
@@ -263,19 +270,21 @@ export async function createContact(lead, assignment = {}) {
   }
 
   const body = {
-    locationId:  LOCATION_ID,
-    companyName: lead.name,
-    firstName:   lead.name,
+    locationId:   LOCATION_ID,
+    companyName:  lead.name || '',
+    firstName:    lead.name || '',
+    lastName:     '',
     phone,
-    city:        lead.city    || '',
-    state:       lead.state   || '',
-    website:     lead.website || '',
-    assignedTo:  assignment.agentId || '',
-    tags:        assignment.campaign ? [assignment.campaign] : [],
     customFields,
   };
+  if (lead.city)           body.city       = lead.city;
+  if (lead.state)          body.state      = lead.state;
+  if (lead.website)        body.website    = lead.website;
+  if (assignment.agentId)  body.assignedTo = assignment.agentId;
+  if (assignment.campaign) body.tags       = [assignment.campaign];
 
   console.log('[IMPORT] Creating contact:', lead.name, phone, '→ assignedTo:', assignment.agentId || '(unassigned)');
+  console.log('[IMPORT] Payload:', JSON.stringify(body, null, 2));
   return ghlRequest('/contacts/', { method: 'POST', body: JSON.stringify(body) });
 }
 
