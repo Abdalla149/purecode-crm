@@ -5,13 +5,14 @@
 // GET  /api/import/status/:jobId → return live job progress
 // ═══════════════════════════════════════════════════════
 
-import { randomUUID }   from 'node:crypto';
-import { Router }       from 'express';
-import { requireAdmin } from '../middleware/auth.js';
-import ghl              from '../services/ghl.js';
+import { randomUUID }              from 'node:crypto';
+import { Router }                  from 'express';
+import { requireAuth, requireAdmin } from '../middleware/auth.js';
+import ghl                         from '../services/ghl.js';
 
 const router = Router();
-router.use(requireAdmin);
+router.use(requireAuth);   // sets req.user from JWT — must come before requireAdmin
+router.use(requireAdmin);  // verifies req.user.role === 'admin'
 
 // ── In-memory job store (cleared on server restart, jobs auto-expire after 2h) ──
 const jobs = new Map();
