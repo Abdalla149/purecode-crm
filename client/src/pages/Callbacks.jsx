@@ -6,7 +6,7 @@ import api from '../utils/api';
 import InCallOverlay from '../components/InCallOverlay';
 import LeadPanel from '../components/LeadPanel';
 import { useCallQueue } from '../hooks/useCallQueue';
-import { formatGoogleScore, toE164 } from '../utils/leads';
+import { formatGoogleScore } from '../utils/leads';
 
 function StatusBadge({ status }) {
   const map = {
@@ -250,11 +250,7 @@ export default function Callbacks() {
                     onClick={() => setSelectedLead(lead)}
                   >
                     <td className="td-name">{lead.name}</td>
-                    <td className="td-phone">
-                      {lead.phone
-                        ? <a href={`tel:${toE164(lead.phone)}`} onClick={e => e.stopPropagation()} style={{ color: 'inherit', textDecoration: 'none' }}>{lead.phone}</a>
-                        : '—'}
-                    </td>
+                    <td className="td-phone">{lead.phone || '—'}</td>
                     <td>{lead.city || '—'}</td>
                     <td style={{ color: 'var(--gold)', fontWeight: 600, fontSize: 12, whiteSpace: 'nowrap' }}>
                       {formatGoogleScore(lead.googleScore) || <span style={{ color: 'var(--text3)', fontWeight: 400 }}>—</span>}
@@ -271,14 +267,14 @@ export default function Callbacks() {
                     </td>
                     <td>
                       <div style={{ display: 'flex', gap: 5, justifyContent: 'flex-end' }} onClick={e => e.stopPropagation()}>
-                        <a
-                          href={lead.phone ? `tel:${toE164(lead.phone)}` : undefined}
+                        <button
                           className="btn btn-primary"
-                          style={{ fontSize: 11, padding: '4px 10px', gap: 4, textDecoration: 'none', pointerEvents: lead.phone ? 'auto' : 'none', opacity: lead.phone ? 1 : 0.4 }}
-                          onClick={e => { e.preventDefault(); handleStartCall(lead); }}
+                          style={{ fontSize: 11, padding: '4px 10px', gap: 4 }}
+                          onClick={() => handleStartCall(lead)}
+                          disabled={!lead.phone}
                         >
                           <Phone size={11} /> Call Now
-                        </a>
+                        </button>
                         <button
                           className="btn btn-secondary"
                           style={{ fontSize: 11, padding: '4px 10px', gap: 4 }}

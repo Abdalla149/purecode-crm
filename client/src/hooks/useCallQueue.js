@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { toE164 } from '../utils/leads';
+import { useDialer } from '../context/DialerContext';
 import api from '../utils/api';
 
 const CALL_LIMIT = 30;
@@ -27,6 +27,7 @@ export function getActiveNumber(phoneNumbers, callCounts) {
 
 export function useCallQueue() {
   const { user } = useAuth();
+  const dialer   = useDialer();
   const phoneNumbers = user?.phoneNumbers || [];
   const [activeCall,  setActiveCall]  = useState(null);
   const [saving,      setSaving]      = useState(false);
@@ -44,27 +45,23 @@ export function useCallQueue() {
     warnTimer.current = setTimeout(() => setDialWarning(null), 4000);
   }
 
-  function handleStartCall(lead) {
+  async function handleStartCall(lead) {
     if (!lead?.phone) {
       showWarning('This lead has no phone number');
       return;
     }
 
-    const phone = toE164(lead.phone);
-    if (!phone) {
-      showWarning('This lead has no phone number');
+    const status = await dialer?.dialNumber(lead.phone);
+
+    if (status === 'not-ready') {
+      showWarning('Dialer is loading — try again in a moment');
+      return;
+    }
+    if (status === 'error') {
+      showWarning('Could not place call — try again');
       return;
     }
 
-    // Fire tel: link — JustCall extension intercepts this and places the call
-    const a = document.createElement('a');
-    a.href = `tel:${phone}`;
-    a.style.cssText = 'display:none;position:fixed;top:-9999px';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    // Open in-call overlay
     setDialWarning(null);
 
     if (activeNumber) {

@@ -1,43 +1,14 @@
-import { useState } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, UserCheck, BarChart2,
   List, Flame, Phone, TrendingUp, LogOut,
-  Star, Activity, Hash, Mic, Upload, X,
+  Star, Activity, Hash, Mic, Upload,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSidebarCounts } from '../context/SidebarCounts';
-
-const EXTENSION_URL = 'https://chromewebstore.google.com/detail/justcall-click-to-call-fo/ahiickjmnblnnhjcomiegpdikaboegda';
-
-function ExtensionBanner() {
-  const [hidden, setHidden] = useState(
-    () => localStorage.getItem('justcall_extension_installed') === 'true'
-  );
-
-  if (hidden) return null;
-
-  function dismiss() {
-    localStorage.setItem('justcall_extension_installed', 'true');
-    setHidden(true);
-  }
-
-  return (
-    <div className="extension-banner">
-      <span>
-        Install the{' '}
-        <a href={EXTENSION_URL} target="_blank" rel="noreferrer">
-          Click-to-Call Chrome Extension
-        </a>
-        {' '}to enable calling from the CRM.
-      </span>
-      <div className="extension-banner-actions">
-        <button className="btn btn-sm btn-primary" onClick={dismiss}>I&apos;ve installed it</button>
-        <button className="extension-banner-close" onClick={dismiss} aria-label="Dismiss"><X size={13} /></button>
-      </div>
-    </div>
-  );
-}
+import { DialerProvider } from '../context/DialerContext';
+import { useDialer } from '../context/DialerContext';
+import JustCallDialer from './JustCallDialer';
 
 const ADMIN_NAV = [
   { to: '/dashboard',   label: 'Dashboard',   Icon: LayoutDashboard },
@@ -84,15 +55,17 @@ const PAGE_TITLES = {
   '/resources':    'Scripts & Objections',
 };
 
-export default function AppShell() {
+// Inner component reads panelOpen from DialerContext (can't read from same component that provides it)
+function AppShellContent() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const navItems = ADMIN_NAV;
+  const { panelOpen }    = useDialer();
+  const navigate   = useNavigate();
+  const location   = useLocation();
   const { counts } = useSidebarCounts();
+
+  const navItems  = ADMIN_NAV;
   const pageTitle = PAGE_TITLES[location.pathname] ?? '';
-  const initials = user?.name?.charAt(0).toUpperCase() ?? '?';
+  const initials  = user?.name?.charAt(0).toUpperCase() ?? '?';
 
   function handleLogout() {
     logout();
@@ -100,7 +73,7 @@ export default function AppShell() {
   }
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${panelOpen ? ' dialer-open' : ''}`}>
       {/* ── Topbar ── */}
       <header className="app-topbar">
         <span className="app-brand">PURECODE</span>
@@ -168,10 +141,20 @@ export default function AppShell() {
 
         {/* ── Page content ── */}
         <main className="app-main">
-          {user?.role !== 'admin' && <ExtensionBanner />}
           <Outlet />
         </main>
       </div>
+
+      {/* ── JustCall dialer side panel (always mounted, never unmounted) ── */}
+      {user?.role !== 'admin' && <JustCallDialer />}
     </div>
+  );
+}
+
+export default function AppShell() {
+  return (
+    <DialerProvider>
+      <AppShellContent />
+    </DialerProvider>
   );
 }

@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Phone, SkipForward, RefreshCw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useDialer } from '../context/DialerContext';
 import api from '../utils/api';
 import InCallOverlay from '../components/InCallOverlay';
 import LeadPanel from '../components/LeadPanel';
-import { parseGoogleScore, formatGoogleScore, generateHook, toE164 } from '../utils/leads';
+import { parseGoogleScore, formatGoogleScore, generateHook } from '../utils/leads';
 
 // ── Constants ────────────────────────────────────────────────
 const CALL_LIMIT = 30;
@@ -80,6 +81,7 @@ function StatusBadge({ status }) {
 // ── Main Component ───────────────────────────────────────────
 export default function MyQueue() {
   const { user } = useAuth();
+  const dialer   = useDialer();
 
   const [leads, setLeads]             = useState([]);
   const [dialWarning, setDialWarning] = useState(null);
@@ -159,23 +161,22 @@ export default function MyQueue() {
     : null;
 
   // ── Call handlers ──────────────────────────────────────────
-  function handleStartCall(lead) {
+  async function handleStartCall(lead) {
     if (!lead?.phone) {
       showDialWarning('This lead has no phone number');
       return;
     }
-    const phone = toE164(lead.phone);
-    if (!phone) {
-      showDialWarning('This lead has no phone number');
+
+    const status = await dialer?.dialNumber(lead.phone);
+
+    if (status === 'not-ready') {
+      showDialWarning('Dialer is loading — try again in a moment');
       return;
     }
-
-    const a = document.createElement('a');
-    a.href = `tel:${phone}`;
-    a.style.cssText = 'display:none;position:fixed;top:-9999px';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    if (status === 'error') {
+      showDialWarning('Could not place call — try again');
+      return;
+    }
 
     setDialWarning(null);
 
@@ -425,9 +426,7 @@ export default function MyQueue() {
               <div className="nc-meta">
                 <div className="nc-meta-item">
                   <Phone size={11} />
-                  {currentLead.phone
-                    ? <a href={`tel:${toE164(currentLead.phone)}`} style={{ color: 'inherit', textDecoration: 'none' }}><strong>{currentLead.phone}</strong></a>
-                    : <span>No phone</span>}
+                  <strong>{currentLead.phone || 'No phone'}</strong>
                 </div>
                 {(currentLead.city || currentLead.state) && (
                   <div className="nc-meta-item">
@@ -462,16 +461,15 @@ export default function MyQueue() {
             </div>
 
             <div className="nc-actions">
-              <a
+              <button
                 className="nc-call-btn"
-                href={currentLead.phone ? `tel:${toE164(currentLead.phone)}` : undefined}
-                onClick={e => { e.preventDefault(); handleStartCall(currentLead); }}
-                style={{ textDecoration: 'none', pointerEvents: currentLead.phone ? 'auto' : 'none', opacity: currentLead.phone ? 1 : 0.4 }}
+                onClick={() => handleStartCall(currentLead)}
+                disabled={!currentLead.phone}
                 title={currentLead.phone ? 'Call now' : 'No phone number'}
               >
                 <div className="nc-icon"><Phone size={26} strokeWidth={2.5} /></div>
                 <div className="nc-label">CALL NOW</div>
-              </a>
+              </button>
               <div className="nc-skip" onClick={() => handleSkip(currentLead)}>
                 <SkipForward size={11} style={{ verticalAlign: 'middle', marginRight: 4 }} />
                 Skip lead
@@ -521,11 +519,7 @@ export default function MyQueue() {
                         {String(idx + 1).padStart(2, '0')}
                       </td>
                       <td className="td-name">{lead.name}</td>
-                      <td className="td-phone">
-                        {lead.phone
-                          ? <a href={`tel:${toE164(lead.phone)}`} onClick={e => e.stopPropagation()} style={{ color: 'inherit', textDecoration: 'none' }}>{lead.phone}</a>
-                          : '—'}
-                      </td>
+                      <td className="td-phone">{lead.phone || '—'}</td>
                       <td>{lead.city || '—'}</td>
                       <td style={{ color: 'var(--gold)', fontWeight: 600, fontSize: 12, whiteSpace: 'nowrap' }}>
                         {gScore || <span style={{ color: 'var(--text3)', fontWeight: 400 }}>—</span>}
@@ -541,14 +535,14 @@ export default function MyQueue() {
                       </td>
                       <td>
                         {!isDone && (
-                          <a
-                            href={lead.phone ? `tel:${toE164(lead.phone)}` : undefined}
+                          <button
                             className={isNext ? 'btn btn-primary' : 'btn btn-secondary'}
-                            style={{ fontSize: 11, padding: '4px 10px', gap: 4, textDecoration: 'none', pointerEvents: lead.phone ? 'auto' : 'none', opacity: lead.phone ? 1 : 0.4 }}
-                            onClick={e => { e.preventDefault(); e.stopPropagation(); handleStartCall(lead); }}
+                            style={{ fontSize: 11, padding: '4px 10px', gap: 4 }}
+                            onClick={e => { e.stopPropagation(); handleStartCall(lead); }}
+                            disabled={!lead.phone}
                           >
                             <Phone size={11} /> Call
-                          </a>
+                          </button>
                         )}
                       </td>
                     </tr>
