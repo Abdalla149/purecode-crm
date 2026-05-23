@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { Upload, CheckSquare, Square, RefreshCw, CheckCircle } from 'lucide-react';
+import { Upload, CheckSquare, Square, RefreshCw, CheckCircle, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
 import api from '../utils/api';
 import AgentCardRow from '../components/AgentCardRow';
 
@@ -84,6 +84,7 @@ const inputBase = {
 
 export default function Import() {
   const fileInputRef = useRef(null);
+  const pollRef = useRef(null);
 
   const [fileName,      setFileName]      = useState('');
   const [allRows,       setAllRows]       = useState([]);
@@ -91,21 +92,20 @@ export default function Import() {
   const [dragOver,      setDragOver]      = useState(false);
   const [minRating,     setMinRating]     = useState('any');
   const [minReviews,    setMinReviews]    = useState('any');
-  const [selectedAgent, setSelectedAgent] = useState(null); // null=not chosen, ''=Unassigned, else ghlUserId
+  const [selectedAgent, setSelectedAgent] = useState(null);
   const [businessType,  setBusinessType]  = useState('');
   const [tier,          setTier]          = useState('2');
   const [campaign,      setCampaign]      = useState('');
-  const [importing,     setImporting]     = useState(false);
-  const [progress,      setProgress]      = useState(0);
-  const [banner,        setBanner]        = useState(null); // {text, sub}
-  const [error,         setError]         = useState(null);
 
-  // Auto-dismiss banner after 5 seconds
-  useEffect(() => {
-    if (!banner) return;
-    const t = setTimeout(() => setBanner(null), 5000);
-    return () => clearTimeout(t);
-  }, [banner]);
+  // Import job state
+  const [importing,  setImporting]  = useState(false);
+  const [jobStatus,  setJobStatus]  = useState(null); // live from server
+  const [banner,     setBanner]     = useState(null); // { imported, updated, skipped, errors[], agentName }
+  const [error,      setError]      = useState(null);
+  const [errorsOpen, setErrorsOpen] = useState(false);
+
+  // Stop polling on unmount
+  useEffect(() => () => clearInterval(pollRef.current), []);
 
   const filteredRows = allRows
     .map((row, i) => ({ ...row, origIdx: i }))
@@ -117,7 +117,7 @@ export default function Import() {
 
   const selectedCount = filteredRows.filter(r => selected.has(r.origIdx)).length;
   const leadsToImport = filteredRows.filter(r => selected.has(r.origIdx));
-  const canImport     = selectedCount > 0 && selectedAgent !== null && businessType;
+  const canImport     = selectedCount > 0 && selectedAgent !== null && businessType && !importing;
 
   const selectedAgentName = selectedAgent === null ? null
     : selectedAgent === '' ? 'Unassigned'
@@ -156,38 +156,66 @@ export default function Import() {
   function selectAll()   { setSelected(prev => { const n = new Set(prev); filteredRows.forEach(r => n.add(r.origIdx)); return n; }); }
   function deselectAll() { setSelected(prev => { const n = new Set(prev); filteredRows.forEach(r => n.delete(r.origIdx)); return n; }); }
 
+  function startPolling(jobId, agentName) {
+    clearInterval(pollRef.current);
+    pollRef.current = setInterval(async () => {
+      try {
+        const { data } = await api.get(`/import/status/${jobId}`);
+        setJobStatus(data);
+
+        if (data.status === 'complete' || data.status === 'failed') {
+          clearInterval(pollRef.current);
+          setImporting(false);
+          setBanner({
+            imported:  data.imported,
+            updated:   data.updated,
+            skipped:   data.skipped,
+            errors:    data.errors || [],
+            agentName,
+            failed:    data.status === 'failed',
+            fatalError: data.fatalError || null,
+          });
+          setJobStatus(null);
+        }
+      } catch {
+        // ignore transient poll failures
+      }
+    }, 2000);
+  }
+
   async function handleImport() {
     if (!canImport) return;
-    setImporting(true); setProgress(0); setError(null);
-    const msPerStep = Math.max(60, Math.round((leadsToImport.length * 300) / 88));
-    const timer = setInterval(() => setProgress(p => p < 88 ? p + 1 : p), msPerStep);
+    setImporting(true);
+    setError(null);
+    setBanner(null);
+    setJobStatus(null);
+    setErrorsOpen(false);
+
     try {
-      const { data } = await api.post('/leads/import', {
+      const { data } = await api.post('/import', {
         leads: leadsToImport.map(({ origIdx, ...row }) => row),
         assignment: { agentId: selectedAgent, businessType, tier, campaign: campaign.trim() },
       });
-      clearInterval(timer); setProgress(100);
-      setTimeout(() => {
-        setImporting(false);
-        setBanner({
-          text: `${data.imported} lead${data.imported !== 1 ? 's' : ''} assigned to ${selectedAgentName}`,
-          sub: data.skipped > 0
-            ? `${data.skipped} skipped${data.firstError ? ` — first error: ${data.firstError}` : ' (duplicates/errors)'}`
-            : null,
-        });
-      }, 400);
+      setJobStatus({ status: 'queued', total: data.total, processed: 0, imported: 0, updated: 0, skipped: 0, errors: [] });
+      startPolling(data.jobId, selectedAgentName);
     } catch {
-      clearInterval(timer); setImporting(false); setProgress(0);
+      setImporting(false);
       setError('Something went wrong — contact David');
     }
   }
 
   function reset() {
+    clearInterval(pollRef.current);
     setAllRows([]); setSelected(new Set()); setFileName('');
-    setBanner(null); setError(null); setProgress(0);
-    setSelectedAgent(null);
+    setBanner(null); setError(null); setJobStatus(null);
+    setImporting(false); setSelectedAgent(null); setErrorsOpen(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   }
+
+  // Progress bar pct — use real server processed count
+  const progressPct = jobStatus
+    ? Math.round((jobStatus.processed / Math.max(jobStatus.total, 1)) * 100)
+    : 0;
 
   return (
     <>
@@ -203,22 +231,78 @@ export default function Import() {
         )}
       </div>
 
-      {/* Success banner */}
+      {/* ── Result banner ── */}
       {banner && (
         <div style={{
-          display: 'flex', alignItems: 'center', gap: 12,
-          background: 'rgba(0,229,160,0.1)', border: '1px solid rgba(0,229,160,0.3)',
-          borderRadius: 10, padding: '14px 18px', marginBottom: 16,
+          background: banner.failed ? 'var(--red-dim)' : 'rgba(0,229,160,0.08)',
+          border: `1px solid ${banner.failed ? 'rgba(255,77,106,0.3)' : 'rgba(0,229,160,0.25)'}`,
+          borderRadius: 10, padding: '16px 18px', marginBottom: 16,
         }}>
-          <CheckCircle size={18} color="var(--primary)" style={{ flexShrink: 0 }} />
-          <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--primary)' }}>{banner.text}</div>
-            {banner.sub && <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>{banner.sub}</div>}
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+            <CheckCircle size={18} color={banner.failed ? 'var(--red)' : 'var(--primary)'} style={{ flexShrink: 0, marginTop: 1 }} />
+            <div style={{ flex: 1 }}>
+              {banner.failed ? (
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--red)' }}>
+                  Import failed — contact David{banner.fatalError ? `: ${banner.fatalError}` : ''}
+                </div>
+              ) : (
+                <>
+                  {banner.imported > 0 && (
+                    <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--primary)' }}>
+                      {banner.imported} newly imported and assigned to {banner.agentName}
+                    </div>
+                  )}
+                  {banner.updated > 0 && (
+                    <div style={{ fontSize: 13, color: 'var(--text2)', marginTop: banner.imported > 0 ? 3 : 0 }}>
+                      {banner.updated} already existed → re-assigned to {banner.agentName} + tags updated
+                    </div>
+                  )}
+                  {banner.skipped > 0 && (
+                    <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 3 }}>
+                      {banner.skipped} skipped — real errors{banner.errors.length > 0 ? ` (${banner.errors.length} with details)` : ''}
+                    </div>
+                  )}
+                  {banner.imported === 0 && banner.updated === 0 && (
+                    <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text2)' }}>
+                      No leads processed — all {banner.skipped} were skipped
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Expandable errors */}
+              {banner.errors?.length > 0 && (
+                <div style={{ marginTop: 10 }}>
+                  <button
+                    onClick={() => setErrorsOpen(v => !v)}
+                    style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text3)', fontSize: 12, padding: 0 }}
+                  >
+                    {errorsOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                    {errorsOpen ? 'Hide' : 'View'} {banner.errors.length} error{banner.errors.length !== 1 ? 's' : ''}
+                  </button>
+                  {errorsOpen && (
+                    <div style={{
+                      marginTop: 8, maxHeight: 200, overflowY: 'auto',
+                      background: 'var(--bg2)', borderRadius: 6, padding: '8px 12px',
+                      fontSize: 11, fontFamily: "'DM Mono', monospace",
+                    }}>
+                      {banner.errors.map((e, i) => (
+                        <div key={i} style={{ display: 'flex', gap: 8, padding: '3px 0', borderBottom: i < banner.errors.length - 1 ? '1px solid var(--border)' : 'none', alignItems: 'flex-start' }}>
+                          <AlertTriangle size={10} color="var(--gold)" style={{ flexShrink: 0, marginTop: 2 }} />
+                          <span style={{ color: 'var(--text2)', minWidth: 160 }}>{e.name} {e.phone}</span>
+                          <span style={{ color: 'var(--text3)' }}>{e.error}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
 
-      {/* Error banner */}
+      {/* ── Error banner ── */}
       {error && (
         <div style={{
           background: 'var(--red-dim)', border: '1px solid rgba(255,77,106,0.25)',
@@ -351,7 +435,6 @@ export default function Import() {
               <span style={{ fontSize: 11, color: 'var(--text3)' }}>applied to all selected leads</span>
             </div>
 
-            {/* Agent cards */}
             <div style={{ marginBottom: 18 }}>
               <div style={{ fontSize: 11, color: 'var(--text2)', fontWeight: 600, marginBottom: 10 }}>Agent *</div>
               <AgentCardRow
@@ -361,7 +444,6 @@ export default function Import() {
               />
             </div>
 
-            {/* Other fields */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 14 }}>
               <div>
                 <div style={{ fontSize: 11, color: 'var(--text2)', fontWeight: 600, marginBottom: 5 }}>Business Type *</div>
@@ -389,29 +471,46 @@ export default function Import() {
             </div>
           </div>
 
-          {/* Status line + Import button */}
+          {/* Status line + Import button / live progress */}
           <div style={{ marginBottom: 20 }}>
-            {selectedAgentName && (
+            {selectedAgentName && !importing && (
               <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--primary)', marginBottom: 10 }}>
                 Assigning to: {selectedAgentName}
               </div>
             )}
 
-            {importing ? (
+            {importing && jobStatus ? (
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text3)', marginBottom: 6 }}>
-                  <span>Importing {leadsToImport.length} lead{leadsToImport.length !== 1 ? 's' : ''}…</span>
-                  <span>{progress}%</span>
+                {/* Live stats line */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text2)', marginBottom: 6, flexWrap: 'wrap', gap: 4 }}>
+                  <span style={{ color: 'var(--text3)' }}>
+                    Processing{' '}
+                    <span style={{ color: 'var(--text)', fontWeight: 600, fontFamily: "'DM Mono', monospace" }}>{jobStatus.processed}</span>
+                    {' of '}
+                    <span style={{ color: 'var(--text)', fontWeight: 600, fontFamily: "'DM Mono', monospace" }}>{jobStatus.total}</span>
+                    {' leads…'}
+                  </span>
+                  <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11 }}>
+                    <span style={{ color: 'var(--primary)' }}>{jobStatus.imported} new</span>
+                    {' · '}
+                    <span style={{ color: 'var(--blue)' }}>{jobStatus.updated} updated</span>
+                    {' · '}
+                    <span style={{ color: 'var(--text3)' }}>{jobStatus.skipped} skipped</span>
+                  </span>
                 </div>
+                {/* Real progress bar */}
                 <div style={{ height: 8, background: 'var(--bg4)', borderRadius: 4, overflow: 'hidden' }}>
                   <div style={{
-                    height: '100%', width: `${progress}%`,
+                    height: '100%', width: `${progressPct}%`,
                     background: 'linear-gradient(to right, var(--primary), rgba(0,229,160,0.55))',
-                    borderRadius: 4, transition: 'width 0.15s ease',
+                    borderRadius: 4, transition: 'width 0.4s ease',
                   }} />
                 </div>
+                <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 6 }}>
+                  You can navigate away — the import keeps running in the background.
+                </div>
               </div>
-            ) : (
+            ) : !importing ? (
               <button
                 disabled={!canImport}
                 onClick={handleImport}
@@ -428,7 +527,7 @@ export default function Import() {
                 <Upload size={14} />
                 Import {selectedCount} Lead{selectedCount !== 1 ? 's' : ''}
               </button>
-            )}
+            ) : null}
           </div>
         </>
       )}

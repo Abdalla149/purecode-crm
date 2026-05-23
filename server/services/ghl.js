@@ -9,6 +9,17 @@
 // GHL REST API v2 docs: https://highlevel.stoplight.io/
 // ═══════════════════════════════════════════════════════
 
+/**
+ * Normalize any phone format to E.164 (+1XXXXXXXXXX for US numbers)
+ */
+function toE164(phone) {
+  const digits = (phone || '').replace(/\D/g, '');
+  if (!digits) return '';
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+  return `+${digits}`;
+}
+
 async function ghlRequest(endpoint, options = {}) {
   const GHL_BASE    = process.env.GHL_BASE_URL || 'https://services.leadconnectorhq.com';
   const GHL_KEY     = process.env.GHL_API_KEY;
@@ -28,13 +39,18 @@ async function ghlRequest(endpoint, options = {}) {
     const errBody = await res.text();
     console.error(`[GHL ERROR] ${options.method || 'GET'} ${endpoint} → ${res.status}`, errBody);
     let errMsg = `status ${res.status}`;
+    let parsedBody = null;
     try {
-      const parsed = JSON.parse(errBody);
-      errMsg = parsed.message || parsed.msg || parsed.error || errBody || errMsg;
+      parsedBody = JSON.parse(errBody);
+      errMsg = parsedBody.message || parsedBody.msg || parsedBody.error || errBody || errMsg;
     } catch {
       if (errBody) errMsg = errBody;
     }
-    throw new Error(`CRM request failed (${res.status}): ${errMsg}`);
+    const err = new Error(`CRM request failed (${res.status}): ${errMsg}`);
+    err.ghlStatus = res.status;
+    err.ghlBody   = errBody;
+    err.ghlParsed = parsedBody;
+    throw err;
   }
 
   return res.json();
@@ -215,35 +231,65 @@ function mapContactToLead(contact) {
 // ═══════════ STATS HELPERS ═══════════
 
 /**
- * Get stats for an agent or the whole team
+ * Find an existing contact by phone using GHL's dedicated duplicate-search endpoint.
+ * Returns the raw GHL contact object (with .id) or null.
  */
-/**
- * Find a contact by exact phone number — used for duplicate detection on import
- */
-export async function findContactByPhone(phone) {
+export async function findDuplicateContact(phone) {
   const LOCATION_ID = process.env.GHL_LOCATION_ID;
-  const digits = (phone || '').replace(/\D/g, '');
-  if (!digits) return null;
+  const e164 = toE164(phone);
+  if (!e164) return null;
+
+  console.log(`[GHL LOOKUP] POST /contacts/search/duplicate phone=${e164}`);
   try {
-    const data = await ghlRequest(
-      `/contacts/?locationId=${LOCATION_ID}&limit=5&query=${encodeURIComponent(digits)}`
-    );
-    const contacts = data.contacts || [];
-    return contacts.find(c => c.phone && c.phone.replace(/\D/g, '') === digits) || null;
-  } catch {
-    return null; // treat lookup failure as no-duplicate so we don't lose the lead
+    const data = await ghlRequest('/contacts/search/duplicate', {
+      method: 'POST',
+      body: JSON.stringify({ locationId: LOCATION_ID, phone: e164 }),
+    });
+    console.log(`[GHL LOOKUP] Raw response:`, JSON.stringify(data).slice(0, 300));
+    // GHL may return { contact: {...} } or { contacts: [...] }
+    const contact = data.contact || (Array.isArray(data.contacts) ? data.contacts[0] : null) || null;
+    if (contact?.id) {
+      console.log(`[GHL LOOKUP] Found contact id=${contact.id}`);
+    } else {
+      console.log(`[GHL LOOKUP] No existing contact found for ${e164}`);
+    }
+    return contact;
+  } catch (err) {
+    console.error(`[GHL LOOKUP] search/duplicate failed for ${e164}:`, err.message);
+    return null;
   }
 }
 
 /**
- * Normalize any phone format to E.164 (+1XXXXXXXXXX for US numbers)
+ * Update an existing contact during import — sets assignedTo, custom fields, campaign tag.
+ * Only overwrites fields we have new values for.
  */
-function toE164(phone) {
-  const digits = (phone || '').replace(/\D/g, '');
-  if (!digits) return '';
-  if (digits.length === 10) return `+1${digits}`;
-  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
-  return `+${digits}`;
+export async function updateExistingContact(contactId, lead, assignment = {}) {
+  const googleScore = lead.rating && lead.reviews
+    ? `${lead.rating} (${lead.reviews} reviews)`
+    : lead.rating || '';
+
+  const customFields = [];
+  if (assignment.businessType) customFields.push({ id: 'x8DJVqauQaM35a8XQJap', value: assignment.businessType });
+  if (assignment.tier)         customFields.push({ id: 'bMRRvfMDR7XSxJqob0hA', value: String(assignment.tier) });
+  if (googleScore)             customFields.push({ id: 'RFj1VlGRDeRor1RXCPfR', value: googleScore });
+
+  const body = {};
+  if (customFields.length)   body.customFields = customFields;
+  if (assignment.agentId)    body.assignedTo   = assignment.agentId;
+
+  console.log(`[GHL UPDATE] PUT /contacts/${contactId}`, JSON.stringify(body));
+  const result = await ghlRequest(`/contacts/${contactId}`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+  });
+  console.log(`[GHL UPDATE] Success for ${contactId}`);
+
+  if (assignment.campaign) {
+    await addTags(contactId, [assignment.campaign]);
+  }
+
+  return result;
 }
 
 /**
@@ -323,7 +369,8 @@ export default {
   getNotes,
   bulkAssign,
   getAgentStats,
-  findContactByPhone,
+  findDuplicateContact,
+  updateExistingContact,
   createContact,
   addTags,
 };
