@@ -214,6 +214,7 @@ export default function HotLeads() {
   const {
     activeCall, saving,
     handleStartCall, handleOutcome,
+    closeCall,
     dialWarning,
   } = useCallQueue();
 
@@ -352,6 +353,7 @@ export default function HotLeads() {
         lead={activeCall.lead}
         agentName={user?.name || 'Agent'}
         onOutcome={(outcome, note) => handleOutcome(outcome, note, onCallOutcome)}
+        onExit={closeCall}
         saving={saving}
         queueStats={null}
         nextLeads={[]}

@@ -53,18 +53,21 @@ function formatTime(secs) {
   return `${m}:${s}`;
 }
 
-export default function CallWorkspace({ lead, agentName, onOutcome, saving, queueStats, nextLeads }) {
+export default function CallWorkspace({ lead, agentName, onOutcome, onExit, saving, queueStats, nextLeads }) {
   const [seconds,      setSeconds]      = useState(0);
   const [activeTab,    setActiveTab]    = useState('OPENER');
   const [note,         setNote]         = useState('');
   const [draftSaved,   setDraftSaved]   = useState(false);
   const [objExpanded,  setObjExpanded]  = useState(false);
   const [starred,      setStarred]      = useState(false);
+  const [exitConfirm,  setExitConfirm]  = useState(false);
   const noteRef       = useRef(null);
   const flashTimer    = useRef(null);
   const onOutcomeRef  = useRef(onOutcome);
+  const onExitRef     = useRef(onExit);
 
   useEffect(() => { onOutcomeRef.current = onOutcome; }, [onOutcome]);
+  useEffect(() => { onExitRef.current = onExit; }, [onExit]);
 
   const scripts = buildScripts(lead, agentName);
   const gscore  = parseGoogleScore(lead.googleScore);
@@ -96,6 +99,11 @@ export default function CallWorkspace({ lead, agentName, onOutcome, saving, queu
   // Keyboard shortcuts (disabled while note textarea focused)
   useEffect(() => {
     function onKey(e) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setExitConfirm(v => !v); // toggle: ESC again cancels the dialog
+        return;
+      }
       if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
       if (saving) return;
       if (KEY_MAP[e.key]) {
@@ -123,6 +131,29 @@ export default function CallWorkspace({ lead, agentName, onOutcome, saving, queu
   return (
     <div className="workspace">
 
+      {/* ── Exit confirmation dialog ── */}
+      {exitConfirm && (
+        <div className="ws-exit-overlay" onClick={() => setExitConfirm(false)}>
+          <div className="ws-exit-dialog" onClick={e => e.stopPropagation()}>
+            <div className="ws-exit-title">Exit without logging outcome?</div>
+            <div className="ws-exit-body">
+              The call timer will stop and no outcome will be saved. The lead stays at the top of your queue.
+            </div>
+            <div className="ws-exit-actions">
+              <button className="btn btn-secondary" onClick={() => setExitConfirm(false)}>
+                Cancel
+              </button>
+              <button
+                className="btn ws-exit-confirm-btn"
+                onClick={() => { setExitConfirm(false); onExitRef.current?.(); }}
+              >
+                Exit anyway
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Lead info topbar ── */}
       <div className="ws-topbar">
         <div className="ws-lead-info">
@@ -149,9 +180,20 @@ export default function CallWorkspace({ lead, agentName, onOutcome, saving, queu
           </div>
           {lead.warning && <div className="ws-inline-warning">⚠ {lead.warning}</div>}
         </div>
-        <div className="ws-timer-block">
-          <div className="ws-timer">{formatTime(seconds)}</div>
-          <div className="ws-timer-label">live</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          {onExit && (
+            <button
+              className="ws-exit-btn"
+              onClick={() => setExitConfirm(true)}
+              title="Exit workspace without logging an outcome (ESC)"
+            >
+              ← Back to Queue
+            </button>
+          )}
+          <div className="ws-timer-block">
+            <div className="ws-timer">{formatTime(seconds)}</div>
+            <div className="ws-timer-label">live</div>
+          </div>
         </div>
       </div>
 

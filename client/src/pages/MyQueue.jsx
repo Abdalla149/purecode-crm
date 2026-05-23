@@ -293,6 +293,7 @@ export default function MyQueue() {
           lead={activeCall.lead}
           agentName={user?.name || 'Agent'}
           onOutcome={handleOutcome}
+          onExit={() => setActiveCall(null)}
           saving={saving}
           queueStats={{
             totalCalls: totalCalls,

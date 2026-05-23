@@ -36,6 +36,7 @@ export default function Callbacks() {
   const {
     activeCall, saving,
     handleStartCall, handleOutcome,
+    closeCall,
     dialWarning,
   } = useCallQueue();
 
@@ -172,6 +173,7 @@ export default function Callbacks() {
         lead={activeCall.lead}
         agentName={user?.name || 'Agent'}
         onOutcome={(outcome, note) => handleOutcome(outcome, note, onCallOutcome)}
+        onExit={closeCall}
         saving={saving}
         queueStats={null}
         nextLeads={callbackLeads.slice(callbackLeads.findIndex(l => l.id === activeCall.lead.id) + 1).slice(0, 3)}

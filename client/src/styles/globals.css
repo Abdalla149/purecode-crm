@@ -1511,6 +1511,82 @@ button { cursor: pointer; }
   animation: pulse 1.6s infinite;
 }
 
+/* Exit button — subtle, top-right of workspace topbar */
+.ws-exit-btn {
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--text3);
+  font-size: 11px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  padding: 5px 11px;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+.ws-exit-btn:hover {
+  color: var(--text2);
+  border-color: var(--border);
+  background: var(--bg3);
+}
+
+/* Exit confirmation overlay + dialog */
+.ws-exit-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ws-exit-dialog {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 28px 22px;
+  max-width: 380px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.ws-exit-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+  font-family: 'Syne', sans-serif;
+}
+.ws-exit-body {
+  font-size: 13px;
+  color: var(--text3);
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+.ws-exit-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.ws-exit-confirm-btn {
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-size: 13px;
+  padding: 7px 16px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+}
+.ws-exit-confirm-btn:hover {
+  background: var(--bg5);
+  color: var(--text);
+}
+
 /* Smart hook bar */
 .ws-hook {
   display: flex;
