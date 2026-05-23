@@ -207,6 +207,7 @@ function mapContactToLead(contact) {
     assignedAgent: contact.assignedTo || '',
     lastActivity: contact.lastActivity || null,
     dateAdded: contact.dateAdded || null,
+    tags: contact.tags || [],
   };
 }
 
@@ -288,6 +289,17 @@ export async function createContact(lead, assignment = {}) {
   return ghlRequest('/contacts/', { method: 'POST', body: JSON.stringify(body) });
 }
 
+/**
+ * Add tags to a contact — merges with existing tags
+ */
+export async function addTags(contactId, newTags) {
+  // Use the dedicated tags endpoint which adds without replacing
+  return ghlRequest(`/contacts/${contactId}/tags`, {
+    method: 'POST',
+    body: JSON.stringify({ tags: newTags }),
+  });
+}
+
 export async function getAgentStats(agentId = null) {
   const leads = await getLeads(agentId ? { assignedAgent: agentId } : {});
   
@@ -313,4 +325,5 @@ export default {
   getAgentStats,
   findContactByPhone,
   createContact,
+  addTags,
 };

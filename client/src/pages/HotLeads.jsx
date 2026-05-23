@@ -1,30 +1,215 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Flame, Phone, RefreshCw } from 'lucide-react';
+import { Phone, RefreshCw, Mail, Send } from 'lucide-react';
+import { DndContext, DragOverlay, closestCenter, useDroppable, useDraggable } from '@dnd-kit/core';
 import { useAuth } from '../context/AuthContext';
-import { useSidebarCounts } from '../context/SidebarCounts';
 import api from '../utils/api';
 import CallWorkspace from '../components/CallWorkspace';
-import LeadPanel from '../components/LeadPanel';
+import WelcomeEmailPanel from '../components/WelcomeEmailPanel';
+import FollowUpEmailPanel from '../components/FollowUpEmailPanel';
+import NextActionBadge from '../components/NextActionBadge';
 import { useCallQueue } from '../hooks/useCallQueue';
 import { formatGoogleScore } from '../utils/leads';
+import { getLeadColumn, COLUMN_STATUS } from '../utils/next_action';
 
-function StatusBadge({ status }) {
-  const map = {
-    'Interested':  'badge-interested',
-    'Demo Booked': 'badge-demo',
-    'Callback':    'badge-called',
-    'New':         'badge-new',
-  };
-  return <span className={`badge-status ${map[status] || 'badge-new'}`}>{status}</span>;
+// ── Column definitions ────────────────────────────────────────
+const COLUMNS = [
+  { id: 'called',     emoji: '📞', title: 'Called',        color: 'var(--text3)' },
+  { id: 'interested', emoji: '💬', title: 'Interested',    color: 'var(--primary)' },
+  { id: 'email',      emoji: '📧', title: 'Email Opened',  color: 'var(--blue)' },
+  { id: 'demo',       emoji: '📅', title: 'Demo Booked',   color: 'var(--purple)' },
+  { id: 'closed',     emoji: '💰', title: 'Closed / Paid', color: 'var(--gold)' },
+  { id: 'lost',       emoji: '❌', title: 'Lost',          color: 'var(--red)' },
+];
+
+// ── Agent avatar colors ────────────────────────────────────────
+const AGENT_COLORS = {
+  lucas: '#00e5a0', harry: '#a78bfa', jim: '#4ea8de', bruce: '#f5c842', david: '#ff6b35',
+};
+
+function agentInitial(name) { return (name || '?').charAt(0).toUpperCase(); }
+function agentColor(name)   { return AGENT_COLORS[(name || '').toLowerCase()] || 'var(--text3)'; }
+
+// ── Relative time ──────────────────────────────────────────────
+function relativeTime(iso) {
+  if (!iso) return null;
+  const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (diff < 60)       return 'just now';
+  if (diff < 3600)     return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400)    return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
 }
 
+// ── Draggable Card ─────────────────────────────────────────────
+function KanbanCard({ lead, agentName, onCall, onWelcome, onFollowUp, onNextAction, isDragging }) {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: lead.id,
+    data: { lead },
+  });
+
+  const style = transform ? {
+    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+  } : undefined;
+
+  const gScore = formatGoogleScore(lead.googleScore);
+  const lastAct = relativeTime(lead.lastActivity || lead.dateAdded);
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`kcard${isDragging ? ' kcard-dragging' : ''}`}
+      {...listeners}
+      {...attributes}
+    >
+      <div className="kcard-name">{lead.name}</div>
+
+      {lead.phone && (
+        <div className="kcard-phone">{lead.phone}</div>
+      )}
+
+      {(lead.city || lead.state) && (
+        <div className="kcard-meta">
+          📍 {[lead.city, lead.state].filter(Boolean).join(', ')}
+        </div>
+      )}
+
+      {gScore && (
+        <div className="kcard-google">{gScore}</div>
+      )}
+
+      <div className="kcard-row">
+        {agentName && (
+          <div className="kcard-agent">
+            <span className="kcard-av" style={{ background: agentColor(agentName) }}>
+              {agentInitial(agentName)}
+            </span>
+            <span className="kcard-agent-name">{agentName}</span>
+          </div>
+        )}
+        {lastAct && <span className="kcard-time">{lastAct}</span>}
+      </div>
+
+      <div className="kcard-na" onClick={e => e.stopPropagation()}>
+        <NextActionBadge lead={lead} onClick={onNextAction} />
+      </div>
+
+      {/* Action buttons */}
+      <div className="kcard-actions" onClick={e => e.stopPropagation()}>
+        <button
+          className="kcard-btn kcard-btn-call"
+          title="Call now"
+          onClick={() => onCall(lead)}
+          disabled={!lead.phone}
+        >
+          <Phone size={11} />
+        </button>
+        <button
+          className="kcard-btn kcard-btn-email"
+          title="Send welcome email"
+          onClick={() => onWelcome(lead)}
+        >
+          <Mail size={11} />
+        </button>
+        <button
+          className="kcard-btn kcard-btn-followup"
+          title="Send follow-up"
+          onClick={() => onFollowUp(lead)}
+        >
+          <Send size={11} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Overlay card (shown while dragging) ───────────────────────
+function KanbanCardOverlay({ lead }) {
+  const gScore = formatGoogleScore(lead.googleScore);
+  return (
+    <div className="kcard kcard-overlay">
+      <div className="kcard-name">{lead.name}</div>
+      {lead.phone && <div className="kcard-phone">{lead.phone}</div>}
+      {gScore && <div className="kcard-google">{gScore}</div>}
+    </div>
+  );
+}
+
+// ── Droppable Column ───────────────────────────────────────────
+function KanbanColumn({ col, leads, agentNames, onCall, onWelcome, onFollowUp, onNextAction, activeDragId }) {
+  const { isOver, setNodeRef } = useDroppable({ id: col.id });
+
+  const isPlaceholder = col.id === 'email';
+
+  return (
+    <div className={`kcol${isOver ? ' kcol-over' : ''}`}>
+      <div className="kcol-head">
+        <span style={{ color: col.color }}>{col.emoji}</span>
+        <span className="kcol-title">{col.title}</span>
+        <span className="kcol-count">{leads.length}</span>
+      </div>
+
+      <div ref={setNodeRef} className="kcol-body">
+        {isPlaceholder ? (
+          <div className="kcol-placeholder">
+            <p>Auto-populated when the email-opened webhook fires in Phase 2</p>
+          </div>
+        ) : leads.length === 0 ? (
+          <div className="kcol-empty">No leads here yet</div>
+        ) : (
+          leads.map(lead => (
+            <KanbanCard
+              key={lead.id}
+              lead={lead}
+              agentName={agentNames[lead.assignedAgent]}
+              onCall={onCall}
+              onWelcome={onWelcome}
+              onFollowUp={onFollowUp}
+              onNextAction={onNextAction}
+              isDragging={lead.id === activeDragId}
+            />
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Skeleton ──────────────────────────────────────────────────
+function KanbanSkeleton() {
+  return (
+    <div className="kanban-board">
+      {COLUMNS.map(col => (
+        <div key={col.id} className="kcol">
+          <div className="kcol-head">
+            <span>{col.emoji}</span>
+            <span className="kcol-title">{col.title}</span>
+          </div>
+          <div className="kcol-body">
+            {[1, 2].map(i => (
+              <div key={i} className="kcard kcard-skeleton">
+                <div className="kskel-line kskel-name" />
+                <div className="kskel-line kskel-phone" />
+                <div className="kskel-line kskel-meta" />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Main Page ─────────────────────────────────────────────────
 export default function HotLeads() {
   const { user }          = useAuth();
-  const { setCounts }     = useSidebarCounts();
   const [leads, setLeads] = useState([]);
+  const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedLead, setSelectedLead] = useState(null);
+  const [agentFilter, setAgentFilter] = useState('all');
+  const [activeDragId, setActiveDragId] = useState(null);
+  const [toast, setToast] = useState(null);
+  const [welcomeLead,  setWelcomeLead]  = useState(null);
+  const [followUpLead, setFollowUpLead] = useState(null);
 
   const {
     activeCall, saving,
@@ -32,56 +217,133 @@ export default function HotLeads() {
     dialWarning,
   } = useCallQueue();
 
+  // ── Data ──────────────────────────────────────────────────
   async function fetchLeads() {
     setLoading(true);
-    setError(null);
     try {
       const { data } = await api.get('/leads');
       setLeads(data.leads || []);
-    } catch {
-      setError('Could not load leads — try refreshing');
-    } finally {
-      setLoading(false);
-    }
+    } catch { /* silent */ }
+    finally { setLoading(false); }
   }
 
   useEffect(() => { fetchLeads(); }, []);
 
-  // Hot = Interested + Demo Booked + tier 1
-  const hotLeads = useMemo(() =>
-    leads
-      .filter(l =>
-        l.status === 'Interested' ||
-        l.status === 'Demo Booked' ||
-        String(l.tier) === '1'
-      )
-      .sort((a, b) => {
-        const pri = { 'Demo Booked': 0, 'Interested': 1 };
-        const ap = pri[a.status] ?? 2;
-        const bp = pri[b.status] ?? 2;
-        if (ap !== bp) return ap - bp;
-        return (Number(a.tier) || 9) - (Number(b.tier) || 9);
-      }),
-    [leads]
-  );
-
   useEffect(() => {
-    setCounts(prev => ({ ...prev, '/hot-leads': hotLeads.length }));
-  }, [hotLeads.length, setCounts]);
+    if (user?.role !== 'admin') return;
+    api.get('/auth/agents').then(r => setAgents(r.data.agents || [])).catch(() => {});
+  }, [user?.role]);
 
+  // ── Agent name lookup ─────────────────────────────────────
+  const agentNames = useMemo(() => {
+    const map = {};
+    agents.forEach(a => { map[a.ghlUserId] = a.name; });
+    return map;
+  }, [agents]);
+
+  // ── Filter & column bucketing ─────────────────────────────
+  const pipelineLeads = useMemo(() => {
+    let filtered = leads.filter(l => getLeadColumn(l) !== null);
+    if (agentFilter !== 'all' && user?.role === 'admin') {
+      filtered = filtered.filter(l => l.assignedAgent === agentFilter);
+    }
+    return filtered;
+  }, [leads, agentFilter, user?.role]);
+
+  const columnLeads = useMemo(() => {
+    const map = {};
+    COLUMNS.forEach(c => { map[c.id] = []; });
+    pipelineLeads.forEach(lead => {
+      const col = getLeadColumn(lead);
+      if (col && map[col]) map[col].push(lead);
+    });
+    return map;
+  }, [pipelineLeads]);
+
+  // ── Pipeline summary stats ────────────────────────────────
+  const stats = useMemo(() => ({
+    total:   pipelineLeads.length,
+    called:  columnLeads['called']?.length    || 0,
+    interested: columnLeads['interested']?.length || 0,
+    demo:    columnLeads['demo']?.length      || 0,
+    closed:  columnLeads['closed']?.length    || 0,
+    revenue: (columnLeads['closed']?.length || 0) * 497,
+  }), [columnLeads, pipelineLeads.length]);
+
+  // ── Toast helper ──────────────────────────────────────────
+  let toastTimer;
+  function showToast(msg) {
+    setToast(msg);
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => setToast(null), 3000);
+  }
+
+  // ── Drag handlers ─────────────────────────────────────────
+  function onDragStart({ active }) {
+    setActiveDragId(active.id);
+  }
+
+  async function onDragEnd({ active, over }) {
+    setActiveDragId(null);
+    if (!over || active.id === over.id) return;
+
+    const newColId = over.id;
+    const newStatus = COLUMN_STATUS[newColId];
+    if (!newStatus) return; // email column is placeholder
+
+    const lead = active.data.current?.lead;
+    if (!lead) return;
+
+    const currentCol = getLeadColumn(lead);
+    if (currentCol === newColId) return;
+
+    // Optimistic update
+    setLeads(prev => prev.map(l =>
+      l.id === lead.id ? { ...l, status: newStatus, lastOutcome: newStatus } : l
+    ));
+
+    const colTitle = COLUMNS.find(c => c.id === newColId)?.title || newColId;
+    showToast(`Moved ${lead.name} → ${colTitle}`);
+
+    try {
+      await api.post(`/leads/${lead.id}/note`, { text: '', outcome: newStatus });
+    } catch {
+      // Revert on failure
+      setLeads(prev => prev.map(l =>
+        l.id === lead.id ? { ...l, status: lead.status, lastOutcome: lead.lastOutcome } : l
+      ));
+    }
+  }
+
+  // ── Next action badge click handler ───────────────────────
+  function handleNextAction(action, lead) {
+    if (action === 'welcome')   { setWelcomeLead(lead);  return; }
+    if (action === 'followup')  { setFollowUpLead(lead); return; }
+    if (action === 'call')      { handleStartCall(lead); return; }
+    if (action === 'demo-prep') { showToast('Demo prep checklist coming soon'); return; }
+    if (action === 'notify')    { showToast('David has been notified'); return; }
+  }
+
+  // ── Welcome email callback ────────────────────────────────
+  function onWelcomeSent(leadId) {
+    setLeads(prev => prev.map(l =>
+      l.id === leadId
+        ? { ...l, status: 'Interested', tags: [...(l.tags || []), 'welcome-email-sent'] }
+        : l
+    ));
+    showToast('Welcome email sent — lead moved to Interested');
+  }
+
+  // ── Follow-up callback ────────────────────────────────────
+  function onFollowUpSent(leadId) {
+    showToast('Follow-up email logged — Zoho send wiring coming in Phase 3');
+  }
+
+  // ── Active call → workspace ───────────────────────────────
   function onCallOutcome(leadId, status) {
     setLeads(prev => prev.map(l =>
       l.id === leadId ? { ...l, status, lastOutcome: status } : l
     ));
-  }
-
-  if (loading) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'var(--text3)', paddingTop: 40 }}>
-        <div style={{ width: 16, height: 16, border: '2px solid var(--text3)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-        Loading hot leads…
-      </div>
-    );
   }
 
   if (activeCall) {
@@ -92,155 +354,127 @@ export default function HotLeads() {
         onOutcome={(outcome, note) => handleOutcome(outcome, note, onCallOutcome)}
         saving={saving}
         queueStats={null}
-        nextLeads={hotLeads.slice(hotLeads.findIndex(l => l.id === activeCall.lead.id) + 1).slice(0, 3)}
+        nextLeads={[]}
       />
     );
   }
 
+  const activeLead = activeDragId
+    ? leads.find(l => l.id === activeDragId) || null
+    : null;
+
   return (
     <>
-      {selectedLead && (
-        <LeadPanel
-          lead={selectedLead}
-          onClose={() => setSelectedLead(null)}
-          onStatusUpdate={(id, status) => {
-            setLeads(prev => prev.map(l => l.id === id ? { ...l, status, lastOutcome: status } : l));
-            setSelectedLead(null);
-          }}
+      {toast && <div className="toast-notification">{toast}</div>}
+
+      {welcomeLead && (
+        <WelcomeEmailPanel
+          lead={welcomeLead}
+          onClose={() => setWelcomeLead(null)}
+          onSent={onWelcomeSent}
         />
       )}
 
+      {followUpLead && (
+        <FollowUpEmailPanel
+          lead={followUpLead}
+          onClose={() => setFollowUpLead(null)}
+          onSent={onFollowUpSent}
+        />
+      )}
+
+      {/* Dial warning */}
       {dialWarning && (
-        <div style={{
-          background:   'rgba(245,158,11,0.12)',
-          border:       '1px solid rgba(245,158,11,0.35)',
-          borderRadius: 8,
-          padding:      '10px 16px',
-          color:        'var(--gold)',
-          fontSize:     13,
-          fontWeight:   600,
-          marginBottom: 12,
-          display:      'flex',
-          alignItems:   'center',
-          gap:          8,
-        }}>
-          <Phone size={14} />
-          {dialWarning}
+        <div className="dial-warning-bar">
+          <Phone size={14} /> {dialWarning}
         </div>
       )}
 
+      {/* Page header */}
       <div className="page-head">
         <div>
-          <h1 className="page-h1">Hot Leads · {user?.name}</h1>
+          <h1 className="page-h1">Sales Pipeline</h1>
           <p className="page-subtitle">
-            {hotLeads.length === 0
-              ? 'No hot leads right now'
-              : `${hotLeads.length} high-priority lead${hotLeads.length !== 1 ? 's' : ''}`}
+            {loading ? 'Loading…' : `${stats.total} leads in pipeline · $${stats.revenue.toLocaleString()} projected`}
           </p>
         </div>
-        <button className="btn btn-secondary" onClick={fetchLeads}>
-          <RefreshCw size={12} /> Refresh
-        </button>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {user?.role === 'admin' && agents.length > 0 && (
+            <select
+              value={agentFilter}
+              onChange={e => setAgentFilter(e.target.value)}
+              style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 6, padding: '7px 10px', color: 'var(--text)', fontSize: 12 }}
+            >
+              <option value="all">All Agents</option>
+              {agents.map(a => (
+                <option key={a.id} value={a.ghlUserId}>{a.name}</option>
+              ))}
+            </select>
+          )}
+          <button className="btn btn-secondary" onClick={fetchLeads}>
+            <RefreshCw size={12} /> Refresh
+          </button>
+        </div>
       </div>
 
-      <div className="kpi-strip">
+      {/* KPI strip */}
+      <div className="kpi-strip" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
+        <div className="kpi blue">
+          <div className="kpi-label">Pipeline</div>
+          <div className="kpi-num">{stats.total}</div>
+          <div className="kpi-delta flat">total</div>
+        </div>
+        <div className="kpi" style={{ '--kc': 'var(--text2)' }}>
+          <div className="kpi-label">Called</div>
+          <div className="kpi-num" style={{ color: 'var(--text2)' }}>{stats.called}</div>
+          <div className="kpi-delta flat">reached</div>
+        </div>
         <div className="kpi green">
           <div className="kpi-label">Interested</div>
-          <div className="kpi-num">{hotLeads.filter(l => l.status === 'Interested').length}</div>
+          <div className="kpi-num">{stats.interested}</div>
           <div className="kpi-delta flat">warm</div>
         </div>
         <div className="kpi purple">
           <div className="kpi-label">Demo Booked</div>
-          <div className="kpi-num">{hotLeads.filter(l => l.status === 'Demo Booked').length}</div>
+          <div className="kpi-num">{stats.demo}</div>
           <div className="kpi-delta flat">scheduled</div>
         </div>
-        <div className="kpi blue">
-          <div className="kpi-label">Total Hot</div>
-          <div className="kpi-num">{hotLeads.length}</div>
-          <div className="kpi-delta flat">priority</div>
+        <div className="kpi gold">
+          <div className="kpi-label">Revenue</div>
+          <div className="kpi-num">${(stats.revenue / 1000).toFixed(1)}k</div>
+          <div className="kpi-delta flat">{stats.closed} closed × $497</div>
         </div>
       </div>
 
-      {error && (
-        <div style={{ background: 'var(--red-dim)', border: '1px solid rgba(255,77,106,0.25)', borderRadius: 8, padding: '12px 16px', color: 'var(--red)', marginBottom: 14 }}>
-          {error}
-        </div>
-      )}
-
-      {hotLeads.length === 0 ? (
-        <div className="placeholder-wrap" style={{ marginTop: 8 }}>
-          <Flame size={32} color="var(--text3)" />
-          <div className="placeholder-title">No hot leads yet</div>
-          <p className="placeholder-sub">
-            Leads marked Interested or Demo Booked will appear here.
-          </p>
-        </div>
+      {/* Kanban board */}
+      {loading ? (
+        <KanbanSkeleton />
       ) : (
-        <div className="panel" style={{ padding: 0 }}>
-          <div className="panel-head" style={{ padding: '14px 18px 0' }}>
-            <div className="panel-title">Priority Leads</div>
-            <span style={{ fontSize: 11, color: 'var(--text3)', fontFamily: "'DM Mono', monospace" }}>
-              Demo Booked → Interested
-            </span>
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
+        >
+          <div className="kanban-board">
+            {COLUMNS.map(col => (
+              <KanbanColumn
+                key={col.id}
+                col={col}
+                leads={columnLeads[col.id] || []}
+                agentNames={agentNames}
+                onCall={handleStartCall}
+                onWelcome={setWelcomeLead}
+                onFollowUp={setFollowUpLead}
+                onNextAction={handleNextAction}
+                activeDragId={activeDragId}
+              />
+            ))}
           </div>
-          <div className="tbl-wrap" style={{ border: 'none', borderRadius: 0, background: 'transparent' }}>
-            <table className="tbl">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Business</th>
-                  <th>Phone</th>
-                  <th>City</th>
-                  <th>Google</th>
-                  <th>Status</th>
-                  <th>Hook</th>
-                  <th style={{ textAlign: 'right' }}>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {hotLeads.map((lead, idx) => {
-                  const gScore = formatGoogleScore(lead.googleScore);
-                  const hook   = lead.hookNote || '';
-                  return (
-                    <tr
-                      key={lead.id}
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => setSelectedLead(lead)}
-                    >
-                      <td className="td-mono" style={{ color: 'var(--text3)' }}>
-                        {String(idx + 1).padStart(2, '0')}
-                      </td>
-                      <td className="td-name">{lead.name}</td>
-                      <td className="td-phone">{lead.phone || '—'}</td>
-                      <td>{lead.city || '—'}</td>
-                      <td style={{ color: 'var(--gold)', fontWeight: 600, fontSize: 12, whiteSpace: 'nowrap' }}>
-                        {gScore || <span style={{ color: 'var(--text3)', fontWeight: 400 }}>—</span>}
-                      </td>
-                      <td><StatusBadge status={lead.status} /></td>
-                      <td style={{ fontSize: 12, color: 'var(--text3)', fontStyle: 'italic', maxWidth: 200 }}>
-                        {hook
-                          ? <span title={hook}>{hook.length > 45 ? hook.slice(0, 45) + '…' : hook}</span>
-                          : '—'}
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', justifyContent: 'flex-end' }} onClick={e => e.stopPropagation()}>
-                          <button
-                            className="btn btn-primary"
-                            style={{ fontSize: 11, padding: '4px 10px', gap: 4 }}
-                            onClick={() => handleStartCall(lead)}
-                            disabled={!lead.phone}
-                          >
-                            <Phone size={11} /> Call Now
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
+
+          <DragOverlay dropAnimation={null}>
+            {activeLead && <KanbanCardOverlay lead={activeLead} />}
+          </DragOverlay>
+        </DndContext>
       )}
     </>
   );

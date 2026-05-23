@@ -1,9 +1,12 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { RefreshCw, Search, UserCheck, X, ChevronDown, CheckCircle } from 'lucide-react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { RefreshCw, Search, UserCheck, X, ChevronDown, CheckCircle, Mail, Send } from 'lucide-react';
 import api from '../utils/api';
 import { formatGoogleScore } from '../utils/leads';
 import LeadPanel from '../components/LeadPanel';
 import AgentCardRow from '../components/AgentCardRow';
+import WelcomeEmailPanel from '../components/WelcomeEmailPanel';
+import FollowUpEmailPanel from '../components/FollowUpEmailPanel';
+import NextActionBadge from '../components/NextActionBadge';
 
 const STATUSES = ['All', 'New', 'Called', 'No Answer', 'Voicemail', 'Callback', 'Interested', 'Demo Booked', 'Closed', 'Not Qualified'];
 
@@ -164,6 +167,10 @@ export default function AllLeads() {
   const [error,       setError]       = useState(null);
   const [selectedLead, setSelectedLead] = useState(null);
   const [showBulk,    setShowBulk]    = useState(false);
+  const [welcomeLead,  setWelcomeLead]  = useState(null);
+  const [followUpLead, setFollowUpLead] = useState(null);
+  const [toast,       setToast]       = useState(null);
+  const toastTimer = useRef(null);
 
   // Bulk selection
   const [checkedLeads,    setCheckedLeads]    = useState(new Set());
@@ -183,6 +190,34 @@ export default function AllLeads() {
     const t = setTimeout(() => setAssignBanner(null), 5000);
     return () => clearTimeout(t);
   }, [assignBanner]);
+
+  function showToast(msg) {
+    setToast(msg);
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 3000);
+  }
+
+  function onWelcomeSent(leadId) {
+    setLeads(prev => prev.map(l =>
+      l.id === leadId
+        ? { ...l, status: 'Interested', tags: [...(l.tags || []), 'welcome-email-sent'] }
+        : l
+    ));
+    showToast('Welcome email sent — lead moved to Interested');
+    setWelcomeLead(null);
+  }
+
+  function onFollowUpSent() {
+    showToast('Follow-up email logged — Zoho send wiring coming in Phase 3');
+    setFollowUpLead(null);
+  }
+
+  function handleNextAction(action, lead) {
+    if (action === 'welcome')  { setWelcomeLead(lead);  return; }
+    if (action === 'followup') { setFollowUpLead(lead); return; }
+    if (action === 'demo-prep') { showToast('Demo prep checklist coming soon'); return; }
+    if (action === 'notify')   { showToast('David has been notified'); return; }
+  }
 
   const fetchLeads = useCallback(async () => {
     setLoading(true); setError(null);
@@ -268,6 +303,8 @@ export default function AllLeads() {
 
   return (
     <>
+      {toast && <div className="toast-notification">{toast}</div>}
+
       {showBulk && (
         <BulkAssignModal agents={agents} onClose={() => setShowBulk(false)} onAssign={() => { setShowBulk(false); fetchLeads(); }} />
       )}
@@ -277,6 +314,12 @@ export default function AllLeads() {
           onClose={() => setSelectedLead(null)}
           onStatusUpdate={(id, status) => { setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l)); setSelectedLead(null); }}
         />
+      )}
+      {welcomeLead && (
+        <WelcomeEmailPanel lead={welcomeLead} onClose={() => setWelcomeLead(null)} onSent={onWelcomeSent} />
+      )}
+      {followUpLead && (
+        <FollowUpEmailPanel lead={followUpLead} onClose={() => setFollowUpLead(null)} onSent={onFollowUpSent} />
       )}
 
       <div className="page-head">
@@ -412,14 +455,15 @@ export default function AllLeads() {
                   <th>Google</th>
                   <th>Type</th>
                   <th>Status</th>
+                  <th>Next Action</th>
                   <th>Agent</th>
-                  <th style={{ textAlign: 'right' }}>Assign</th>
+                  <th style={{ textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={10} style={{ textAlign: 'center', color: 'var(--text3)', padding: '32px 0', fontSize: 13 }}>
+                    <td colSpan={11} style={{ textAlign: 'center', color: 'var(--text3)', padding: '32px 0', fontSize: 13 }}>
                       No leads match your filters
                     </td>
                   </tr>
@@ -449,9 +493,32 @@ export default function AllLeads() {
                         </td>
                         <td style={{ fontSize: 11, color: 'var(--text3)' }}>{lead.businessType || '—'}</td>
                         <td><StatusBadge status={lead.status} /></td>
+                        <td onClick={e => e.stopPropagation()}>
+                          <NextActionBadge lead={lead} onClick={handleNextAction} />
+                        </td>
                         <td style={{ fontSize: 12, color: 'var(--text2)' }}>{agentName(lead.assignedAgent)}</td>
                         <td>
-                          <div style={{ display: 'flex', justifyContent: 'flex-end' }} onClick={e => e.stopPropagation()}>
+                          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 4 }} onClick={e => e.stopPropagation()}>
+                            {!(lead.tags || []).includes('welcome-email-sent') ? (
+                              <button
+                                className="btn btn-secondary btn-sm"
+                                style={{ gap: 4 }}
+                                title="Send welcome email"
+                                onClick={() => setWelcomeLead(lead)}
+                              >
+                                <Mail size={10} />
+                              </button>
+                            ) : (
+                              <span className="email-sent-badge" title="Welcome email already sent">✓ Sent</span>
+                            )}
+                            <button
+                              className="btn btn-secondary btn-sm"
+                              style={{ gap: 4 }}
+                              title="Send follow-up email"
+                              onClick={() => setFollowUpLead(lead)}
+                            >
+                              <Send size={10} />
+                            </button>
                             <ReassignDropdown lead={lead} agents={agents} onReassign={handleReassign} />
                           </div>
                         </td>

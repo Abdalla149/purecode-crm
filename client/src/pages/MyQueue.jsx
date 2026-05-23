@@ -1,10 +1,13 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Phone, SkipForward, RefreshCw } from 'lucide-react';
+import { Phone, SkipForward, RefreshCw, Mail, Send } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useDialer } from '../context/DialerContext';
 import api from '../utils/api';
 import CallWorkspace from '../components/CallWorkspace';
 import LeadPanel from '../components/LeadPanel';
+import WelcomeEmailPanel from '../components/WelcomeEmailPanel';
+import FollowUpEmailPanel from '../components/FollowUpEmailPanel';
+import NextActionBadge from '../components/NextActionBadge';
 import { parseGoogleScore, formatGoogleScore, generateHook } from '../utils/leads';
 
 // ── Constants ────────────────────────────────────────────────
@@ -109,6 +112,8 @@ export default function MyQueue() {
   const [selectedLead, setSelectedLead] = useState(null);
   const [agentKpi, setAgentKpi]       = useState(null);
   const [toast, setToast]             = useState(null);
+  const [welcomeLead,  setWelcomeLead]  = useState(null);
+  const [followUpLead, setFollowUpLead] = useState(null);
   const toastTimer = useRef(null);
 
   const phoneNumbers = user?.phoneNumbers || [];
@@ -231,6 +236,29 @@ export default function MyQueue() {
     setQueueIndex(i => i + 1);
   }
 
+  function onWelcomeSent(leadId) {
+    setLeads(prev => prev.map(l =>
+      l.id === leadId
+        ? { ...l, status: 'Interested', tags: [...(l.tags || []), 'welcome-email-sent'] }
+        : l
+    ));
+    showToast('Welcome email sent — lead moved to Interested');
+    setWelcomeLead(null);
+  }
+
+  function onFollowUpSent() {
+    showToast('Follow-up email logged — Zoho send wiring coming in Phase 3');
+    setFollowUpLead(null);
+  }
+
+  function handleNextAction(action, lead) {
+    if (action === 'welcome')   { setWelcomeLead(lead);  return; }
+    if (action === 'followup')  { setFollowUpLead(lead); return; }
+    if (action === 'call')      { handleStartCall(lead); return; }
+    if (action === 'demo-prep') { showToast('Demo prep checklist coming soon'); return; }
+    if (action === 'notify')    { showToast('David has been notified'); return; }
+  }
+
   // ── Render helpers ─────────────────────────────────────────
   const totalCalls = callCounts.callsToday || 0;
 
@@ -292,6 +320,12 @@ export default function MyQueue() {
             setSelectedLead(null);
           }}
         />
+      )}
+      {welcomeLead && (
+        <WelcomeEmailPanel lead={welcomeLead} onClose={() => setWelcomeLead(null)} onSent={onWelcomeSent} />
+      )}
+      {followUpLead && (
+        <FollowUpEmailPanel lead={followUpLead} onClose={() => setFollowUpLead(null)} onSent={onFollowUpSent} />
       )}
 
       {/* ── Page header ── */}
@@ -509,6 +543,7 @@ export default function MyQueue() {
                   <th>City</th>
                   <th>Google</th>
                   <th>Status</th>
+                  <th>Next Action</th>
                   <th>Hook</th>
                   <th></th>
                 </tr>
@@ -536,6 +571,9 @@ export default function MyQueue() {
                         {gScore || <span style={{ color: 'var(--text3)', fontWeight: 400 }}>—</span>}
                       </td>
                       <td><StatusBadge status={lead.status} /></td>
+                      <td onClick={e => e.stopPropagation()}>
+                        <NextActionBadge lead={lead} onClick={handleNextAction} />
+                      </td>
                       <td style={{ fontStyle: 'italic', color: 'var(--text3)', fontSize: 12, maxWidth: 180 }}>
                         {hook
                           ? <span title={hook} style={!lead.hookNote ? { opacity: 0.6 } : {}}>
@@ -545,16 +583,38 @@ export default function MyQueue() {
                         }
                       </td>
                       <td>
-                        {!isDone && (
+                        <div style={{ display: 'flex', gap: 4 }} onClick={e => e.stopPropagation()}>
+                          {!isDone && (
+                            <button
+                              className={isNext ? 'btn btn-primary' : 'btn btn-secondary'}
+                              style={{ fontSize: 11, padding: '4px 10px', gap: 4 }}
+                              onClick={() => handleStartCall(lead)}
+                              disabled={!lead.phone}
+                            >
+                              <Phone size={11} /> Call
+                            </button>
+                          )}
+                          {!(lead.tags || []).includes('welcome-email-sent') ? (
+                            <button
+                              className="btn btn-secondary"
+                              style={{ fontSize: 11, padding: '4px 8px' }}
+                              title="Send welcome email"
+                              onClick={() => setWelcomeLead(lead)}
+                            >
+                              <Mail size={10} />
+                            </button>
+                          ) : (
+                            <span className="email-sent-badge">✓</span>
+                          )}
                           <button
-                            className={isNext ? 'btn btn-primary' : 'btn btn-secondary'}
-                            style={{ fontSize: 11, padding: '4px 10px', gap: 4 }}
-                            onClick={e => { e.stopPropagation(); handleStartCall(lead); }}
-                            disabled={!lead.phone}
+                            className="btn btn-secondary"
+                            style={{ fontSize: 11, padding: '4px 8px' }}
+                            title="Send follow-up"
+                            onClick={() => setFollowUpLead(lead)}
                           >
-                            <Phone size={11} /> Call
+                            <Send size={10} />
                           </button>
-                        )}
+                        </div>
                       </td>
                     </tr>
                   );

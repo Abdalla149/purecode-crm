@@ -151,6 +151,37 @@ router.post('/:id/call', async (req, res) => {
 });
 
 
+// ═══════════ POST /api/leads/:id/welcome-email ═══════════
+// Mark that the agent sent a welcome email — moves lead to Interested + tags it
+router.post('/:id/welcome-email', async (req, res) => {
+  try {
+    const lead = await ghl.getLead(req.params.id);
+
+    if (req.user.role === 'agent' && lead.assignedAgent !== req.user.ghlUserId) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const dateTag = `welcome-email-sent-${today}`;
+
+    await Promise.all([
+      ghl.updateLead(req.params.id, { status: 'Interested' }),
+      ghl.addTags(req.params.id, ['welcome-email-sent', dateTag]),
+      ghl.addNote(req.params.id, {
+        text: `Welcome email sent on ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`,
+        agentName: req.user.name,
+        outcome: 'Interested',
+      }),
+    ]);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[WELCOME EMAIL ERROR]', err);
+    res.status(500).json({ error: 'Something went wrong — contact David' });
+  }
+});
+
+
 // ═══════════ PUT /api/leads/:id/assign ═══════════
 // Admin only — reassign a lead to a different agent
 router.put('/:id/assign', requireAdmin, async (req, res) => {

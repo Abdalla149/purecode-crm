@@ -24,6 +24,7 @@ import feedRoutes from './routes/feed.js';
 import webhookRoutes from './routes/webhooks.js';
 import justcallRoutes from './routes/justcall.js';
 import callsRoutes from './routes/calls.js';
+import emailsRoutes from './routes/emails.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -73,6 +74,7 @@ app.use('/api/feed', feedRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/justcall', justcallRoutes);
 app.use('/api/calls', callsRoutes);
+app.use('/api/emails', emailsRoutes);
 
 // ── Error handler — NEVER expose GHL/JustCall names to frontend ──
 app.use((err, req, res, next) => {

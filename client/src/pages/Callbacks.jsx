@@ -1,10 +1,13 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Phone, RefreshCw, CheckCheck, Calendar } from 'lucide-react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { Phone, RefreshCw, CheckCheck, Calendar, Mail, Send } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSidebarCounts } from '../context/SidebarCounts';
 import api from '../utils/api';
 import CallWorkspace from '../components/CallWorkspace';
 import LeadPanel from '../components/LeadPanel';
+import WelcomeEmailPanel from '../components/WelcomeEmailPanel';
+import FollowUpEmailPanel from '../components/FollowUpEmailPanel';
+import NextActionBadge from '../components/NextActionBadge';
 import { useCallQueue } from '../hooks/useCallQueue';
 import { formatGoogleScore } from '../utils/leads';
 
@@ -25,6 +28,10 @@ export default function Callbacks() {
   const [error, setError]   = useState(null);
   const [leadNotes, setLeadNotes] = useState({});     // { leadId: [notes] }
   const [selectedLead, setSelectedLead] = useState(null);
+  const [welcomeLead,  setWelcomeLead]  = useState(null);
+  const [followUpLead, setFollowUpLead] = useState(null);
+  const [toast, setToast]               = useState(null);
+  const toastTimer = useRef(null);
 
   const {
     activeCall, saving,
@@ -102,6 +109,34 @@ export default function Callbacks() {
     );
   }
 
+  function showToast(msg) {
+    setToast(msg);
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 3000);
+  }
+
+  function onWelcomeSent(leadId) {
+    setLeads(prev => prev.map(l =>
+      l.id === leadId
+        ? { ...l, status: 'Interested', tags: [...(l.tags || []), 'welcome-email-sent'] }
+        : l
+    ));
+    showToast('Welcome email sent — lead moved to Interested');
+    setWelcomeLead(null);
+  }
+
+  function onFollowUpSent() {
+    showToast('Follow-up email logged — Zoho send wiring coming in Phase 3');
+    setFollowUpLead(null);
+  }
+
+  function handleNextAction(action, lead) {
+    if (action === 'welcome')   { setWelcomeLead(lead);  return; }
+    if (action === 'followup')  { setFollowUpLead(lead); return; }
+    if (action === 'demo-prep') { showToast('Demo prep checklist coming soon'); return; }
+    if (action === 'notify')    { showToast('David has been notified'); return; }
+  }
+
   // ── Mark Done — moves back to queue as "Called" ────────────
   async function handleMarkDone(lead) {
     try {
@@ -146,6 +181,8 @@ export default function Callbacks() {
 
   return (
     <>
+      {toast && <div className="toast-notification">{toast}</div>}
+
       {selectedLead && (
         <LeadPanel
           lead={selectedLead}
@@ -155,6 +192,12 @@ export default function Callbacks() {
             setSelectedLead(null);
           }}
         />
+      )}
+      {welcomeLead && (
+        <WelcomeEmailPanel lead={welcomeLead} onClose={() => setWelcomeLead(null)} onSent={onWelcomeSent} />
+      )}
+      {followUpLead && (
+        <FollowUpEmailPanel lead={followUpLead} onClose={() => setFollowUpLead(null)} onSent={onFollowUpSent} />
       )}
 
       {dialWarning && (
@@ -241,6 +284,7 @@ export default function Callbacks() {
                   <th>City</th>
                   <th>Google</th>
                   <th>Status</th>
+                  <th>Next Action</th>
                   <th>Last Note</th>
                   <th>Scheduled</th>
                   <th style={{ textAlign: 'right' }}>Actions</th>
@@ -260,6 +304,9 @@ export default function Callbacks() {
                       {formatGoogleScore(lead.googleScore) || <span style={{ color: 'var(--text3)', fontWeight: 400 }}>—</span>}
                     </td>
                     <td><StatusBadge status={lead.status} /></td>
+                    <td onClick={e => e.stopPropagation()}>
+                      <NextActionBadge lead={lead} onClick={handleNextAction} />
+                    </td>
                     <td style={{ maxWidth: 220, color: 'var(--text2)' }}>
                       {getCallbackNote(lead.id)}
                     </td>
@@ -270,7 +317,7 @@ export default function Callbacks() {
                       </span>
                     </td>
                     <td>
-                      <div style={{ display: 'flex', gap: 5, justifyContent: 'flex-end' }} onClick={e => e.stopPropagation()}>
+                      <div style={{ display: 'flex', gap: 5, justifyContent: 'flex-end', flexWrap: 'wrap' }} onClick={e => e.stopPropagation()}>
                         <button
                           className="btn btn-primary"
                           style={{ fontSize: 11, padding: '4px 10px', gap: 4 }}
@@ -278,6 +325,26 @@ export default function Callbacks() {
                           disabled={!lead.phone}
                         >
                           <Phone size={11} /> Call Now
+                        </button>
+                        {!(lead.tags || []).includes('welcome-email-sent') ? (
+                          <button
+                            className="btn btn-secondary"
+                            style={{ fontSize: 11, padding: '4px 8px', gap: 4 }}
+                            title="Send welcome email"
+                            onClick={() => setWelcomeLead(lead)}
+                          >
+                            <Mail size={11} />
+                          </button>
+                        ) : (
+                          <span className="email-sent-badge">✓</span>
+                        )}
+                        <button
+                          className="btn btn-secondary"
+                          style={{ fontSize: 11, padding: '4px 8px', gap: 4 }}
+                          title="Send follow-up email"
+                          onClick={() => setFollowUpLead(lead)}
+                        >
+                          <Send size={11} />
                         </button>
                         <button
                           className="btn btn-secondary"

@@ -42,6 +42,7 @@ export default function App() {
         <Route element={<RealtimeFeedProvider><AppShell /></RealtimeFeedProvider>}>
           <Route path="/dashboard"  element={<Dashboard />} />
           <Route path="/all-leads"  element={<AllLeads />} />
+          <Route path="/hot-leads"  element={<HotLeads />} />
           <Route path="/agents"     element={<Agents />} />
           <Route path="/reports"     element={<Reports />} />
           <Route path="/recordings" element={<Recordings />} />
