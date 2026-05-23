@@ -3,7 +3,7 @@ import { Phone, SkipForward, RefreshCw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useDialer } from '../context/DialerContext';
 import api from '../utils/api';
-import InCallOverlay from '../components/InCallOverlay';
+import CallWorkspace from '../components/CallWorkspace';
 import LeadPanel from '../components/LeadPanel';
 import { parseGoogleScore, formatGoogleScore, generateHook } from '../utils/leads';
 
@@ -256,23 +256,34 @@ export default function MyQueue() {
     );
   }
 
+  // ── Call workspace replaces page content while a call is active ──────────
+  if (activeCall) {
+    return (
+      <>
+        {toast && <div className="toast-notification">{toast}</div>}
+        <CallWorkspace
+          lead={activeCall.lead}
+          agentName={user?.name || 'Agent'}
+          onOutcome={handleOutcome}
+          saving={saving}
+          queueStats={{
+            totalCalls: totalCalls,
+            interested: stats?.interested ?? 0,
+            demos:      stats?.demosBooked ?? 0,
+          }}
+          nextLeads={activeQueue.slice(queueIndex + 1, queueIndex + 4)}
+        />
+      </>
+    );
+  }
+
   return (
     <>
       {/* ── Toast notification ── */}
       {toast && <div className="toast-notification">{toast}</div>}
 
-      {/* ── In-call overlay ── */}
-      {activeCall && (
-        <InCallOverlay
-          lead={activeCall.lead}
-          agentName={user?.name || 'Agent'}
-          onOutcome={handleOutcome}
-          saving={saving}
-        />
-      )}
-
       {/* ── Lead CRM panel ── */}
-      {selectedLead && !activeCall && (
+      {selectedLead && (
         <LeadPanel
           lead={selectedLead}
           onClose={() => setSelectedLead(null)}

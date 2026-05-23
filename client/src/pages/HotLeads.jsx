@@ -3,7 +3,7 @@ import { Flame, Phone, RefreshCw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSidebarCounts } from '../context/SidebarCounts';
 import api from '../utils/api';
-import InCallOverlay from '../components/InCallOverlay';
+import CallWorkspace from '../components/CallWorkspace';
 import LeadPanel from '../components/LeadPanel';
 import { useCallQueue } from '../hooks/useCallQueue';
 import { formatGoogleScore } from '../utils/leads';
@@ -84,18 +84,22 @@ export default function HotLeads() {
     );
   }
 
+  if (activeCall) {
+    return (
+      <CallWorkspace
+        lead={activeCall.lead}
+        agentName={user?.name || 'Agent'}
+        onOutcome={(outcome, note) => handleOutcome(outcome, note, onCallOutcome)}
+        saving={saving}
+        queueStats={null}
+        nextLeads={hotLeads.slice(hotLeads.findIndex(l => l.id === activeCall.lead.id) + 1).slice(0, 3)}
+      />
+    );
+  }
+
   return (
     <>
-      {activeCall && (
-        <InCallOverlay
-          lead={activeCall.lead}
-          agentName={user?.name || 'Agent'}
-          onOutcome={(outcome, note) => handleOutcome(outcome, note, onCallOutcome)}
-          saving={saving}
-        />
-      )}
-
-      {selectedLead && !activeCall && (
+      {selectedLead && (
         <LeadPanel
           lead={selectedLead}
           onClose={() => setSelectedLead(null)}
