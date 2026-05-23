@@ -1,15 +1,25 @@
 import { useState, useEffect, useRef } from 'react';
-import { Phone, PhoneOff, Mic, MicOff } from 'lucide-react';
+import { PhoneOff, Mic, MicOff } from 'lucide-react';
 
 const TABS = ['OPENER', 'PITCH', 'OBJECTIONS', 'CLOSE'];
 
+const OUTCOMES = [
+  { key: 'No Answer',     label: 'No Answer',     cls: '',           shortcut: '1' },
+  { key: 'Voicemail',     label: 'Voicemail',     cls: '',           shortcut: '2' },
+  { key: 'Interested',    label: 'Interested',    cls: 'interested', shortcut: '3' },
+  { key: 'Demo Booked',   label: 'Demo Booked',   cls: 'demo',       shortcut: '4' },
+  { key: 'Callback',      label: 'Callback',      cls: '',           shortcut: '5' },
+  { key: 'Not Qualified', label: 'Not Qualified', cls: '',           shortcut: '6' },
+];
+
+const KEY_MAP = Object.fromEntries(OUTCOMES.map(o => [o.shortcut, o.key]));
+
 function buildScripts(lead, agentName) {
-  const biz     = lead?.name        || 'the business';
-  const owner   = lead?.ownerName   || 'there';
-  const city    = lead?.city        || 'your area';
-  const type    = lead?.businessType || 'service';
-  const score   = lead?.googleScore;
-  const hook    = lead?.hookNote;
+  const biz   = lead?.name         || 'the business';
+  const owner = lead?.ownerName    || 'there';
+  const city  = lead?.city         || 'your area';
+  const type  = lead?.businessType || 'service';
+  const hook  = lead?.hookNote;
 
   return {
     OPENER: hook
@@ -37,28 +47,18 @@ function buildScripts(lead, agentName) {
   };
 }
 
-function formatTime(seconds) {
-  const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-  const s = (seconds % 60).toString().padStart(2, '0');
+function formatTime(secs) {
+  const m = Math.floor(secs / 60).toString().padStart(2, '0');
+  const s = (secs % 60).toString().padStart(2, '0');
   return `${m}:${s}`;
 }
 
-const OUTCOMES = [
-  { key: 'No Answer',     label: 'No Answer',    cls: '' },
-  { key: 'Voicemail',     label: 'Voicemail',    cls: '' },
-  { key: 'Interested',    label: 'Interested',   cls: 'interested' },
-  { key: 'Demo Booked',   label: 'Demo Booked',  cls: 'demo' },
-  { key: 'Not Qualified', label: 'Not Qualified',cls: '' },
-  { key: 'Callback',      label: 'Callback',     cls: '' },
-];
-
 export default function InCallOverlay({ lead, agentName, onOutcome, saving }) {
-  const [seconds, setSeconds] = useState(0);
+  const [seconds,   setSeconds]   = useState(0);
   const [activeTab, setActiveTab] = useState('OPENER');
-  const [note, setNote] = useState('');
-  const [muted, setMuted] = useState(false);
+  const [note,      setNote]      = useState('');
+  const [muted,     setMuted]     = useState(false);
   const noteRef = useRef(null);
-
   const scripts = buildScripts(lead, agentName);
 
   useEffect(() => {
@@ -66,53 +66,66 @@ export default function InCallOverlay({ lead, agentName, onOutcome, saving }) {
     return () => clearInterval(id);
   }, []);
 
-  function handleOutcome(outcomeKey) {
-    if (saving) return;
-    onOutcome(outcomeKey, note);
-  }
-
-  // Trap focus inside overlay
+  // Keyboard shortcuts — disabled while typing in note field
   useEffect(() => {
-    const el = document.querySelector('.call-interface');
-    if (el) el.focus?.();
-  }, []);
+    function onKey(e) {
+      if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+      if (saving) return;
+      if (KEY_MAP[e.key]) {
+        e.preventDefault();
+        onOutcome(KEY_MAP[e.key], note);
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        onOutcome('Called', note);
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [saving, note, onOutcome]);
 
   return (
     <div className="overlay-backdrop" role="dialog" aria-modal="true">
       <div className="call-interface">
 
-        {/* ── Left — timer, script ── */}
+        {/* ── Full-width header ── */}
+        <div className="ci-header">
+          <div className="ci-header-left">
+            <div className="ci-header-tag">CALL IN PROGRESS</div>
+            <div className="ci-header-name">{lead.name}</div>
+            <div className="ci-header-sub">
+              {lead.phone}
+              {lead.city ? ` · ${lead.city}${lead.state ? ', ' + lead.state : ''}` : ''}
+            </div>
+          </div>
+          <div className="ci-header-right">
+            <div className="ci-timer">{formatTime(seconds)}</div>
+            <div className="ci-controls">
+              <button
+                className={`ci-ctrl${muted ? ' active' : ''}`}
+                style={muted ? { color: 'var(--orange)', borderColor: 'rgba(255,107,53,0.4)' } : {}}
+                onClick={() => setMuted(m => !m)}
+              >
+                {muted ? <MicOff size={12} /> : <Mic size={12} />}
+                {muted ? 'Unmute' : 'Mute'}
+              </button>
+              <button
+                className="ci-ctrl danger"
+                onClick={() => !saving && onOutcome('Called', note)}
+                disabled={saving}
+              >
+                <PhoneOff size={12} /> End Call
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Instruction bar ── */}
+        <div className="ci-instruction">
+          JustCall popup handles audio — keep it open, work from this dashboard.
+        </div>
+
+        {/* ── Left — script tabs ── */}
         <div className="ci-left">
-          <div className="ci-status">ON CALL · LIVE</div>
-          <div className="ci-biz">{lead.name}</div>
-          <div className="ci-num">
-            {lead.phone}
-            {lead.city ? ` · ${lead.city}${lead.state ? ', ' + lead.state : ''}` : ''}
-          </div>
-          <div className="ci-timer">{formatTime(seconds)}</div>
-
-          <div className="ci-controls">
-            <button
-              className={`ci-ctrl${muted ? ' active' : ''}`}
-              style={muted ? { color: 'var(--orange)', borderColor: 'rgba(255,107,53,0.4)' } : {}}
-              onClick={() => setMuted(m => !m)}
-            >
-              {muted ? <MicOff size={12} /> : <Mic size={12} />}
-              {muted ? 'Unmute' : 'Mute'}
-            </button>
-            <button className="ci-ctrl" onClick={() => noteRef.current?.focus()}>
-              <Phone size={12} /> Note
-            </button>
-            <button
-              className="ci-ctrl danger"
-              onClick={() => handleOutcome('Called')}
-              disabled={saving}
-            >
-              <PhoneOff size={12} /> End Call
-            </button>
-          </div>
-
-          {/* Script tabs */}
           <div className="ci-script-wrap">
             <div className="ci-script-tabs">
               {TABS.map(tab => (
@@ -129,7 +142,7 @@ export default function InCallOverlay({ lead, agentName, onOutcome, saving }) {
           </div>
         </div>
 
-        {/* ── Right — lead info + outcomes ── */}
+        {/* ── Right — lead info, note, outcomes ── */}
         <div className="ci-right">
           <div className="ci-side-label">Lead Info</div>
           <div className="ci-side-info">
@@ -180,23 +193,29 @@ export default function InCallOverlay({ lead, agentName, onOutcome, saving }) {
           <textarea
             ref={noteRef}
             className="ci-note-area"
-            placeholder="Type while you talk..."
+            placeholder="Type while you talk…"
             value={note}
             onChange={e => setNote(e.target.value)}
           />
 
           <div className="ci-side-label">Log Outcome</div>
           <div className="ci-outcomes-grid">
-            {OUTCOMES.map(({ key, label, cls }) => (
+            {OUTCOMES.map(({ key, label, cls, shortcut }) => (
               <button
                 key={key}
                 className={`ci-out-btn${cls ? ' ' + cls : ''}${saving ? ' disabled' : ''}`}
-                onClick={() => handleOutcome(key)}
+                onClick={() => !saving && onOutcome(key, note)}
                 disabled={saving}
               >
+                <span className="ci-out-key">{shortcut}</span>
                 {saving ? '…' : label}
               </button>
             ))}
+          </div>
+
+          <div className="ci-keyboard-hint">
+            Press 1 = No Answer&nbsp; 2 = Voicemail&nbsp; 3 = Interested&nbsp;
+            4 = Demo Booked&nbsp; 5 = Callback&nbsp; 6 = Not Qualified&nbsp; ESC = End Call
           </div>
         </div>
 

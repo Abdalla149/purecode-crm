@@ -318,6 +318,8 @@ button { cursor: pointer; }
 
 .btn-primary:hover { filter: brightness(1.08); }
 
+.btn-sm { padding: 4px 10px; font-size: 11px; }
+
 .btn-secondary {
   background: var(--bg3);
   color: var(--text2);
@@ -764,19 +766,89 @@ button { cursor: pointer; }
   border-radius: 14px;
   overflow: hidden;
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr 320px;
   width: 100%;
-  max-width: 900px;
-  max-height: 90vh;
+  max-width: 960px;
+  max-height: 92vh;
   overflow-y: auto;
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0,229,160,0.08);
+}
+
+/* ── Full-width header spanning both columns ── */
+.ci-header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg3);
+}
+
+.ci-header-left { display: flex; flex-direction: column; gap: 4px; }
+
+.ci-header-tag {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+
+.ci-header-tag::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: pulse 1.2s infinite;
+  flex-shrink: 0;
+}
+
+.ci-header-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.ci-header-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text2);
+  margin-top: 2px;
+}
+
+.ci-header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+/* ── Instruction bar ── */
+.ci-instruction {
+  grid-column: 1 / -1;
+  background: rgba(0, 229, 160, 0.04);
+  border-bottom: 1px solid rgba(0, 229, 160, 0.1);
+  padding: 6px 24px;
+  font-size: 11px;
+  color: var(--text3);
+  text-align: center;
+  letter-spacing: 0.02em;
+  font-style: italic;
 }
 
 .ci-left {
-  padding: 24px;
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
 
 .ci-status {
@@ -817,10 +889,9 @@ button { cursor: pointer; }
 
 .ci-timer {
   font-family: 'Syne', sans-serif;
-  font-size: 40px;
+  font-size: 36px;
   font-weight: 800;
   color: var(--primary);
-  margin-bottom: 16px;
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
@@ -998,6 +1069,59 @@ button { cursor: pointer; }
 .ci-out-btn.disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.ci-out-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: var(--bg4);
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text3);
+  margin-right: 5px;
+  flex-shrink: 0;
+}
+
+.ci-keyboard-hint {
+  margin-top: 10px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--text3);
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+  text-align: center;
+  padding: 6px 4px 2px;
+  border-top: 1px solid var(--border);
+}
+
+/* ─── TOAST NOTIFICATION ─── */
+.toast-notification {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary);
+  color: #000;
+  padding: 11px 22px;
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 13px;
+  z-index: 1100;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0,229,160,0.3);
+  animation: toast-pop 0.2s ease;
+}
+
+@keyframes toast-pop {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
 /* ─── EMPTY QUEUE STATE ─── */
@@ -1309,6 +1433,8 @@ button { cursor: pointer; }
   .nc-grid { grid-template-columns: 1fr; }
   .nc-actions { display: flex; justify-content: center; }
   .call-interface { grid-template-columns: 1fr; }
+  .ci-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .ci-header-right { width: 100%; justify-content: space-between; }
   .ci-right { border-left: none; border-top: 1px solid var(--border); }
 }
 

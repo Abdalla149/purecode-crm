@@ -91,6 +91,12 @@ export default function MyQueue() {
     warnTimer.current = setTimeout(() => setDialWarning(null), 4000);
   }
 
+  function showToast(msg) {
+    setToast(msg);
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 3000);
+  }
+
   const [loading, setLoading]         = useState(true);
   const [error, setError]             = useState(null);
   const [stats, setStats]             = useState(null);
@@ -100,6 +106,8 @@ export default function MyQueue() {
   const [callCounts, setCallCounts]   = useState(loadCallCounts);
   const [selectedLead, setSelectedLead] = useState(null);
   const [agentKpi, setAgentKpi]       = useState(null);
+  const [toast, setToast]             = useState(null);
+  const toastTimer = useRef(null);
 
   const phoneNumbers = user?.phoneNumbers || [];
 
@@ -208,13 +216,13 @@ export default function MyQueue() {
         interested:  outcome === 'Interested'  ? (prev.interested  || 0) + 1 : (prev.interested  || 0),
         demosBooked: outcome === 'Demo Booked' ? (prev.demosBooked || 0) + 1 : (prev.demosBooked || 0),
       } : prev);
-    } catch (err) {
-      console.error('[OUTCOME ERROR]', err);
-      // Still advance even if note fails — don't block the agent
+    } catch {
+      // Advance even if note fails — don't block the agent
     } finally {
       setSaving(false);
       setActiveCall(null);
       setQueueIndex(i => i + 1);
+      showToast('Outcome saved — next lead loaded');
     }
   }
 
@@ -249,6 +257,9 @@ export default function MyQueue() {
 
   return (
     <>
+      {/* ── Toast notification ── */}
+      {toast && <div className="toast-notification">{toast}</div>}
+
       {/* ── In-call overlay ── */}
       {activeCall && (
         <InCallOverlay
