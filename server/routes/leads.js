@@ -226,4 +226,89 @@ router.post('/bulk-assign', requireAdmin, async (req, res) => {
 });
 
 
+// ═══════════ POST /api/leads/bulk-unassign-agent ═══════════
+// Admin only — remove all leads from one agent
+router.post('/bulk-unassign-agent', requireAdmin, async (req, res) => {
+  try {
+    const { agentId } = req.body;
+    if (!agentId) return res.status(400).json({ error: 'agentId required' });
+
+    const leads = await ghl.getLeads({ assignedAgent: agentId });
+    console.log(`[UNASSIGN] Unassigning ${leads.length} leads from ${agentId}`);
+
+    let unassigned = 0;
+    const BATCH = 20;
+    for (let i = 0; i < leads.length; i += BATCH) {
+      if (i > 0) await new Promise(r => setTimeout(r, 200));
+      const results = await Promise.allSettled(
+        leads.slice(i, i + BATCH).map(l => ghl.updateLead(l.id, { assignedAgent: '' }))
+      );
+      unassigned += results.filter(r => r.status === 'fulfilled').length;
+    }
+
+    ghl.clearContactCache();
+    res.json({ success: true, unassigned, total: leads.length });
+  } catch (err) {
+    console.error('[UNASSIGN AGENT ERROR]', err);
+    res.status(500).json({ error: 'Could not unassign leads — contact David' });
+  }
+});
+
+
+// ═══════════ POST /api/leads/bulk-reassign-agent ═══════════
+// Admin only — move all leads from one agent to another
+router.post('/bulk-reassign-agent', requireAdmin, async (req, res) => {
+  try {
+    const { fromAgentId, toAgentId } = req.body;
+    if (!fromAgentId) return res.status(400).json({ error: 'fromAgentId required' });
+
+    const leads = await ghl.getLeads({ assignedAgent: fromAgentId });
+    console.log(`[REASSIGN] Moving ${leads.length} leads from ${fromAgentId} → ${toAgentId || 'unassigned'}`);
+
+    let reassigned = 0;
+    const BATCH = 20;
+    for (let i = 0; i < leads.length; i += BATCH) {
+      if (i > 0) await new Promise(r => setTimeout(r, 200));
+      const results = await Promise.allSettled(
+        leads.slice(i, i + BATCH).map(l => ghl.updateLead(l.id, { assignedAgent: toAgentId || '' }))
+      );
+      reassigned += results.filter(r => r.status === 'fulfilled').length;
+    }
+
+    ghl.clearContactCache();
+    res.json({ success: true, reassigned, total: leads.length });
+  } catch (err) {
+    console.error('[REASSIGN AGENT ERROR]', err);
+    res.status(500).json({ error: 'Could not reassign leads — contact David' });
+  }
+});
+
+
+// ═══════════ POST /api/leads/reset-all-agents ═══════════
+// Admin only — strip all agent assignments from the entire pipeline
+router.post('/reset-all-agents', requireAdmin, async (req, res) => {
+  try {
+    const all      = await ghl.getLeads();
+    const assigned = all.filter(l => l.assignedAgent);
+    console.log(`[RESET] Unassigning all ${assigned.length} assigned leads`);
+
+    let unassigned = 0;
+    const BATCH = 20;
+    for (let i = 0; i < assigned.length; i += BATCH) {
+      if (i > 0) await new Promise(r => setTimeout(r, 200));
+      const results = await Promise.allSettled(
+        assigned.slice(i, i + BATCH).map(l => ghl.updateLead(l.id, { assignedAgent: '' }))
+      );
+      unassigned += results.filter(r => r.status === 'fulfilled').length;
+    }
+
+    ghl.clearContactCache();
+    res.json({ success: true, unassigned, total: assigned.length });
+  } catch (err) {
+    console.error('[RESET ALL ERROR]', err);
+    res.status(500).json({ error: 'Could not reset agents — contact David' });
+  }
+});
+
+
 export default router;

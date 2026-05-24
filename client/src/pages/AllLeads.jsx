@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { RefreshCw, Search, UserCheck, X, ChevronDown, CheckCircle, Mail, Send } from 'lucide-react';
 import api from '../utils/api';
 import { formatGoogleScore } from '../utils/leads';
@@ -161,6 +162,8 @@ function ReassignDropdown({ lead, agents, onReassign }) {
 }
 
 export default function AllLeads() {
+  const location = useLocation();
+
   const [leads,       setLeads]       = useState([]);
   const [agents,      setAgents]      = useState([]);
   const [loading,     setLoading]     = useState(true);
@@ -178,9 +181,10 @@ export default function AllLeads() {
   const [bulkAssigning,   setBulkAssigning]   = useState(false);
   const [assignBanner,    setAssignBanner]    = useState(null);
 
-  // Filters
+  // Filters — pre-populate from ?assigned= query param (from Agents page "View Queue")
+  const initialAgent = new URLSearchParams(location.search).get('assigned') || 'All';
   const [statusFilter, setStatusFilter] = useState('All');
-  const [agentFilter,  setAgentFilter]  = useState('All');
+  const [agentFilter,  setAgentFilter]  = useState(initialAgent);
   const [search,       setSearch]       = useState('');
   const [cityFilter,   setCityFilter]   = useState('');
 
