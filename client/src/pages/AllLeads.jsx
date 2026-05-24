@@ -123,11 +123,12 @@ function ReassignDropdown({ lead, agents, onReassign }) {
   const [open,    setOpen]    = useState(false);
   const [loading, setLoading] = useState(false);
 
-  async function reassign(ghlUserId) {
+  async function reassign(ghlUserId, newAgentName) {
+    const prevName = agents.find(a => a.ghlUserId === lead.assignedAgent)?.name || null;
     setOpen(false); setLoading(true);
     try {
       await api.put(`/leads/${lead.id}/assign`, { agentId: ghlUserId });
-      onReassign(lead.id, ghlUserId);
+      onReassign(lead.id, ghlUserId, prevName, newAgentName);
     } catch { /* silent */ } finally { setLoading(false); }
   }
 
@@ -147,13 +148,14 @@ function ReassignDropdown({ lead, agents, onReassign }) {
           background: 'var(--bg3)', border: '1px solid var(--border2)', borderRadius: 8,
           minWidth: 130, overflow: 'hidden', boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
         }}>
-          <div style={{ padding: '8px 12px', fontSize: 12, cursor: 'pointer', color: 'var(--text2)' }} onClick={() => reassign('')}>Unassign</div>
+          <div style={{ padding: '8px 12px', fontSize: 12, cursor: 'pointer', color: 'var(--text3)' }}
+            onClick={() => reassign('', null)}>Unassign</div>
           {agents.map(a => (
             <div key={a.id} style={{
               padding: '8px 12px', fontSize: 12, cursor: 'pointer',
               color: a.ghlUserId === lead.assignedAgent ? 'var(--primary)' : 'var(--text)',
               background: a.ghlUserId === lead.assignedAgent ? 'var(--primary-dim)' : 'transparent',
-            }} onClick={() => reassign(a.ghlUserId)}>{a.name}</div>
+            }} onClick={() => reassign(a.ghlUserId, a.name)}>{a.name}</div>
           ))}
         </div>
       )}
@@ -245,8 +247,13 @@ export default function AllLeads() {
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);
 
-  function handleReassign(leadId, ghlUserId) {
+  function handleReassign(leadId, ghlUserId, prevAgentName, newAgentName) {
     setLeads(prev => prev.map(l => l.id === leadId ? { ...l, assignedAgent: ghlUserId } : l));
+    if (!ghlUserId) {
+      showToast(`Lead unassigned${prevAgentName ? ` from ${prevAgentName}` : ''}`);
+    } else {
+      showToast(`Lead assigned to ${newAgentName}`);
+    }
   }
 
   const cities   = [...new Set(leads.map(l => l.city).filter(Boolean))].sort();

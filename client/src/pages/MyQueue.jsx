@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Phone, SkipForward, RefreshCw, Mail, Send } from 'lucide-react';
+import { Phone, SkipForward, RefreshCw, Mail, Send, MoreHorizontal } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useDialer } from '../context/DialerContext';
 import api from '../utils/api';
@@ -114,6 +114,7 @@ export default function MyQueue() {
   const [toast, setToast]             = useState(null);
   const [welcomeLead,  setWelcomeLead]  = useState(null);
   const [followUpLead, setFollowUpLead] = useState(null);
+  const [kebabLeadId,  setKebabLeadId]  = useState(null);
   const toastTimer = useRef(null);
 
   const phoneNumbers = user?.phoneNumbers || [];
@@ -249,6 +250,17 @@ export default function MyQueue() {
   function onFollowUpSent() {
     showToast('Follow-up email logged — Zoho send wiring coming in Phase 3');
     setFollowUpLead(null);
+  }
+
+  async function handleUnassign(lead) {
+    setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, assignedAgent: '' } : l));
+    showToast('Lead unassigned');
+    try {
+      await api.put(`/leads/${lead.id}/assign`, { agentId: '' });
+    } catch {
+      setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, assignedAgent: lead.assignedAgent } : l));
+      showToast('Could not unassign — try again');
+    }
   }
 
   function handleNextAction(action, lead) {
@@ -615,6 +627,33 @@ export default function MyQueue() {
                           >
                             <Send size={10} />
                           </button>
+                          {user?.role === 'admin' && lead.assignedAgent && (
+                            <div style={{ position: 'relative' }}>
+                              <button
+                                className="btn btn-secondary"
+                                style={{ fontSize: 11, padding: '4px 8px' }}
+                                title="More options"
+                                onClick={() => setKebabLeadId(prev => prev === lead.id ? null : lead.id)}
+                              >
+                                <MoreHorizontal size={10} />
+                              </button>
+                              {kebabLeadId === lead.id && (
+                                <div style={{
+                                  position: 'absolute', right: 0, top: '100%', marginTop: 4, zIndex: 50,
+                                  background: 'var(--bg3)', border: '1px solid var(--border2)',
+                                  borderRadius: 6, overflow: 'hidden',
+                                  boxShadow: '0 4px 16px rgba(0,0,0,0.5)', whiteSpace: 'nowrap',
+                                }}>
+                                  <div
+                                    style={{ padding: '8px 14px', fontSize: 12, cursor: 'pointer', color: 'var(--red)' }}
+                                    onClick={() => { setKebabLeadId(null); handleUnassign(lead); }}
+                                  >
+                                    Unassign from agent
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </td>
                     </tr>

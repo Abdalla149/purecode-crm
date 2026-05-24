@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Phone, RefreshCw, Mail, Send } from 'lucide-react';
+import { Phone, RefreshCw, Mail, Send, MoreHorizontal } from 'lucide-react';
 import { DndContext, DragOverlay, closestCenter, useDroppable, useDraggable } from '@dnd-kit/core';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
@@ -40,7 +40,8 @@ function relativeTime(iso) {
 }
 
 // ── Draggable Card ─────────────────────────────────────────────
-function KanbanCard({ lead, agentName, onCall, onWelcome, onFollowUp, onNextAction, isDragging }) {
+function KanbanCard({ lead, agentName, onCall, onWelcome, onFollowUp, onNextAction, onUnassign, isDragging }) {
+  const [kebabOpen, setKebabOpen] = useState(false);
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: lead.id,
     data: { lead },
@@ -117,6 +118,32 @@ function KanbanCard({ lead, agentName, onCall, onWelcome, onFollowUp, onNextActi
         >
           <Send size={11} />
         </button>
+        {onUnassign && lead.assignedAgent && (
+          <div style={{ position: 'relative' }}>
+            <button
+              className="kcard-btn"
+              title="More options"
+              onClick={() => setKebabOpen(o => !o)}
+            >
+              <MoreHorizontal size={11} />
+            </button>
+            {kebabOpen && (
+              <div style={{
+                position: 'absolute', right: 0, bottom: '100%', marginBottom: 4,
+                background: 'var(--bg3)', border: '1px solid var(--border2)',
+                borderRadius: 6, overflow: 'hidden', zIndex: 100,
+                boxShadow: '0 4px 16px rgba(0,0,0,0.5)', whiteSpace: 'nowrap',
+              }}>
+                <div
+                  style={{ padding: '8px 14px', fontSize: 12, cursor: 'pointer', color: 'var(--red)' }}
+                  onClick={() => { setKebabOpen(false); onUnassign(lead); }}
+                >
+                  Unassign from agent
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -135,7 +162,7 @@ function KanbanCardOverlay({ lead }) {
 }
 
 // ── Droppable Column ───────────────────────────────────────────
-function KanbanColumn({ col, leads, agentNames, onCall, onWelcome, onFollowUp, onNextAction, activeDragId }) {
+function KanbanColumn({ col, leads, agentNames, onCall, onWelcome, onFollowUp, onNextAction, onUnassign, activeDragId }) {
   const { isOver, setNodeRef } = useDroppable({ id: col.id });
 
   const isPlaceholder = col.id === 'email';
@@ -165,6 +192,7 @@ function KanbanColumn({ col, leads, agentNames, onCall, onWelcome, onFollowUp, o
               onWelcome={onWelcome}
               onFollowUp={onFollowUp}
               onNextAction={onNextAction}
+              onUnassign={onUnassign}
               isDragging={lead.id === activeDragId}
             />
           ))
@@ -340,6 +368,19 @@ export default function HotLeads() {
     showToast('Follow-up email logged — Zoho send wiring coming in Phase 3');
   }
 
+  // ── Unassign a lead (admin only) ──────────────────────────
+  async function handleUnassign(lead) {
+    const name = agentNames[lead.assignedAgent] || 'agent';
+    setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, assignedAgent: '' } : l));
+    showToast(`Lead unassigned from ${name}`);
+    try {
+      await api.put(`/leads/${lead.id}/assign`, { agentId: '' });
+    } catch {
+      setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, assignedAgent: lead.assignedAgent } : l));
+      showToast('Could not unassign — try again');
+    }
+  }
+
   // ── Active call → workspace ───────────────────────────────
   function onCallOutcome(leadId, status) {
     setLeads(prev => prev.map(l =>
@@ -468,6 +509,7 @@ export default function HotLeads() {
                 onWelcome={setWelcomeLead}
                 onFollowUp={setFollowUpLead}
                 onNextAction={handleNextAction}
+                onUnassign={user?.role === 'admin' ? handleUnassign : undefined}
                 activeDragId={activeDragId}
               />
             ))}
