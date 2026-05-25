@@ -23,6 +23,15 @@ const BIZ_TYPE_MAP = {
   'auto':        'auto shops',
 };
 
+const PITCH_BIZ_MAP = {
+  'roofing':     'roofers',
+  'hvac':        'HVAC companies',
+  'plumbing':    'plumbers',
+  'towing':      'towing companies',
+  'auto repair': 'auto shops',
+  'auto':        'auto shops',
+};
+
 function buildOpeners(lead, agentName) {
   const nameParts  = (lead?.ownerName || '').trim().split(/\s+/);
   const ownerFirst = nameParts[0] || 'there';
@@ -47,14 +56,44 @@ function buildOpeners(lead, agentName) {
   ];
 }
 
+function buildPitch(lead) {
+  const bizWord = PITCH_BIZ_MAP[(lead?.businessType || '').toLowerCase()] || 'service businesses';
+
+  return [
+    {
+      label: 'Ask These First',
+      questions: [
+        'Real quick — do you have any idea how many calls a week your business is missing right now?',
+        'Right now — when a homeowner calls, who\'s picking up?',
+        'What about after 5pm or weekends?',
+        'How are calls getting logged today — are you using a CRM, or just memory?',
+        'Roughly how many estimate calls do you take a week?',
+      ],
+    },
+    {
+      label: 'Dig Deeper',
+      questions: [
+        'How often do calls end up going to voicemail or unanswered?',
+        'What kind of issues come up when your wife/admin can\'t get to the phone in time?',
+        'Have you had homeowners tell you they tried calling before they finally got through?',
+      ],
+    },
+    {
+      label: 'Pain Punch — Drop This Line',
+      isPunchline: true,
+      questions: [
+        `"And here's what most ${bizWord} don't realize — those callers who didn't reach you don't leave a voicemail. 75% of them. They just call the next ${bizWord} in their search. So you don't even SEE the calls you're losing."`,
+      ],
+    },
+  ];
+}
+
 function buildScripts(lead, agentName) {
   const biz   = lead?.name         || 'the business';
   const city  = lead?.city         || 'your area';
   const type  = lead?.businessType || 'service';
 
   return {
-    PITCH: `"We build an AI receptionist specifically for ${type} companies in ${city}.\n\nIt answers every call 24/7 — when you're on a job, after hours, weekends. Books straight to your calendar, handles FAQs, routes urgent jobs directly to you.\n\nMost ${type} businesses we work with start booking 20–30% more jobs within the first month.\n\nWe set it up in about a week, completely done-for-you."`,
-
     OBJECTIONS: `"I'm too busy right now."
 → "That's the point — it runs itself. Takes me 2 minutes to explain."
 
@@ -265,6 +304,41 @@ export default function CallWorkspace({ lead, agentName, onOutcome, onExit, savi
                   </div>
                   <div className="ws-script" style={{ minHeight: 'unset', flex: 'unset' }}>
                     {text}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : activeTab === 'PITCH' ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
+              {buildPitch(lead).map(({ label, questions, isPunchline }, si) => (
+                <div
+                  key={label}
+                  style={{
+                    borderTop: si > 0 ? '1px solid var(--border)' : 'none',
+                    paddingTop: si > 0 ? 14 : 0,
+                    marginBottom: si < 2 ? 14 : 0,
+                  }}
+                >
+                  <div style={{
+                    fontFamily: "'DM Mono', monospace",
+                    fontSize: 9, fontWeight: 700,
+                    letterSpacing: '0.14em', textTransform: 'uppercase',
+                    color: 'var(--primary)', marginBottom: 8,
+                  }}>
+                    {label}
+                  </div>
+                  <div className="ws-script" style={{ minHeight: 'unset', flex: 'unset' }}>
+                    {questions.map((q, qi) => (
+                      <div
+                        key={qi}
+                        style={{
+                          marginBottom: qi < questions.length - 1 ? 10 : 0,
+                          fontStyle: isPunchline ? 'italic' : 'normal',
+                        }}
+                      >
+                        {q}
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}
