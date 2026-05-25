@@ -14,18 +14,45 @@ const OUTCOMES = [
 
 const KEY_MAP = Object.fromEntries(OUTCOMES.map(o => [o.shortcut, o.key]));
 
+const BIZ_TYPE_MAP = {
+  'roofing':     'roofing companies',
+  'hvac':        'HVAC companies',
+  'towing':      'towing companies',
+  'plumbing':    'plumbing companies',
+  'auto repair': 'auto shops',
+  'auto':        'auto shops',
+};
+
+function buildOpeners(lead, agentName) {
+  const nameParts  = (lead?.ownerName || '').trim().split(/\s+/);
+  const ownerFirst = nameParts[0] || 'there';
+  const ownerLast  = nameParts.length > 1 ? nameParts[nameParts.length - 1] : (lead?.name || 'there');
+  const agentFirst = (agentName || '').split(' ')[0] || 'I';
+  const city       = lead?.city || 'your area';
+  const bizType    = BIZ_TYPE_MAP[(lead?.businessType || '').toLowerCase()] || 'local service businesses';
+
+  return [
+    {
+      label: 'Variant A — Bad Time',
+      text:  `"Hey ${ownerFirst} — is now a bad time?"\n\n→ [If they say "No, what's this?" or similar]\n\n"Appreciate that. I'll be quick. I help ${bizType} in ${city} stop losing jobs to missed calls. Worth 60 seconds?"`,
+    },
+    {
+      label: 'Variant B — Honest Cold Call',
+      text:  `"Hey ${ownerFirst} — this is ${agentFirst} with PureCode. Full disclosure — this is a cold call. I get it if you want to hang up. Could I have 20 seconds to tell you why I called, then you decide?"`,
+    },
+    {
+      label: 'Variant C — Good News / Bad News',
+      text:  `"Hello sir, my name is ${agentFirst}. I'll be quick — you want the good news or the bad news, Mr. ${ownerLast}?\n\n→ [Wait for them to pick]\n\nThe bad news is that this is a cold call. The good news is that it's a well-researched cold call for your business."`,
+    },
+  ];
+}
+
 function buildScripts(lead, agentName) {
   const biz   = lead?.name         || 'the business';
-  const owner = lead?.ownerName    || 'there';
   const city  = lead?.city         || 'your area';
   const type  = lead?.businessType || 'service';
-  const hook  = lead?.hookNote;
 
   return {
-    OPENER: hook
-      ? `"Hey ${owner} — this is ${agentName} with PureCode Agency. Super quick. ${hook}\n\nIs that something you're still dealing with? … Got 90 seconds?"`
-      : `"Hey ${owner} — this is ${agentName} with PureCode Agency. I was looking at ${biz}'s Google profile and had a quick question about your lead follow-up process.\n\nAre missed calls or slow follow-ups costing you jobs? … [pause] … That's exactly why I'm calling. Got 90 seconds?"`,
-
     PITCH: `"We build an AI receptionist specifically for ${type} companies in ${city}.\n\nIt answers every call 24/7 — when you're on a job, after hours, weekends. Books straight to your calendar, handles FAQs, routes urgent jobs directly to you.\n\nMost ${type} businesses we work with start booking 20–30% more jobs within the first month.\n\nWe set it up in about a week, completely done-for-you."`,
 
     OBJECTIONS: `"I'm too busy right now."
@@ -223,7 +250,28 @@ export default function CallWorkspace({ lead, agentName, onOutcome, onExit, savi
               </button>
             ))}
           </div>
-          <div className="ws-script">{scripts[activeTab]}</div>
+
+          {activeTab === 'OPENER' ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
+              {buildOpeners(lead, agentName).map(({ label, text }) => (
+                <div key={label}>
+                  <div style={{
+                    fontFamily: "'DM Mono', monospace",
+                    fontSize: 9, fontWeight: 700,
+                    letterSpacing: '0.14em', textTransform: 'uppercase',
+                    color: 'var(--primary)', marginBottom: 6,
+                  }}>
+                    {label}
+                  </div>
+                  <div className="ws-script" style={{ minHeight: 'unset', flex: 'unset' }}>
+                    {text}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="ws-script">{scripts[activeTab]}</div>
+          )}
 
           {/* Note */}
           <div className="ws-note-wrap">
