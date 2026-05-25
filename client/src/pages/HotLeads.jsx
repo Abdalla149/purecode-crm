@@ -13,7 +13,6 @@ import { getLeadColumn, COLUMN_STATUS } from '../utils/next_action';
 
 // ── Column definitions ────────────────────────────────────────
 const COLUMNS = [
-  { id: 'called',     emoji: '📞', title: 'Called',        color: 'var(--text3)' },
   { id: 'interested', emoji: '💬', title: 'Interested',    color: 'var(--primary)' },
   { id: 'email',      emoji: '📧', title: 'Email Opened',  color: 'var(--blue)' },
   { id: 'demo',       emoji: '📅', title: 'Demo Booked',   color: 'var(--purple)' },
@@ -291,12 +290,11 @@ export default function HotLeads() {
 
   // ── Pipeline summary stats ────────────────────────────────
   const stats = useMemo(() => ({
-    total:   pipelineLeads.length,
-    called:  columnLeads['called']?.length    || 0,
+    total:      pipelineLeads.length,
     interested: columnLeads['interested']?.length || 0,
-    demo:    columnLeads['demo']?.length      || 0,
-    closed:  columnLeads['closed']?.length    || 0,
-    revenue: (columnLeads['closed']?.length || 0) * 497,
+    demo:       columnLeads['demo']?.length       || 0,
+    closed:     columnLeads['closed']?.length     || 0,
+    revenue:    (columnLeads['closed']?.length || 0) * 497,
   }), [columnLeads, pipelineLeads.length]);
 
   // ── Toast helper ──────────────────────────────────────────
@@ -461,16 +459,11 @@ export default function HotLeads() {
       </div>
 
       {/* KPI strip */}
-      <div className="kpi-strip" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
+      <div className="kpi-strip" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
         <div className="kpi blue">
           <div className="kpi-label">Pipeline</div>
           <div className="kpi-num">{stats.total}</div>
           <div className="kpi-delta flat">total</div>
-        </div>
-        <div className="kpi" style={{ '--kc': 'var(--text2)' }}>
-          <div className="kpi-label">Called</div>
-          <div className="kpi-num" style={{ color: 'var(--text2)' }}>{stats.called}</div>
-          <div className="kpi-delta flat">reached</div>
         </div>
         <div className="kpi green">
           <div className="kpi-label">Interested</div>

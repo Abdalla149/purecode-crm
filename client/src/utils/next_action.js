@@ -58,13 +58,11 @@ export function getLeadColumn(lead) {
   if (lead.status === 'Closed')        return 'closed';
   if (lead.status === 'Demo Booked')   return 'demo';
   if (lead.status === 'Interested' || hasWelcome) return 'interested';
-  if (['Called', 'No Answer', 'Voicemail', 'Callback'].includes(lead.status)) return 'called';
-  return null; // New / unworked leads don't appear in the pipeline kanban
+  return null; // Called/No Answer/Voicemail/Callback and New don't appear in the pipeline
 }
 
 /** Maps a kanban column id → the GHL status to set when a card is dropped there */
 export const COLUMN_STATUS = {
-  called:    'Called',
   interested:'Interested',
   email:     null,          // Phase 2 placeholder — no status change
   demo:      'Demo Booked',
