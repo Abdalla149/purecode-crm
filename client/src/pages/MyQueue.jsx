@@ -115,6 +115,8 @@ export default function MyQueue() {
   const [welcomeLead,  setWelcomeLead]  = useState(null);
   const [followUpLead, setFollowUpLead] = useState(null);
   const [kebabLeadId,  setKebabLeadId]  = useState(null);
+  const [showCalled,   setShowCalled]   = useState(false);
+  const [resumeLead,   setResumeLead]   = useState(null); // business name string
   const toastTimer = useRef(null);
 
   const phoneNumbers = user?.phoneNumbers || [];
@@ -125,12 +127,27 @@ export default function MyQueue() {
     setError(null);
     try {
       const { data } = await api.get('/leads');
-      setLeads(data.leads || []);
+      const loaded = data.leads || [];
+      setLeads(loaded);
+      checkResumePosition(loaded);
     } catch (err) {
       setError('Could not load your queue — try refreshing');
     } finally {
       setLoading(false);
     }
+  }
+
+  async function checkResumePosition(loadedLeads) {
+    try {
+      const { data } = await api.get('/agent/session/position');
+      if (!data.lastLeadId) return;
+      const sorted = sortLeads(loadedLeads).filter(l => !STATUS_DONE.has(l.status));
+      const idx = sorted.findIndex(l => l.id === data.lastLeadId);
+      if (idx > 0) {
+        setQueueIndex(idx);
+        setResumeLead(sorted[idx].name);
+      }
+    } catch {} // non-critical
   }
 
   async function fetchStats() {
@@ -160,6 +177,20 @@ export default function MyQueue() {
   const currentLead = activeQueue[queueIndex] || null;
   const queueDone   = leads.length > 0 && queueIndex >= activeQueue.length;
   const remaining   = Math.max(0, activeQueue.length - queueIndex);
+
+  // Leads unworked (New or Callback) — drives the "Remaining" counter
+  const uncalledCount = useMemo(
+    () => sortedLeads.filter(l => l.status === 'New' || l.status === 'Callback').length,
+    [sortedLeads]
+  );
+
+  // Table rows: hide already-called leads unless toggle is on
+  const tableLeads = useMemo(
+    () => showCalled
+      ? sortedLeads
+      : sortedLeads.filter(l => l.status === 'New' || l.status === 'Callback'),
+    [sortedLeads, showCalled]
+  );
 
   // ── Phone rotation ─────────────────────────────────────────
   const activeNumber = phoneNumbers.length > 0
@@ -199,6 +230,9 @@ export default function MyQueue() {
       saveCallCounts(newCounts);
     }
 
+    // Persist position server-side for cross-device resume
+    api.post('/agent/session/position', { leadId: lead.id }).catch(() => {});
+
     setActiveCall({ lead });
   }
 
@@ -229,12 +263,17 @@ export default function MyQueue() {
       setSaving(false);
       setActiveCall(null);
       setQueueIndex(i => i + 1);
+      const nextLead = activeQueue[queueIndex + 1];
+      if (nextLead) api.post('/agent/session/position', { leadId: nextLead.id }).catch(() => {});
       showToast('Outcome saved — next lead loaded');
     }
   }
 
   function handleSkip(lead) {
-    setQueueIndex(i => i + 1);
+    const nextIdx = queueIndex + 1;
+    setQueueIndex(nextIdx);
+    const nextLead = activeQueue[nextIdx];
+    if (nextLead) api.post('/agent/session/position', { leadId: nextLead.id }).catch(() => {});
   }
 
   function onWelcomeSent(leadId) {
@@ -341,6 +380,25 @@ export default function MyQueue() {
         <FollowUpEmailPanel lead={followUpLead} onClose={() => setFollowUpLead(null)} onSent={onFollowUpSent} />
       )}
 
+      {/* ── Resume banner ── */}
+      {resumeLead && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10,
+          background: 'rgba(0,229,160,0.08)', border: '1px solid rgba(0,229,160,0.25)',
+          borderRadius: 8, padding: '10px 16px', marginBottom: 14, fontSize: 13,
+        }}>
+          <span style={{ color: 'var(--primary)', fontWeight: 600 }}>
+            ↩ Resumed from your last session — {resumeLead}
+          </span>
+          <button
+            style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontSize: 12 }}
+            onClick={() => { setResumeLead(null); setQueueIndex(0); }}
+          >
+            Start from top
+          </button>
+        </div>
+      )}
+
       {/* ── Page header ── */}
       <div className="page-head">
         <div>
@@ -348,12 +406,23 @@ export default function MyQueue() {
           <p className="page-subtitle">
             {leads.length === 0
               ? 'No leads assigned yet'
-              : `${remaining} lead${remaining !== 1 ? 's' : ''} remaining · ${totalCalls} calls today`}
+              : `Called today: ${totalCalls} · Remaining: ${uncalledCount}`}
           </p>
         </div>
-        <button className="btn btn-secondary" onClick={() => { fetchLeads(); fetchStats(); }}>
-          <RefreshCw size={12} /> Refresh
-        </button>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text3)', cursor: 'pointer', userSelect: 'none' }}>
+            <input
+              type="checkbox"
+              checked={showCalled}
+              onChange={e => setShowCalled(e.target.checked)}
+              style={{ accentColor: 'var(--primary)', cursor: 'pointer' }}
+            />
+            Show already-called leads
+          </label>
+          <button className="btn btn-secondary" onClick={() => { fetchLeads(); fetchStats(); }}>
+            <RefreshCw size={12} /> Refresh
+          </button>
+        </div>
       </div>
 
       {/* ── KPI strip ── */}
@@ -543,7 +612,7 @@ export default function MyQueue() {
           <div className="panel-head" style={{ padding: '16px 18px 0' }}>
             <div className="panel-title">Lead Queue · Up Next</div>
             <span style={{ fontSize: 11, color: 'var(--text3)', fontFamily: "'DM Mono', monospace" }}>
-              {leads.length} total
+              {tableLeads.length} shown{!showCalled && sortedLeads.length > tableLeads.length ? ` · ${sortedLeads.length - tableLeads.length} hidden (called)` : ''}
             </span>
           </div>
           <div className="tbl-wrap" style={{ border: 'none', borderRadius: 0, background: 'transparent' }}>
@@ -562,7 +631,7 @@ export default function MyQueue() {
                 </tr>
               </thead>
               <tbody>
-                {sortedLeads.map((lead, idx) => {
+                {tableLeads.map((lead, idx) => {
                   const isNext  = lead.id === currentLead?.id;
                   const isDone  = STATUS_DONE.has(lead.status);
                   const gScore  = formatGoogleScore(lead.googleScore);

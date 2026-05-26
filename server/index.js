@@ -26,6 +26,7 @@ import justcallRoutes from './routes/justcall.js';
 import callsRoutes from './routes/calls.js';
 import emailsRoutes from './routes/emails.js';
 import importRoutes from './routes/import.js';
+import agentSessionRoutes from './routes/agentSession.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -77,6 +78,7 @@ app.use('/api/justcall', justcallRoutes);
 app.use('/api/calls', callsRoutes);
 app.use('/api/emails', emailsRoutes);
 app.use('/api/import', importRoutes);
+app.use('/api/agent/session', agentSessionRoutes);
 
 // ── Error handler — NEVER expose GHL/JustCall names to frontend ──
 app.use((err, req, res, next) => {
