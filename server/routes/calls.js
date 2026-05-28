@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { requireAuth } from '../middleware/auth.js';
 import ghl from '../services/ghl.js';
+import { logEvent } from '../services/activity.js';
 
 const router = Router();
 router.use(requireAuth);
@@ -19,6 +20,12 @@ router.post('/log', async (req, res) => {
       text:      `Call duration: ${durationStr}`,
       agentName: req.user.name,
       outcome:   'Called',
+    });
+
+    logEvent({
+      agent:  req.user.name,
+      type:   'call_ended',
+      detail: durationStr,
     });
 
     res.json({ success: true });

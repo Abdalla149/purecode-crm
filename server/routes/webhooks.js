@@ -2,6 +2,7 @@ import { Router } from 'express';
 import crypto from 'crypto';
 import ghl from '../services/ghl.js';
 import { logActivity, setAgentInactive } from './feed.js';
+import { logEvent } from '../services/activity.js';
 
 const router = Router();
 
@@ -145,6 +146,14 @@ router.post('/justcall', async (req, res) => {
     business:  contactName || call.toNumber,
     outcome,
     note: noteLines.join(' | '),
+  });
+
+  logEvent({
+    agent:     call.agentName,
+    type:      'call_ended',
+    leadName:  contactName || null,
+    leadPhone: call.toNumber || null,
+    detail:    call.duration ? formatDuration(call.duration) : null,
   });
 });
 

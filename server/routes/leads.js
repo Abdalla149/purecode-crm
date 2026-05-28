@@ -11,6 +11,21 @@ import { requireAuth, requireAdmin } from '../middleware/auth.js';
 import ghl from '../services/ghl.js';
 import justcall from '../services/justcall.js';
 import { logActivity, setAgentActive, setAgentInactive } from './feed.js';
+import { logEvent } from '../services/activity.js';
+
+function outcomeToEventType(outcome) {
+  const map = {
+    'Interested':    'interested',
+    'Demo Booked':   'demo_booked',
+    'Callback':      'callback',
+    'Not Qualified': 'not_qualified',
+    'No Answer':     'no_answer',
+    'Voicemail':     'voicemail',
+    'Closed':        'closed',
+    'Closed/Paid':   'closed',
+  };
+  return map[outcome] || 'call_ended';
+}
 
 const router = Router();
 
@@ -87,7 +102,6 @@ router.post('/:id/note', async (req, res) => {
 
     if (outcome) {
       await ghl.updateLead(req.params.id, { status: outcome });
-      // Log to activity feed
       logActivity({
         agentName:  req.user.name,
         agentId:    req.user.ghlUserId,
@@ -95,7 +109,13 @@ router.post('/:id/note', async (req, res) => {
         outcome,
         note:       text || '',
       });
-      // Clear active-call indicator once outcome is filed
+      logEvent({
+        agent:     req.user.name,
+        type:      outcomeToEventType(outcome),
+        leadName:  lead.companyName || lead.name,
+        leadPhone: lead.phone || null,
+        detail:    text || null,
+      });
       setAgentInactive(req.user.ghlUserId);
     }
 
@@ -129,6 +149,13 @@ router.post('/:id/call', async (req, res) => {
 
     // Mark agent as on a call (cleared when they file an outcome)
     setAgentActive(req.user.ghlUserId);
+
+    logEvent({
+      agent:     req.user.name,
+      type:      'call_started',
+      leadName:  lead.companyName || lead.name,
+      leadPhone: lead.phone,
+    });
 
     const result = await justcall.makeCall({
       fromNumber: activeNumber.number,
@@ -174,6 +201,13 @@ router.post('/:id/welcome-email', async (req, res) => {
         outcome: 'Interested',
       }),
     ]);
+
+    logEvent({
+      agent:     req.user.name,
+      type:      'email_sent',
+      leadName:  lead.companyName || lead.name,
+      leadPhone: lead.phone || null,
+    });
 
     res.json({ success: true });
   } catch (err) {
