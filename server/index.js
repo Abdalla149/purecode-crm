@@ -27,6 +27,7 @@ import callsRoutes from './routes/calls.js';
 import emailsRoutes from './routes/emails.js';
 import importRoutes from './routes/import.js';
 import agentSessionRoutes from './routes/agentSession.js';
+import zohoRoutes from './routes/zoho.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -79,6 +80,7 @@ app.use('/api/calls', callsRoutes);
 app.use('/api/emails', emailsRoutes);
 app.use('/api/import', importRoutes);
 app.use('/api/agent/session', agentSessionRoutes);
+app.use('/api/zoho', zohoRoutes);
 
 // ── Error handler — NEVER expose GHL/JustCall names to frontend ──
 app.use((err, req, res, next) => {
