@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Mic, RefreshCw, Play, Search, X } from 'lucide-react';
+import { Mic, RefreshCw, PhoneIncoming, PhoneOutgoing, Phone } from 'lucide-react';
 import api from '../utils/api';
+
+// ── Helpers ────────────────────────────────────────────────
 
 function formatDuration(seconds) {
   if (seconds == null) return '—';
   const s = parseInt(seconds, 10);
+  if (isNaN(s) || s < 0) return '—';
   const m = Math.floor(s / 60);
   const rem = s % 60;
   return m > 0 ? `${m}m ${rem}s` : `${rem}s`;
@@ -13,54 +16,176 @@ function formatDuration(seconds) {
 function formatDateTime(dt) {
   if (!dt) return '—';
   try {
-    return new Date(dt).toLocaleDateString('en-US', {
-      month: 'short', day: 'numeric',
-      hour: '2-digit', minute: '2-digit',
-    });
+    const d = new Date(dt);
+    if (isNaN(d.getTime())) return '—';
+    const day  = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    return `${day} · ${time}`;
   } catch {
     return '—';
   }
 }
 
-const DIR_STYLE = {
-  inbound: {
-    background: 'rgba(0,229,160,0.12)',
-    color: 'var(--primary)',
-  },
-  outbound: {
-    background: 'rgba(120,120,255,0.12)',
-    color: 'var(--purple)',
-  },
+// Strip email addresses and return just the first name
+function cleanAgentName(name) {
+  if (!name) return '—';
+  const withoutEmail = name.replace(/\S*@\S+/g, '').replace(/[()[\]]/g, '').trim();
+  const first = withoutEmail.split(/\s+/)[0];
+  return first || name.split(/\s+/)[0] || name;
+}
+
+// ── Config ─────────────────────────────────────────────────
+
+const AGENTS = ['Lucas', 'Harry', 'Jim', 'Bruce'];
+
+const DATE_RANGES = [
+  { value: 'last7',  label: 'Last 7 Days' },
+  { value: 'today',  label: 'Today' },
+  { value: 'last30', label: 'Last 30 Days' },
+  { value: 'all',    label: 'All Time' },
+];
+
+function getDateRange(range) {
+  const today = new Date().toISOString().split('T')[0];
+  if (range === 'today') return { from: today, to: today };
+  if (range === 'last7') {
+    const d = new Date();
+    d.setDate(d.getDate() - 7);
+    return { from: d.toISOString().split('T')[0], to: today };
+  }
+  if (range === 'last30') {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return { from: d.toISOString().split('T')[0], to: today };
+  }
+  return { from: '', to: '' };
+}
+
+const STATUS_CONFIG = {
+  answered:   { label: 'Completed',  color: 'var(--primary)',  bg: 'rgba(0,229,160,0.12)' },
+  completed:  { label: 'Completed',  color: 'var(--primary)',  bg: 'rgba(0,229,160,0.12)' },
+  'no-answer':{ label: 'Missed',     color: 'var(--red)',      bg: 'var(--red-dim)' },
+  missed:     { label: 'Missed',     color: 'var(--red)',      bg: 'var(--red-dim)' },
+  voicemail:  { label: 'Voicemail',  color: 'var(--gold)',     bg: 'rgba(255,193,7,0.12)' },
+  busy:       { label: 'Busy',       color: 'var(--gold)',     bg: 'rgba(255,193,7,0.12)' },
+  failed:     { label: 'Failed',     color: 'var(--red)',      bg: 'var(--red-dim)' },
 };
+
+// ── Sub-components ─────────────────────────────────────────
+
+function StatusBadge({ status }) {
+  const cfg = STATUS_CONFIG[status?.toLowerCase()] || {
+    label: status || '—',
+    color: 'var(--text3)',
+    bg: 'rgba(255,255,255,0.06)',
+  };
+  return (
+    <span style={{
+      display: 'inline-block',
+      fontSize: 11, fontWeight: 700,
+      padding: '3px 9px', borderRadius: 100,
+      background: cfg.bg, color: cfg.color,
+      whiteSpace: 'nowrap',
+    }}>
+      {cfg.label}
+    </span>
+  );
+}
+
+function DirIcon({ direction }) {
+  const dir = direction?.toLowerCase();
+  if (dir === 'inbound')  return <PhoneIncoming  size={14} color="var(--primary)" title="Inbound" />;
+  if (dir === 'outbound') return <PhoneOutgoing   size={14} color="var(--purple)"  title="Outbound" />;
+  return <Phone size={14} color="var(--text3)" />;
+}
+
+// One audio player per row — only one open at a time (managed by parent)
+function PlayCell({ url, isOpen, onOpen, onClose }) {
+  if (!url) return <span style={{ color: 'var(--text3)', fontSize: 11 }}>—</span>;
+  if (isOpen) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <audio
+          controls
+          autoPlay
+          src={url}
+          style={{ height: 30, minWidth: 200, maxWidth: 240 }}
+          onEnded={onClose}
+        />
+        <button
+          onClick={onClose}
+          style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            color: 'var(--text3)', fontSize: 14, lineHeight: 1, padding: 2,
+          }}
+          title="Close player"
+        >
+          ✕
+        </button>
+      </div>
+    );
+  }
+  return (
+    <button
+      onClick={onOpen}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 5,
+        fontSize: 11, fontWeight: 600, color: 'var(--primary)',
+        background: 'var(--primary-dim)', padding: '4px 11px',
+        borderRadius: 100, border: 'none', cursor: 'pointer',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      ▶ Play
+    </button>
+  );
+}
+
+function SkeletonRow() {
+  const widths = ['100px', '55px', '20px', '48px', '72px', '145px', '64px'];
+  return (
+    <tr>
+      {widths.map((w, i) => (
+        <td key={i}>
+          <div style={{
+            height: 13, borderRadius: 4,
+            background: 'rgba(255,255,255,0.07)',
+            width: w,
+          }} />
+        </td>
+      ))}
+    </tr>
+  );
+}
+
+// ── Page ───────────────────────────────────────────────────
 
 export default function Recordings() {
   const [recordings, setRecordings] = useState([]);
   const [loading, setLoading]       = useState(true);
   const [error, setError]           = useState(null);
+  const [syncedAt, setSyncedAt]     = useState(null);
+  const [openId, setOpenId]         = useState(null);   // which row has audio open
 
-  // Filter state
-  const [agentInput, setAgentInput] = useState('');
-  const [fromInput, setFromInput]   = useState('');
-  const [toInput, setToInput]       = useState('');
+  // Filters
+  const [agentFilter, setAgentFilter] = useState('');
+  const [dateRange, setDateRange]     = useState('last7');
 
-  // Active filters (applied on fetch)
-  const [activeAgent, setActiveAgent] = useState('');
-  const [activeFrom, setActiveFrom]   = useState('');
-  const [activeTo, setActiveTo]       = useState('');
-
-  const hasFilter = activeAgent || activeFrom || activeTo;
-
-  async function fetchRecordings(agent = activeAgent, from = activeFrom, to = activeTo) {
+  async function fetchRecordings({ agent = agentFilter, range = dateRange, refresh = false } = {}) {
     setLoading(true);
     setError(null);
+    setOpenId(null);
     try {
+      const { from, to } = getDateRange(range);
       const params = new URLSearchParams();
-      if (agent) params.set('agent', agent);
-      if (from)  params.set('from', from);
-      if (to)    params.set('to', to);
+      if (agent)   params.set('agent', agent);
+      if (from)    params.set('from', from);
+      if (to)      params.set('to', to);
+      if (refresh) params.set('refresh', 'true');
       const qs = params.toString();
       const { data } = await api.get(`/recordings${qs ? `?${qs}` : ''}`);
       setRecordings(data.recordings || []);
+      setSyncedAt(new Date());
     } catch (err) {
       const msg = err.response?.data?.error || 'Something went wrong — contact David';
       setError(msg);
@@ -71,29 +196,31 @@ export default function Recordings() {
 
   useEffect(() => { fetchRecordings(); }, []);
 
-  function handleFilter(e) {
-    e.preventDefault();
-    setActiveAgent(agentInput);
-    setActiveFrom(fromInput);
-    setActiveTo(toInput);
-    fetchRecordings(agentInput, fromInput, toInput);
+  function handleAgentChange(e) {
+    const val = e.target.value;
+    setAgentFilter(val);
+    fetchRecordings({ agent: val, range: dateRange });
   }
 
-  function handleClear() {
-    setAgentInput('');
-    setFromInput('');
-    setToInput('');
-    setActiveAgent('');
-    setActiveFrom('');
-    setActiveTo('');
-    fetchRecordings('', '', '');
+  function handleRangeChange(e) {
+    const val = e.target.value;
+    setDateRange(val);
+    fetchRecordings({ agent: agentFilter, range: val });
   }
 
+  const syncText = syncedAt ? 'Last synced just now' : '';
   const subtitle = loading
-    ? 'Loading…'
+    ? 'Loading recordings…'
     : error
       ? 'Error loading recordings'
-      : `${recordings.length} recording${recordings.length !== 1 ? 's' : ''}${hasFilter ? ' (filtered)' : ''}`;
+      : `${recordings.length} recording${recordings.length !== 1 ? 's' : ''} · ${syncText}`;
+
+  const selectStyle = {
+    padding: '6px 10px', minWidth: 140,
+    background: 'var(--bg3)', color: 'var(--text)',
+    border: '1px solid var(--border2)', borderRadius: 7,
+    fontSize: 13, cursor: 'pointer',
+  };
 
   return (
     <>
@@ -102,71 +229,28 @@ export default function Recordings() {
           <h1 className="page-h1">Recordings</h1>
           <p className="page-subtitle">{subtitle}</p>
         </div>
-        <button className="btn btn-secondary" onClick={() => fetchRecordings()} disabled={loading}>
-          <RefreshCw size={12} /> Refresh
+        <button
+          className="btn btn-secondary"
+          onClick={() => fetchRecordings({ refresh: true })}
+          disabled={loading}
+        >
+          <RefreshCw size={12} style={{ animation: loading ? 'spin 0.7s linear infinite' : 'none' }} />
+          Refresh
         </button>
       </div>
 
-      {/* Filter bar */}
-      <form
-        onSubmit={handleFilter}
-        style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap', alignItems: 'flex-end' }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <label style={{ fontSize: 11, color: 'var(--text3)', fontWeight: 700, letterSpacing: '0.05em' }}>
-            AGENT
-          </label>
-          <input
-            className="input"
-            style={{ width: 160, padding: '6px 10px' }}
-            placeholder="e.g. Lucas"
-            value={agentInput}
-            onChange={e => setAgentInput(e.target.value)}
-          />
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <label style={{ fontSize: 11, color: 'var(--text3)', fontWeight: 700, letterSpacing: '0.05em' }}>
-            FROM
-          </label>
-          <input
-            type="date"
-            className="input"
-            style={{ padding: '6px 10px' }}
-            value={fromInput}
-            onChange={e => setFromInput(e.target.value)}
-          />
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <label style={{ fontSize: 11, color: 'var(--text3)', fontWeight: 700, letterSpacing: '0.05em' }}>
-            TO
-          </label>
-          <input
-            type="date"
-            className="input"
-            style={{ padding: '6px 10px' }}
-            value={toInput}
-            onChange={e => setToInput(e.target.value)}
-          />
-        </div>
-        <button
-          type="submit"
-          className="btn btn-primary"
-          style={{ height: 34, padding: '0 14px' }}
-          disabled={loading}
-        >
-          <Search size={12} /> Filter
-        </button>
-        {hasFilter && (
-          <button
-            type="button"
-            className="btn btn-secondary"
-            style={{ height: 34, padding: '0 12px' }}
-            onClick={handleClear}
-          >
-            <X size={12} /> Clear
-          </button>
-        )}
-      </form>
+      {/* Filters */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 18, alignItems: 'center', flexWrap: 'wrap' }}>
+        <select style={selectStyle} value={agentFilter} onChange={handleAgentChange}>
+          <option value="">All Agents</option>
+          {AGENTS.map(a => <option key={a} value={a}>{a}</option>)}
+        </select>
+        <select style={selectStyle} value={dateRange} onChange={handleRangeChange}>
+          {DATE_RANGES.map(r => (
+            <option key={r.value} value={r.value}>{r.label}</option>
+          ))}
+        </select>
+      </div>
 
       {error && (
         <div style={{
@@ -177,22 +261,14 @@ export default function Recordings() {
         </div>
       )}
 
-      {loading ? (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'var(--text3)', paddingTop: 40 }}>
-          <div style={{
-            width: 16, height: 16,
-            border: '2px solid var(--text3)', borderTopColor: 'var(--primary)',
-            borderRadius: '50%', animation: 'spin 0.7s linear infinite',
-          }} />
-          Loading recordings…
-        </div>
-      ) : recordings.length === 0 ? (
+      {/* Empty state — only when not loading and genuinely empty */}
+      {!loading && !error && recordings.length === 0 ? (
         <div className="placeholder-wrap" style={{ marginTop: 8 }}>
           <Mic size={32} color="var(--text3)" />
-          <div className="placeholder-title">No recordings found</div>
+          <div className="placeholder-title">No recordings yet</div>
           <p className="placeholder-sub">
-            {hasFilter
-              ? 'Try adjusting your filters.'
+            {agentFilter || dateRange !== 'all'
+              ? 'Try "All Time" or a different agent filter.'
               : 'Calls with recordings will appear here once calls are made.'}
           </p>
         </div>
@@ -200,74 +276,57 @@ export default function Recordings() {
         <div className="panel" style={{ padding: 0 }}>
           <div className="panel-head" style={{ padding: '14px 18px 0' }}>
             <div className="panel-title">Call Recordings</div>
-            <span style={{ fontSize: 11, color: 'var(--text3)', fontFamily: "'DM Mono', monospace" }}>
-              {recordings.length} total
-            </span>
+            {!loading && (
+              <span style={{ fontSize: 11, color: 'var(--text3)', fontFamily: "'DM Mono', monospace" }}>
+                {recordings.length} total
+              </span>
+            )}
           </div>
           <div className="tbl-wrap" style={{ border: 'none', borderRadius: 0, background: 'transparent' }}>
             <table className="tbl">
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Agent</th>
                   <th>Contact</th>
-                  <th>From #</th>
-                  <th>Date</th>
+                  <th>Agent</th>
+                  <th style={{ width: 36 }}>Dir</th>
                   <th>Duration</th>
-                  <th>Dir</th>
-                  <th>Play</th>
+                  <th>Status</th>
+                  <th>Date & Time</th>
+                  <th>Recording</th>
                 </tr>
               </thead>
               <tbody>
-                {recordings.map((rec, idx) => {
-                  const dirStyle = DIR_STYLE[rec.direction?.toLowerCase()] || {};
-                  return (
-                    <tr key={rec.id || idx}>
-                      <td className="td-mono" style={{ color: 'var(--text3)' }}>
-                        {String(idx + 1).padStart(2, '0')}
-                      </td>
-                      <td style={{ fontSize: 13, fontWeight: 500, color: 'var(--text)' }}>
-                        {rec.agentName || '—'}
-                      </td>
-                      <td className="td-phone">{rec.contactNumber || '—'}</td>
-                      <td className="td-phone" style={{ color: 'var(--text3)' }}>
-                        {rec.justcallNumber || '—'}
-                      </td>
-                      <td style={{ fontSize: 12, color: 'var(--text2)' }}>
-                        {formatDateTime(rec.dateTime)}
-                      </td>
-                      <td style={{ fontSize: 12, fontFamily: "'DM Mono', monospace", color: 'var(--text2)' }}>
-                        {formatDuration(rec.durationSeconds)}
-                      </td>
-                      <td>
-                        {rec.direction && (
-                          <span style={{
-                            fontSize: 10, fontWeight: 700, padding: '2px 7px',
-                            borderRadius: 100, textTransform: 'uppercase',
-                            ...dirStyle,
-                          }}>
-                            {rec.direction}
-                          </span>
-                        )}
-                      </td>
-                      <td>
-                        <a
-                          href={rec.recordingUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            display: 'inline-flex', alignItems: 'center', gap: 4,
-                            fontSize: 11, fontWeight: 600, color: 'var(--primary)',
-                            background: 'var(--primary-dim)', padding: '3px 10px',
-                            borderRadius: 100, textDecoration: 'none',
-                          }}
-                        >
-                          <Play size={9} /> Play
-                        </a>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {loading
+                  ? Array.from({ length: 8 }).map((_, i) => <SkeletonRow key={i} />)
+                  : recordings.map((rec) => (
+                      <tr key={rec.id}>
+                        <td className="td-phone">{rec.contactNumber || '—'}</td>
+                        <td style={{ fontSize: 13, fontWeight: 500, color: 'var(--text)' }}>
+                          {cleanAgentName(rec.agentName)}
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          <DirIcon direction={rec.direction} />
+                        </td>
+                        <td style={{ fontSize: 12, fontFamily: "'DM Mono', monospace", color: 'var(--text2)' }}>
+                          {formatDuration(rec.durationSeconds)}
+                        </td>
+                        <td>
+                          <StatusBadge status={rec.status} />
+                        </td>
+                        <td style={{ fontSize: 12, color: 'var(--text2)', whiteSpace: 'nowrap' }}>
+                          {formatDateTime(rec.dateTime)}
+                        </td>
+                        <td>
+                          <PlayCell
+                            url={rec.recordingUrl}
+                            isOpen={openId === rec.id}
+                            onOpen={() => setOpenId(rec.id)}
+                            onClose={() => setOpenId(null)}
+                          />
+                        </td>
+                      </tr>
+                    ))
+                }
               </tbody>
             </table>
           </div>

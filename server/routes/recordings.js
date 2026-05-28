@@ -100,10 +100,11 @@ async function fetchAllCalls({ from, to } = {}) {
 
 // ── GET /api/recordings ───────────────────────────────────
 router.get('/', async (req, res) => {
-  const { agent, from, to } = req.query;
+  const { agent, from, to, refresh } = req.query;
+  const forceRefresh = refresh === 'true';
 
-  // Only cache fully unfiltered fetches
-  const canUseCache = !from && !to;
+  // Cache only on unfiltered fetches; skip if caller requests a refresh
+  const canUseCache = !from && !to && !forceRefresh;
 
   if (canUseCache && _cache && Date.now() - _cacheTs < CACHE_TTL) {
     const result = agent
@@ -120,7 +121,7 @@ router.get('/', async (req, res) => {
       .filter(r => r.recordingUrl)
       .sort((a, b) => (b.dateTime || '').localeCompare(a.dateTime || ''));
 
-    if (canUseCache) {
+    if (!from && !to) {
       _cache   = normalized;
       _cacheTs = Date.now();
     }
