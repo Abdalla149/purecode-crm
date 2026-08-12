@@ -74,6 +74,26 @@ const USERS = [
     justcallNumbers: [
       { id: 'bn1', number: '+18314014983', label: '#1' },
     ]
+  },
+  {
+    id: 'agent_ana',
+    username: 'ana',
+    passwordHash: '$2a$10$w/2QJV7Bqr03RM5NSNuUyOqIp5fGrH3c4lmwSbOD4ORiL8xjHagF2',
+    role: 'agent',
+    name: 'Ana',
+    ghlUserId: null,      // TODO: set Ana's GHL user ID
+    agentId: null,        // TODO: set Ana's JustCall agent ID
+    justcallNumbers: []   // TODO: assign JustCall number(s) so she can call
+  },
+  {
+    id: 'agent_adam',
+    username: 'adam',
+    passwordHash: '$2a$10$CkNoPh7kMmURPsAoCE3ODuFWsp80OXKMWar7vpK67HdZ0OJaHXXjS',
+    role: 'agent',
+    name: 'Adam Black',
+    ghlUserId: null,      // TODO: set Adam's GHL user ID
+    agentId: null,        // TODO: set Adam's JustCall agent ID
+    justcallNumbers: []   // TODO: assign JustCall number(s) so he can call
   }
 ];
 
