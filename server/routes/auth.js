@@ -45,7 +45,7 @@ const USERS = [
     passwordHash: '$2a$10$w/2QJV7Bqr03RM5NSNuUyOqIp5fGrH3c4lmwSbOD4ORiL8xjHagF2',
     role: 'agent',
     name: 'Ana',
-    ghlUserId: null,      // TODO: set Ana's GHL user ID
+    ghlUserId: 'UZunnpAz8nu4GYTohYRW',
     agentId: null,        // TODO: set Ana's JustCall agent ID
     justcallNumbers: []   // TODO: assign JustCall number(s) so she can call
   },
@@ -55,7 +55,7 @@ const USERS = [
     passwordHash: '$2a$10$CkNoPh7kMmURPsAoCE3ODuFWsp80OXKMWar7vpK67HdZ0OJaHXXjS',
     role: 'agent',
     name: 'Adam Black',
-    ghlUserId: null,      // TODO: set Adam's GHL user ID
+    ghlUserId: '07n150lGezYVHDmRy1Eu',
     agentId: null,        // TODO: set Adam's JustCall agent ID
     justcallNumbers: []   // TODO: assign JustCall number(s) so he can call
   }
