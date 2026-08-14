@@ -5,13 +5,31 @@ import api from '../utils/api';
 
 const CALL_LIMIT = 30;
 
+// Pacific calendar day + 12-hour shift key (AM = 00:00–12:00, PM = 12:00–24:00).
+function ptKeys() {
+  const p = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles', hour12: false,
+    year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit',
+  }).formatToParts(new Date()).reduce((o, x) => (o[x.type] = x.value, o), {});
+  const day = `${p.year}-${p.month}-${p.day}`;
+  return { day, shift: `${day}-${(+p.hour % 24) < 12 ? 'AM' : 'PM'}` };
+}
+
 function loadCallCounts() {
+  const { day, shift } = ptKeys();
   try {
-    const today = new Date().toISOString().split('T')[0];
     const raw = JSON.parse(localStorage.getItem('purecode_call_counts') || 'null');
-    if (raw?.date === today) return raw;
+    if (raw) {
+      return {
+        day,
+        shift,
+        // Calls Today resets every 12h shift; per-number counts persist for the day
+        callsToday: raw.shift === shift ? (raw.callsToday || 0) : 0,
+        counts:     raw.day === day     ? (raw.counts || {})   : {},
+      };
+    }
   } catch {}
-  return { date: new Date().toISOString().split('T')[0], counts: {}, callsToday: 0 };
+  return { day, shift, counts: {}, callsToday: 0 };
 }
 
 function saveCallCounts(data) {

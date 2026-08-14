@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { requireAuth, requireAdmin } from '../middleware/auth.js';
 import { getEvents } from '../services/activity.js';
 import ghl from '../services/ghl.js';
+import { dayStartMsPT, shiftStartMsPT } from '../utils/shiftWindow.js';
 
 const router = Router();
 router.use(requireAuth, requireAdmin);
@@ -32,12 +33,6 @@ function parseDurationSecs(detail) {
   return total;
 }
 
-function todayMidnightMs() {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  return d.getTime();
-}
-
 // ── GET /api/dashboard/live ───────────────────────────────────────────────────
 router.get('/live', async (req, res) => {
   // Return cached response if fresh
@@ -53,7 +48,8 @@ router.get('/live', async (req, res) => {
     ]);
 
     const nowMs         = Date.now();
-    const midnightMs    = todayMidnightMs();
+    const dayStartMs    = dayStartMsPT();    // calendar day (Pacific)
+    const shiftStartMs  = shiftStartMsPT();  // current 12h shift (00:00/12:00 Pacific)
     const tenMinMs      = 10 * 60 * 1000;
     const thirtyMinMs   = 30 * 60 * 1000;
 
@@ -81,13 +77,15 @@ router.get('/live', async (req, res) => {
         e => e.agent && e.agent.toLowerCase().startsWith(nameLC)
       );
 
-      // Today's events only
+      // Today's events (calendar day, Pacific) — drives talk time + today metrics
       const agentEventsToday = agentEvents.filter(
-        e => new Date(e.timestamp).getTime() >= midnightMs
+        e => new Date(e.timestamp).getTime() >= dayStartMs
       );
 
-      // ── Calls today: count call_started (one per CRM-initiated call) ────────
-      const callsToday = agentEventsToday.filter(e => e.type === 'call_started').length;
+      // ── Calls today: resets every 12h shift (00:00 / 12:00 Pacific) ─────────
+      const callsToday = agentEvents.filter(
+        e => e.type === 'call_started' && new Date(e.timestamp).getTime() >= shiftStartMs
+      ).length;
 
       // ── Talk time: sum call_ended durations today ────────────────────────────
       const talkTimeSecs = agentEventsToday
