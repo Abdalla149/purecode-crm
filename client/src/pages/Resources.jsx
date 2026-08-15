@@ -32,15 +32,15 @@ const SCRIPTS = [
     badgeColor: "#f5c842",
     when: "When the prospect sounds analytical or numbers-driven — let the math do the work",
     psych: "Makes him do the math himself before you've pitched anything. When he calculates the number out loud, he sells himself. Questions close — statements don't.",
-    script: `"Hey [Name] — quick question for you. How many estimate calls a week would you say go unanswered or to voicemail?
+    script: `"Hey [Name] — quick question for you. How many service calls a week would you say go unanswered or to voicemail while you're in the bay?
 
 [Let him answer]
 
-And rough ballpark — what's an average roofing job worth for you?
+And rough ballpark — what's an average repair ticket worth for you?
 
 [Let him answer]
 
-So if even half those missed calls were potential jobs — that's real money walking out the door every week. Is that a problem worth solving?"`,
+So if even half those missed calls were potential jobs — that's real money driving to the next shop every week. Is that a problem worth solving?"`,
     notes: "Let him do the math. Don't rush to answer. The longer the silence after his answer, the better — he's sitting with the number himself.",
     tonality: "Genuinely curious. Conversational. Not scripted. Pause between each question.",
     avoid: ["Giving him the math before he gives you his numbers", "Rushing to the next question", "Adding 'potentially' or 'maybe' — kills certainty"]
@@ -57,9 +57,9 @@ So if even half those missed calls were potential jobs — that's real money wal
 
 "We have three plans. Elite is $697/month — that's our premium tier with a dedicated success manager, a real human assigned to your account. Most multi-truck operations go there.
 
-Growth at $497 is where most of our roofing clients land — you get everything: AI receptionist 24/7, appointment booking, missed-call text-back, automated review requests, repeat customer recognition, no-show reminders. It pays for itself fastest.
+Growth at $497 is where most auto shops land — you get everything: AI receptionist 24/7, appointment booking, missed-call text-back, automated review requests, repeat customer recognition, no-show reminders. It pays for itself fastest.
 
-Starter at $397 is for solo operators who just want to stop missing calls — no frills, just the AI answering every call and booking jobs.
+Starter at $397 is for solo operators who just want to stop missing calls — no frills, just the AI answering every call and booking appointments.
 
 Which of those sounds closest to your situation?"
 
@@ -82,11 +82,11 @@ ADD-ONS (only after base tier is agreed):
     badge: "🎯 Core Framework",
     badgeColor: "#a78bfa",
     when: "After opener lands and he's still on the line — this is where the close is actually built",
-    psych: "When a roofer articulates his own pain in his own words, he is 80% sold before you pitch. Surface-level pain doesn't close. Drive 3 levels deep.",
+    psych: "When a shop owner articulates his own pain in his own words, he is 80% sold before you pitch. Surface-level pain doesn't close. Drive 3 levels deep.",
     script: `LEVEL 1 — Surface:
 "How often do calls actually go unanswered or to voicemail?"
-"What kind of issues come up when your wife/admin can't get to the phone in time?"
-"Have you had homeowners tell you they tried calling before they finally got through?"
+"What kind of issues come up when your front desk or service writer can't get to the phone in time?"
+"Have you had customers tell you they tried calling before they finally got through?"
 
 LEVEL 2 — Consequence:
 "And when that happens — what usually goes down?"
@@ -107,15 +107,15 @@ LEVEL 3 — The Money Question (THIS IS WHERE THE CLOSE STARTS):
     badgeColor: "#4ea8de",
     when: "Only after he's articulated his own pain at Level 3",
     psych: "Hormozi value stacking — anchor the value before revealing the price. Three points, each one destroying a different objection before it's raised.",
-    script: `"Here's exactly what we do. PureCode is a 24/7 AI receptionist built specifically for roofers. Three things matter:
+    script: `"Here's exactly what we do. PureCode is a 24/7 AI receptionist built specifically for auto shops. Three things matter:
 
-One — every call gets answered, day or night, storm or no storm. Voicemail never picks up again.
+One — every call gets answered, day or night, slow day or slammed. Voicemail never picks up again.
 
-Two — it captures the lead, books the estimate straight into your calendar, and texts the customer back so they don't call your competitor while you're on the roof.
+Two — it captures the lead, books the appointment straight into your calendar, and texts the customer back so they don't call the shop down the street while you're under a car.
 
-Three — it starts at $397 a month. That's less than half of one recovered roofing job. Everything past that is pure profit.
+Three — it starts at $397 a month. That's less than one recovered repair job. Everything past that is pure profit.
 
-Based on what you just told me — if this recovered even 2 missed estimate calls a month, what does that look like for your business?"`,
+Based on what you just told me — if this recovered even 2 missed service calls a month, what does that look like for your business?"`,
     notes: "The final question makes him do the ROI math out loud. Whatever number he says becomes your anchor for the close. Do NOT move to close until he answers.",
     tonality: "Certain. Measured. Pause between each point. Land 'less than ONE recovered job' like it's obvious.",
     avoid: ["Saying 'does that make sense?'", "Adding features after the three points", "Moving to close before he answers the question"]
@@ -132,7 +132,7 @@ Based on what you just told me — if this recovered even 2 missed estimate call
 
 If it makes sense after the demo, getting you set up and live takes about a week. 
 
-Starter plan is $397 a month. Growth — which is what most of our roofers go with — is $497. Both include everything you need to stop missing calls starting day one.
+Starter plan is $397 a month. Growth — which is what most shops go with — is $497. Both include everything you need to stop missing calls starting day one.
 
 Does Tuesday or Wednesday work better for the demo?"`,
     notes: "The question offers Tuesday vs Wednesday — NOT 'do you want to do this.' He's choosing WHEN, not IF. Never say 'what do you think?' after the close.",
@@ -146,8 +146,8 @@ Does Tuesday or Wednesday work better for the demo?"`,
     badge: "📱 Leave Every Time",
     badgeColor: "#ff6b35",
     when: "Every no-answer — never skip leaving a voicemail",
-    psych: "Open loop + genuine value. Gives him a real reason to call back — not a fake urgency claim. Roofers call back when they think there's something in it for them.",
-    script: `"Hey [Name] — [Your Name] with PureCode Agency. I work specifically with roofing companies helping them stop losing jobs to missed calls and voicemail. 
+    psych: "Open loop + genuine value. Gives him a real reason to call back — not a fake urgency claim. Shop owners call back when they think there's something in it for them.",
+    script: `"Hey [Name] — [Your Name] with PureCode Agency. I work specifically with auto repair shops helping them stop losing jobs to missed calls and voicemail.
 
 Had a quick thought about your business I wanted to run by you. Takes 2 minutes.
 
@@ -167,7 +167,7 @@ const OBJECTIONS = [
     color: "#f5c842",
     framework: "NEPQ — turn it into a question",
     script: `"Totally fair. When you say good — are you saying the phones are covered, or just that it hasn't become a big enough problem yet to deal with?"`,
-    why: "Forces him to define 'good.' Most roofers saying this haven't measured their missed calls. The question makes him confront that without you pointing it out.",
+    why: "Forces him to define 'good.' Most shop owners saying this haven't measured their missed calls. The question makes him confront that without you pointing it out.",
     followUp: `If he says phones are covered: "Got it. How many calls a day would you say actually go unanswered or to voicemail — rough estimate?"`,
     neverSay: "Most businesses think they're fine until they see the numbers — then watch it become pushy"
   },
@@ -178,7 +178,7 @@ const OBJECTIONS = [
     difficulty: "Easy",
     color: "#4ea8de",
     framework: "Voss — label + redirect",
-    script: `"Happy to. Before I do — I want to make sure I send you the right thing. What's the main concern you'd want it to address? Is it the cost, how it works, or whether it actually fits a roofing operation like yours?"`,
+    script: `"Happy to. Before I do — I want to make sure I send you the right thing. What's the main concern you'd want it to address? Is it the cost, how it works, or whether it actually fits an auto shop like yours?"`,
     why: "Sending info without this question guarantees he never reads it. This forces him to name his real objection.",
     followUp: `Whatever he says — that's the real objection. Handle it live on the call before sending anything.`,
     neverSay: "Sure I'll send that right over — then waiting for a reply that never comes"
@@ -204,28 +204,28 @@ const OBJECTIONS = [
     framework: "Hormozi — ROI anchor before price",
     script: `"Before I give you a number — you mentioned you're missing around [X] calls a week. At your average job value and a standard close rate, that's real money walking out the door every month. 
 
-Our Starter plan is $397 a month. Growth — which is what most of our roofers go with — is $497. 
+Our Starter plan is $397 a month. Growth — which is what most shops go with — is $497.
 
-If this recovers even ONE extra roofing job in the first month, you're already ahead. Does the number still feel expensive from that angle?"`,
+If this recovers even ONE extra repair job in the first month, you're already ahead. Does the number still feel expensive from that angle?"`,
     why: "Price without anchored value always feels expensive. Make him do the ROI math himself first using HIS numbers, not industry averages. Then $397 looks small.",
     followUp: `If he still pushes: "What number would feel right to you?" — Then work backwards. "Okay so if the number was $X, what would need to be true about what it delivered?"`,
     neverSay: "I understand it's a big investment — which validates his concern and loses the frame"
   },
   {
     id: "obj_5",
-    trigger: "My wife handles the phones",
+    trigger: "My front desk handles the phones",
     category: "Existing Solution",
     difficulty: "Hard",
     color: "#ff6b35",
     framework: "NEPQ — illuminate the unseen problem",
-    script: `"That makes sense — a lot of the guys I talk to say the same thing. Quick question though: when she's with the kids, or at school pickup, or just not near the phone — what happens to those calls?"
+    script: `"That makes sense — a lot of the shops I talk to say the same thing. Quick question though: when your front desk is with a customer at the counter, on another line, or it's after hours — what happens to those calls?"
 
 [Pause — let him answer]
 
-"And do you know roughly how many of those callers actually leave a voicemail vs just call the next roofer?"`,
-    why: "He hasn't measured this. 75% of missed callers don't leave voicemails — they just call the next roofer. Once he sits with that number, the wife-handles-it defense collapses.",
-    followUp: `"What would your wife say if she didn't have to be the receptionist anymore?"`,
-    neverSay: "AI is way better than a person — triggers defensiveness about his wife"
+"And do you know roughly how many of those callers actually leave a voicemail vs just call the next shop?"`,
+    why: "He hasn't measured this. 75% of missed callers don't leave voicemails — they just call the next shop. Once he sits with that number, the front-desk-handles-it defense collapses.",
+    followUp: `"What would your front desk person get done if they weren't tied to the phone all day?"`,
+    neverSay: "AI is way better than a person — triggers defensiveness about his staff"
   },
   {
     id: "obj_6",
@@ -252,7 +252,7 @@ If this recovers even ONE extra roofing job in the first month, you're already a
     framework: "Braun — reduce resistance, earn 20 more seconds",
     script: `"Totally fair — and I appreciate you being straight with me. One quick question before I let you go: is it that you've got the missed-call problem handled, or just that now's not the right time to look at something new?"`,
     why: "Splits the objection into two possible real meanings. If timing is the issue, you can re-engage later. If it's genuinely handled, you learn something.",
-    followUp: `If timing: "Got it. When would be a better time to circle back — after storm season, or Q1?"`,
+    followUp: `If timing: "Got it. When would be a better time to circle back — after your busy season, or early next quarter?"`,
     neverSay: "Can I ask why? — sounds defensive and puts him on the spot"
   },
   {
@@ -262,9 +262,9 @@ If this recovers even ONE extra roofing job in the first month, you're already a
     difficulty: "Hard",
     color: "#a78bfa",
     framework: "Social proof + reframe",
-    script: `"That's actually the most common thing I hear from roofers — and it makes sense. Here's the thing though: your callers aren't experiencing 'AI.' They're experiencing someone answering the phone on the first ring at 9pm, getting their info, and seeing an estimate booked on their calendar within minutes.
+    script: `"That's actually the most common thing I hear from shop owners — and it makes sense. Here's the thing though: your callers aren't experiencing 'AI.' They're experiencing someone answering the phone on the first ring at 9pm, getting their info, and seeing an appointment booked on their calendar within minutes.
 
-We had a roofer in [City] who thought the same thing. Month one, he captured 19 missed calls, booked 7 estimates, and closed $77K in jobs. His callers never knew — they just knew someone picked up."`,
+We had an auto shop in [City] who thought the same thing. Month one, they captured 19 missed calls, booked 11 appointments, and added about $22K in repair work. Their callers never knew — they just knew someone picked up."`,
     why: "Reframes AI from 'robot' to 'someone always answers.' The client story anchors it with a real outcome.",
     followUp: `"Would it help to hear a recorded call so you can judge the experience yourself?"`,
     neverSay: "AI is actually really human these days — sounds defensive and dismissive of his concern"
@@ -283,15 +283,15 @@ We had a roofer in [City] who thought the same thing. Month one, he captured 19 
   },
   {
     id: "obj_10",
-    trigger: "I need to talk to my wife / partner first",
+    trigger: "I need to talk to my business partner first",
     category: "Decision Maker",
     difficulty: "Medium",
     color: "#00e5a0",
     framework: "Sandler — involve the partner",
-    script: `"That makes total sense — sounds like she's involved in the business decisions. Is she available now, or would it be easier to set up a quick 15-minute call with both of you together so I can answer her questions directly?"`,
-    why: "The close won't happen without her anyway. Get her on the call now rather than letting him 'explain it' to her inaccurately and lose the deal at the kitchen table.",
-    followUp: `If she can't join now: "What's the main thing she'd want to know? I can give you the exact answer to bring to her."`,
-    neverSay: "No problem just let me know what she thinks — removes you from the equation"
+    script: `"That makes total sense — sounds like they're involved in the business decisions. Are they available now, or would it be easier to set up a quick 15-minute call with both of you together so I can answer their questions directly?"`,
+    why: "The close won't happen without them anyway. Get them on the call now rather than letting him 'explain it' inaccurately and lose the deal in the back office.",
+    followUp: `If they can't join now: "What's the main thing they'd want to know? I can give you the exact answer to bring to them."`,
+    neverSay: "No problem just let me know what they think — removes you from the equation"
   }
 ];
 
@@ -514,12 +514,12 @@ export default function Resources() {
 
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
-        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: "#4a4845", letterSpacing: ".14em", marginBottom: 8 }}>RESOURCES · ROOFING</div>
+        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: "#4a4845", letterSpacing: ".14em", marginBottom: 8 }}>RESOURCES · AUTO REPAIR</div>
         <h1 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 28, color: "#edeae3", letterSpacing: "-.02em", marginBottom: 6 }}>
           Scripts & Objection Handling
         </h1>
         <p style={{ fontSize: 13, color: "#8a8780", lineHeight: 1.6, maxWidth: 560 }}>
-          Every script, every objection rebuttal from the PureCode Roofing Sales Playbook — organized so you can pull them during a live call.
+          Every script, every objection rebuttal from the PureCode Auto Repair Sales Playbook — organized so you can pull them during a live call.
         </p>
       </div>
 

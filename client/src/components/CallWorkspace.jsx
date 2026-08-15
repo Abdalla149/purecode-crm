@@ -63,19 +63,19 @@ function buildPitch(lead) {
     {
       label: 'Ask These First',
       questions: [
-        'Real quick — do you have any idea how many calls a week your business is missing right now?',
-        'Right now — when a homeowner calls, who\'s picking up?',
-        'What about after 5pm or weekends?',
+        'Real quick — do you have any idea how many calls a week your shop is missing right now?',
+        'Right now — when a customer calls, who\'s picking up?',
+        'What about after you close, or on weekends?',
         'How are calls getting logged today — are you using a CRM, or just memory?',
-        'Roughly how many estimate calls do you take a week?',
+        'Roughly how many service or quote calls do you take a week?',
       ],
     },
     {
       label: 'Dig Deeper',
       questions: [
         'How often do calls end up going to voicemail or unanswered?',
-        'What kind of issues come up when your wife/admin can\'t get to the phone in time?',
-        'Have you had homeowners tell you they tried calling before they finally got through?',
+        'What kind of issues come up when your front desk or service writer can\'t get to the phone in time?',
+        'Have you had customers tell you they tried calling before they finally got through?',
       ],
     },
     {
@@ -98,7 +98,7 @@ function buildScripts(lead, agentName) {
 → "That's the point — it runs itself. Takes me 2 minutes to explain."
 
 "I already have someone answering calls."
-→ "Does she answer at 9pm when a homeowner has an emergency? Ours does."
+→ "Does your front desk answer at 9pm when a customer's car breaks down? Ours does."
 
 "How much is it?"
 → "Before I give you a number — how many calls do you get per day roughly?"

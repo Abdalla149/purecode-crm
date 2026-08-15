@@ -10,7 +10,7 @@ const AGENTS = [
   { ghlUserId: 'hHYQ1Yk7EZhxjjFYYGln', name: 'Bruce' },
 ];
 
-const BUSINESS_TYPES = ['Roofing', 'HVAC', 'Plumbing', 'Towing', 'Auto Repair'];
+const BUSINESS_TYPES = ['Auto Repair', 'Towing', 'HVAC', 'Plumbing', 'Roofing'];
 
 const MIN_RATINGS = [
   { value: 'any', label: 'Any rating' },
@@ -346,7 +346,7 @@ export default function Import() {
             <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text2)', marginBottom: 6 }}>CSV format</div>
             <div style={{ fontSize: 11, color: 'var(--text3)', fontFamily: "'DM Mono', monospace", lineHeight: 1.8 }}>
               Name, Phone, City, State, Rating, NOR, Website<br />
-              "Apex Roofing", "555-123-4567", "Austin", "TX", "4.9", "212", "apexroofing.com"
+              "Apex Auto Repair", "555-123-4567", "Anaheim", "CA", "4.9", "212", "apexautorepair.com"
             </div>
           </div>
         </>
@@ -464,7 +464,7 @@ export default function Import() {
                 <div style={{ fontSize: 11, color: 'var(--text2)', fontWeight: 600, marginBottom: 5 }}>Campaign Tag</div>
                 <input
                   type="text" value={campaign} onChange={e => setCampaign(e.target.value)}
-                  placeholder="e.g. CA-Roofing-May2026"
+                  placeholder="e.g. CA-AutoRepair-Aug2026"
                   style={{ ...inputBase, fontFamily: "'DM Mono', monospace" }}
                 />
               </div>

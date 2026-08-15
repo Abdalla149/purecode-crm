@@ -86,7 +86,7 @@ function BulkAssignModal({ agents, onClose, onAssign }) {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               <div>
                 <label style={{ fontSize: 11, color: 'var(--text3)', display: 'block', marginBottom: 6, fontWeight: 600 }}>Business Type</label>
-                <input value={type} onChange={e => setType(e.target.value)} placeholder="e.g. Roofing"
+                <input value={type} onChange={e => setType(e.target.value)} placeholder="e.g. Auto Repair"
                   style={{ width: '100%', background: 'var(--bg3)', border: '1px solid var(--border2)', borderRadius: 6, padding: '8px 12px', color: 'var(--text)', fontSize: 13 }} />
               </div>
               <div>
