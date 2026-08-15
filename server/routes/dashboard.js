@@ -9,10 +9,9 @@ router.use(requireAuth, requireAdmin);
 
 // ── Agent roster — mirrors auth.js USERS and stats.js AGENT_LIST ─────────────
 const AGENTS = [
-  { name: 'Lucas', ghlUserId: '7c0sDQ3oEzttlQfa3jAA' },
-  { name: 'Harry', ghlUserId: 'EFYhirIwNFKAY04HjbbK' },
-  { name: 'Jim',   ghlUserId: 'CUqipGSIfqu2o7bcWroN' },
   { name: 'Bruce', ghlUserId: 'hHYQ1Yk7EZhxjjFYYGln' },
+  { name: 'Ana',   ghlUserId: 'UZunnpAz8nu4GYTohYRW' },
+  { name: 'Adam Black', ghlUserId: '07n150lGezYVHDmRy1Eu' },
 ];
 
 // ── 5-second response cache (shared across concurrent dashboard polls) ────────
