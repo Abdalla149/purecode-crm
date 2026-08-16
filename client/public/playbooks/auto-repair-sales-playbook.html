@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PureCode Agency — Elite Sales Playbook for Auto Repair Shops</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#07080a;
+  --bg2:#0d0f12;
+  --bg3:#13151a;
+  --bg4:#1a1d24;
+  --bg5:#21252e;
+  --gold:#c9a84c;
+  --gold2:#e8c97a;
+  --gold3:rgba(201,168,76,0.12);
+  --em:#10b981;
+  --em2:rgba(16,185,129,0.12);
+  --rose:#f43f5e;
+  --rose2:rgba(244,63,94,0.1);
+  --sky:#38bdf8;
+  --sky2:rgba(56,189,248,0.1);
+  --amber:#f59e0b;
+  --amber2:rgba(245,158,11,0.1);
+  --violet:#a78bfa;
+  --violet2:rgba(167,139,250,0.1);
+  --text:#eeeae0;
+  --text2:#9a9588;
+  --text3:#5a5650;
+  --border:rgba(255,255,255,0.06);
+  --border2:rgba(255,255,255,0.1);
+  --r:8px;
+  --r2:12px;
+}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  font-size:15px;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+
+/* ── HERO ── */
+.hero{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:60px 48px 48px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;
+  width:800px;height:800px;
+  background:radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 65%);
+  top:-300px;right:-200px;pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;
+  width:500px;height:500px;
+  background:radial-gradient(circle,rgba(16,185,129,0.04) 0%,transparent 65%);
+  bottom:-200px;left:-100px;pointer-events:none;
+}
+
+.hero-kicker{
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-kicker::before{content:'';width:24px;height:1px;background:var(--gold);}
+
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(40px,6vw,72px);
+  font-weight:900;
+  line-height:1.05;
+  letter-spacing:-0.02em;
+  margin-bottom:16px;
+}
+.hero h1 em{
+  font-style:italic;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.hero-desc{
+  color:var(--text2);
+  font-size:16px;
+  max-width:600px;
+  margin-bottom:36px;
+  line-height:1.75;
+}
+
+.hero-authors{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px;
+}
+.ha{
+  padding:5px 14px;
+  border-radius:100px;
+  border:1px solid var(--border2);
+  font-size:12px;font-weight:500;
+  color:var(--text2);
+  background:var(--bg3);
+}
+
+.hero-stats{display:flex;gap:40px;flex-wrap:wrap;}
+.hs{display:flex;flex-direction:column;}
+.hs .n{
+  font-family:'Playfair Display',serif;
+  font-size:36px;font-weight:700;
+  color:var(--gold2);line-height:1;
+}
+.hs .l{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;}
+
+/* ── NAV ── */
+.nav-wrap{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+}
+.nav-scroll{
+  display:flex;gap:0;
+  overflow-x:auto;
+  padding:0 48px;
+}
+.nav-scroll::-webkit-scrollbar{height:0;}
+.ntab{
+  padding:14px 18px;
+  border:none;
+  background:transparent;
+  color:var(--text3);
+  cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;
+  white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:all 0.15s;
+}
+.ntab:hover{color:var(--text2);}
+.ntab.on{color:var(--gold);border-bottom-color:var(--gold);}
+
+/* ── MAIN ── */
+.main{max-width:1020px;margin:0 auto;padding:48px;}
+.sec{display:none;animation:fadeIn 0.2s ease;}
+.sec.on{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── TYPOGRAPHY ── */
+.sec-head{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,4vw,42px);
+  font-weight:900;
+  letter-spacing:-0.02em;
+  line-height:1.1;
+  margin-bottom:8px;
+}
+.sec-head em{font-style:italic;color:var(--gold);}
+
+.sec-sub{color:var(--text2);font-size:15px;margin-bottom:36px;max-width:680px;line-height:1.75;}
+
+h3{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:700;
+  margin-bottom:10px;color:var(--text);
+}
+h4{font-size:15px;font-weight:600;margin-bottom:6px;color:var(--text);}
+
+.div{height:1px;background:var(--border);margin:36px 0;}
+
+/* ── CARDS ── */
+.card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:24px 28px;
+  margin-bottom:16px;
+}
+.card-gold{border-left:3px solid var(--gold);}
+.card-em{border-left:3px solid var(--em);}
+.card-rose{border-left:3px solid var(--rose);}
+.card-sky{border-left:3px solid var(--sky);}
+.card-amber{border-left:3px solid var(--amber);}
+.card-violet{border-left:3px solid var(--violet);}
+
+/* ── HIGHLIGHT BOXES ── */
+.hbox{
+  border-radius:var(--r);
+  padding:18px 22px;
+  margin-bottom:16px;
+  display:flex;gap:14px;align-items:flex-start;
+}
+.hbox-gold{background:var(--gold3);border:1px solid rgba(201,168,76,0.2);}
+.hbox-em{background:var(--em2);border:1px solid rgba(16,185,129,0.2);}
+.hbox-rose{background:var(--rose2);border:1px solid rgba(244,63,94,0.2);}
+.hbox-sky{background:var(--sky2);border:1px solid rgba(56,189,248,0.2);}
+.hbox-amber{background:var(--amber2);border:1px solid rgba(245,158,11,0.2);}
+.hbox-violet{background:var(--violet2);border:1px solid rgba(167,139,250,0.2);}
+
+.hbox-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.hbox-body h5{
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.1em;
+  margin-bottom:6px;
+}
+.hbox-gold .hbox-body h5{color:var(--gold);}
+.hbox-em .hbox-body h5{color:var(--em);}
+.hbox-rose .hbox-body h5{color:var(--rose);}
+.hbox-sky .hbox-body h5{color:var(--sky);}
+.hbox-amber .hbox-body h5{color:var(--amber);}
+.hbox-violet .hbox-body h5{color:var(--violet);}
+.hbox-body p{font-size:14px;color:var(--text2);line-height:1.65;}
+
+/* ── SCRIPT LINES ── */
+.sblock{
+  background:var(--bg3);
+  border-radius:var(--r);
+  padding:16px 20px;
+  margin-bottom:10px;
+}
+.sblock .who{
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:0.1em;
+  font-weight:500;text-transform:uppercase;
+  margin-bottom:7px;
+}
+.who-you{color:var(--gold);}
+.who-them{color:var(--sky);}
+.who-note{color:var(--amber);}
+.who-why{color:var(--em);}
+.who-bad{color:var(--rose);}
+
+.sblock .st{font-size:14.5px;line-height:1.65;color:var(--text);}
+.sblock .sn{font-size:12px;color:var(--text3);font-style:italic;margin-top:6px;}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+@media(max-width:720px){.g2,.g3,.g4{grid-template-columns:1fr;}.main{padding:24px 20px;}.hero{padding:36px 20px 32px;}.nav-scroll{padding:0 20px;}}
+
+/* ── QUOTE ── */
+.pullquote{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:600;
+  font-style:italic;
+  color:var(--gold2);
+  padding:24px 32px;
+  border-left:4px solid var(--gold);
+  background:var(--gold3);
+  border-radius:0 var(--r2) var(--r2) 0;
+  margin-bottom:24px;
+  line-height:1.4;
+}
+.pullquote span{
+  display:block;
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;font-style:normal;
+  color:var(--text3);margin-top:8px;
+  font-weight:500;letter-spacing:0.05em;text-transform:uppercase;
+}
+
+/* ── TAGS ── */
+.tag{
+  display:inline-block;padding:3px 11px;
+  border-radius:100px;font-size:11px;font-weight:600;
+  margin-right:6px;margin-bottom:4px;
+}
+.tg{background:var(--gold3);color:var(--gold);}
+.te{background:var(--em2);color:var(--em);}
+.tr{background:var(--rose2);color:var(--rose);}
+.ts{background:var(--sky2);color:var(--sky);}
+.ta{background:var(--amber2);color:var(--amber);}
+.tv{background:var(--violet2);color:var(--violet);}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:16px;}
+.tbl th{
+  text-align:left;padding:11px 16px;
+  background:var(--bg3);color:var(--text2);
+  font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:0.07em;
+  border-bottom:1px solid var(--border);
+}
+.tbl td{
+  padding:11px 16px;
+  border-bottom:1px solid var(--border);
+  vertical-align:top;color:var(--text);
+}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(255,255,255,0.015);}
+
+/* ── STEP ROW ── */
+.step-row{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px;}
+.step-n{
+  width:32px;height:32px;flex-shrink:0;
+  background:var(--gold);color:var(--bg);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;
+  font-size:15px;font-weight:700;
+}
+.step-body h4{margin-bottom:4px;}
+.step-body p{font-size:13.5px;color:var(--text2);}
+
+/* ── FRAMEWORK CARD ── */
+.fw-card{
+  background:var(--bg3);
+  border-radius:var(--r2);
+  overflow:hidden;
+  margin-bottom:16px;
+  border:1px solid var(--border);
+}
+.fw-head{
+  padding:14px 20px;
+  background:var(--bg4);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+}
+.fw-badge{
+  padding:3px 12px;border-radius:100px;
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.07em;
+}
+.fw-body{padding:20px;}
+.fw-body p{font-size:14px;color:var(--text2);margin-bottom:12px;}
+
+/* ── MONO SCRIPT ── */
+.mono{
+  background:var(--bg4);
+  border-radius:var(--r);
+  padding:14px 18px;
+  font-family:'DM Mono',monospace;
+  font-size:13px;
+  line-height:1.6;
+  color:var(--text);
+  border-left:3px solid var(--gold);
+  margin-bottom:10px;
+}
+
+/* ── STAT CARD ── */
+.stat-card{
+  background:var(--bg3);
+  border-radius:var(--r2);
+  padding:20px;
+  text-align:center;
+}
+.stat-card .sn{
+  font-family:'Playfair Display',serif;
+  font-size:42px;font-weight:700;
+  line-height:1;margin-bottom:6px;
+}
+.stat-card .sl{font-size:12px;color:var(--text2);}
+
+/* ── COMPARISON ── */
+.vs-row{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  gap:12px;align-items:center;margin-bottom:12px;
+}
+.vs-l,.vs-r{
+  background:var(--bg3);
+  border-radius:var(--r);
+  padding:12px 16px;
+  font-size:13.5px;
+}
+.vs-mid{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-weight:700;
+  color:var(--text3);text-align:center;
+}
+
+/* ── SYSTEM FLOW ── */
+.flow{
+  display:flex;align-items:center;
+  gap:0;flex-wrap:wrap;
+  background:var(--bg3);
+  border-radius:var(--r2);
+  overflow:hidden;
+  margin-bottom:20px;
+  border:1px solid var(--border);
+}
+.flow-step{
+  flex:1;min-width:120px;
+  padding:16px 14px;
+  text-align:center;
+  border-right:1px solid var(--border);
+  position:relative;
+}
+.flow-step:last-child{border-right:none;}
+.flow-step .fn{
+  font-family:'DM Mono',monospace;
+  font-size:10px;text-transform:uppercase;
+  letter-spacing:0.08em;margin-bottom:4px;
+}
+.flow-step .fv{
+  font-size:13px;font-weight:600;
+  line-height:1.3;
+}
+
+/* ── CHECKLIST ── */
+.ck-item{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:10px 0;border-bottom:1px solid var(--border);
+  font-size:14px;
+}
+.ck-item:last-child{border-bottom:none;}
+.ck-box{
+  width:19px;height:19px;
+  border:1.5px solid var(--border2);
+  border-radius:4px;flex-shrink:0;
+  cursor:pointer;transition:all 0.15s;
+  display:flex;align-items:center;justify-content:center;
+  margin-top:2px;
+}
+.ck-box.on{background:var(--em);border-color:var(--em);}
+.ck-box.on::after{
+  content:'';width:10px;height:6px;
+  border-left:2px solid #fff;
+  border-bottom:2px solid #fff;
+  transform:rotate(-45deg) translateY(-1px);
+}
+
+/* ── VERTICAL PILLS ── */
+.vpills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;}
+.vpill{
+  padding:7px 16px;border-radius:100px;
+  border:1px solid var(--border);
+  background:transparent;color:var(--text2);
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;transition:all 0.15s;
+}
+.vpill:hover{background:var(--bg3);color:var(--text);}
+.vpill.on{background:var(--gold);border-color:var(--gold);color:var(--bg);font-weight:600;}
+
+.vc{display:none;}
+.vc.on{display:block;}
+
+/* ── PROGRESS BAR ── */
+.pbar{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.pb-label{width:140px;flex-shrink:0;font-size:13px;color:var(--text2);}
+.pb-track{flex:1;height:6px;background:var(--bg4);border-radius:100px;overflow:hidden;}
+.pb-fill{height:100%;border-radius:100px;}
+.pb-note{width:160px;font-size:11px;color:var(--text3);}
+
+/* ── 30-DAY GRID ── */
+.day-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:10px;margin-bottom:24px;
+}
+.day-card{
+  background:var(--bg3);
+  border-radius:var(--r);
+  padding:14px;
+  border:1px solid var(--border);
+  cursor:pointer;transition:border-color 0.15s;
+}
+.day-card:hover{border-color:var(--gold);}
+.day-card .dc-day{
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.08em;
+  margin-bottom:4px;
+}
+.day-card .dc-title{font-size:13px;font-weight:600;margin-bottom:4px;}
+.day-card .dc-focus{font-size:11px;color:var(--text2);}
+
+.phase-label{
+  font-family:'DM Mono',monospace;
+  font-size:11px;letter-spacing:0.1em;
+  text-transform:uppercase;
+  padding:4px 14px;
+  border-radius:100px;
+  margin-bottom:12px;
+  display:inline-block;
+}
+</style>
+
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-kicker">PureCode Agency · Internal Sales Bible · Auto Repair Vertical</div>
+  <h1>The <em>PureCode</em><br>Closer's Playbook</h1>
+  <p class="hero-desc">The complete sales operating system for selling 24/7 AI receptionists to independent auto repair shops across the United States. Synthesized from Belfort, Voss, Hormozi, Miner, Braun, Cialdini, Blount, Cardone, Kahneman, SPIN, Sandler, and Challenger — adapted to one industry: auto repair.</p>
+  <div class="hero-authors">
+    <span class="ha">Belfort · Straight Line</span><span class="ha">Voss · Tactical Empathy</span>
+    <span class="ha">Miner · NEPQ</span><span class="ha">Hormozi · Value Stacking</span>
+    <span class="ha">Braun · Zone 1</span><span class="ha">Blount · Fanatical Prospecting</span>
+    <span class="ha">Cialdini · 7 Principles</span><span class="ha">Kahneman · Loss Aversion</span>
+    <span class="ha">Cardone · Certainty</span><span class="ha">SPIN · Implication</span>
+    <span class="ha">Sandler · Pain Funnel</span><span class="ha">Challenger · Teach-Tailor-Take Control</span>
+  </div>
+  <div class="hero-stats">
+    <div class="hs"><span class="n">17</span><span class="l">Complete Modules</span></div>
+    <div class="hs"><span class="n">16</span><span class="l">Objection Rebuttals</span></div>
+    <div class="hs"><span class="n">8</span><span class="l">Roleplay Scenarios</span></div>
+    <div class="hs"><span class="n">50</span><span class="l">Non-Negotiable Rules</span></div>
+    <div class="hs"><span class="n">30</span><span class="l">Day Mastery Plan</span></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-wrap">
+<div class="nav-scroll">
+  <button class="ntab on" onclick="show('intro',this)">01 · System</button>
+  <button class="ntab" onclick="show('mindset',this)">02 · Mindset</button>
+  <button class="ntab" onclick="show('shopowner',this)">03 · The Shop Owner</button>
+  <button class="ntab" onclick="show('product',this)">04 · Product</button>
+  <button class="ntab" onclick="show('psych',this)">05 · Psychology</button>
+  <button class="ntab" onclick="show('attention',this)">06 · First 5 Sec</button>
+  <button class="ntab" onclick="show('framework',this)">07 · Call Framework</button>
+  <button class="ntab" onclick="show('discovery',this)">08 · Discovery</button>
+  <button class="ntab" onclick="show('tonality',this)">09 · Tonality</button>
+  <button class="ntab" onclick="show('objections',this)">10 · Objections</button>
+  <button class="ntab" onclick="show('demo',this)">11 · Demo</button>
+  <button class="ntab" onclick="show('closing',this)">12 · Closing</button>
+  <button class="ntab" onclick="show('roleplay',this)">13 · Roleplay</button>
+  <button class="ntab" onclick="show('training',this)">14 · Training</button>
+  <button class="ntab" onclick="show('rules',this)">15 · 50 Rules</button>
+  <button class="ntab" onclick="show('thirtydays',this)">16 · 30-Day Plan</button>
+  <button class="ntab" onclick="show('master',this)">17 · Master</button>
+</div>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 01 INTRO / SYSTEM -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-intro" class="sec on">
+  <div class="sec-head">The PureCode <em>Sales System</em></div>
+  <p class="sec-sub">Everything you need before dialing your first auto repair shop. What this playbook is, how it is structured, and why it will turn you into the most dangerous AI receptionist closer in the country.</p>
+
+  <div class="pullquote">
+    "Shop owners do not buy AI. They buy booked appointments, fewer no-shows, and revenue they are currently hemorrhaging to voicemail. Sell what they buy."
+    <span>— PureCode Agency · Core Operating Principle</span>
+  </div>
+
+  <h3>What This Playbook Does</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:20px;">Every other sales training teaches you one framework. You memorize it, hit the phones, and watch it shatter the moment a shop owner says "we're good right now." This playbook is different. It synthesizes 12+ frameworks into a single, unified, auto-repair-specific operating system — and tells you <em>which mechanism to use, when, and exactly why it works on the shop owner brain.</em></p>
+
+  <div class="g3">
+    <div class="stat-card"><div class="sn" style="color:var(--gold);">$11K+</div><div class="sl">average monthly revenue lost to missed calls per independent auto repair shop</div></div>
+    <div class="stat-card"><div class="sn" style="color:var(--em);">23%</div><div class="sl">of all auto repair calls go unanswered — the industry average miss rate</div></div>
+    <div class="stat-card"><div class="sn" style="color:var(--rose);">80%</div><div class="sl">of callers who reach voicemail hang up without leaving a message</div></div>
+  </div>
+
+  <div class="div"></div>
+  <h3>The 7 Core Truths This System Is Built On</h3>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">🩸</div><div class="hbox-body"><h5>Truth 1 · The Wound Is Real</h5><p>Every shop owner you call is bleeding revenue. Industry data: auto repair shops miss 23% of inbound calls. At an average repair order of $500–$586, that is $11,000+ in lost monthly revenue. You are not interrupting their day — you are showing them a wound they have been ignoring.</p></div></div>
+  <div class="hbox hbox-em"><div class="hbox-icon">🎯</div><div class="hbox-body"><h5>Truth 2 · The First 5 Seconds Decide Everything</h5><p>Belfort's 4-second brain rule is even shorter for shop owners. They hear "AI" or "marketing" and the call is dead. Your first sentence must signal: not generic, not pitch, not waste of time.</p></div></div>
+  <div class="hbox hbox-sky"><div class="hbox-icon">❓</div><div class="hbox-body"><h5>Truth 3 · Questions Close. Statements Don't.</h5><p>NEPQ core principle: when a shop owner articulates his own pain in his own words, he is 80% sold before you pitch. Your job is to ask the question that makes him do the math out loud.</p></div></div>
+  <div class="hbox hbox-rose"><div class="hbox-icon">⚡</div><div class="hbox-body"><h5>Truth 4 · Loss Beats Gain 2:1</h5><p>Kahneman: people work twice as hard to avoid losing $500 than to gain $500. Frame everything as money walking out the door — never as money you could maybe earn. The shop owner is already losing the money. Show him the leak.</p></div></div>
+  <div class="hbox hbox-amber"><div class="hbox-icon">🛡️</div><div class="hbox-body"><h5>Truth 5 · Resistance Is The Real Enemy</h5><p>The shop owner's amygdala fires the moment he classifies you as "salesperson." Once that happens, no logic lands. Your opener's only job is to prevent that classification — through honesty, peer reference, or a question he wants to answer.</p></div></div>
+  <div class="hbox hbox-violet"><div class="hbox-icon">🎭</div><div class="hbox-body"><h5>Truth 6 · Certainty Is Contagious</h5><p>Belfort's certainty transfer: if you are 100% certain PureCode will recover his revenue, that certainty travels through your tone, pace, and pauses — and physically changes how he feels about the offer. If you are 70% sure, he will be 30% sure.</p></div></div>
+  <div class="hbox hbox-gold"><div class="hbox-icon">🏗️</div><div class="hbox-body"><h5>Truth 7 · Shop Owners Are Mechanics, Not Buyers</h5><p>Stop pitching them like SaaS directors. They built this shop with their hands. They distrust smooth talkers. They respond to: directness, peers, math, and the morning rush. Speak their language. Use their words. Match their pace.</p></div></div>
+
+  <div class="div"></div>
+  <h3>The PureCode Power Stack — How The System Layers</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:16px;">After analyzing all 12 frameworks against the auto repair buyer specifically, the optimal stack is layered in this order. Each handles a different phase of the call.</p>
+
+  <div class="flow">
+    <div class="flow-step"><div class="fn" style="color:var(--sky);">Layer 1</div><div class="fv">Braun<br><span style="font-size:11px;color:var(--text3);">Resistance Down</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--violet);">Layer 2</div><div class="fv">Voss<br><span style="font-size:11px;color:var(--text3);">Trust + No-Frame</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--gold);">Layer 3</div><div class="fv">NEPQ<br><span style="font-size:11px;color:var(--text3);">Pain Realization</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--em);">Layer 4</div><div class="fv">Sandler<br><span style="font-size:11px;color:var(--text3);">3-Level Pain</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--rose);">Layer 5</div><div class="fv">Hormozi<br><span style="font-size:11px;color:var(--text3);">Value Stack</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--amber);">Layer 6</div><div class="fv">Belfort<br><span style="font-size:11px;color:var(--text3);">Certainty Close</span></div></div>
+  </div>
+
+  <div class="hbox hbox-em"><div class="hbox-icon">🔑</div><div class="hbox-body"><h5>Why This Order Matters</h5><p>You cannot extract pain (Layer 3) until defenses are down (Layer 1). You cannot value-stack (Layer 5) until pain is real (Layer 4). You cannot close (Layer 6) until value exceeds resistance. The order is the system. Break the order, break the call.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 02 MINDSET -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-mindset" class="sec">
+  <div class="sec-head">The Closer's <em>Mindset</em></div>
+  <p class="sec-sub">Before you dial a single number, your internal operating system must be configured correctly. Technique without mindset is a loaded gun with no trigger finger.</p>
+
+  <div class="pullquote">
+    "The distance between a $50K rep and a $250K rep is not talent. It is the belief system running underneath every call."
+    <span>— PureCode Sales Operating Principle</span>
+  </div>
+
+  <h3>The Two Types of Reps</h3>
+  <div class="g2">
+    <div class="card card-rose">
+      <div class="tag tr">Average Rep</div>
+      <p style="font-size:14px;color:var(--text2);margin-top:10px;"><strong>"I hope this guy buys."</strong> Begs for a sale. Apologetic tonality. Defends every objection emotionally. Sends information when stalled. Confuses being liked with being bought from.</p>
+    </div>
+    <div class="card card-em">
+      <div class="tag te">Elite Closer</div>
+      <p style="font-size:14px;color:var(--text2);margin-top:10px;"><strong>"I hope this guy qualifies."</strong> Interviews the prospect. Walks in with calm dominance. Treats objections as requests for more conviction. Books the next step on the live call. Knows the math destroys every objection.</p>
+    </div>
+  </div>
+
+  <div class="div"></div>
+  <h3>The 5 Beliefs of an Elite PureCode Closer</h3>
+  <div class="hbox hbox-gold"><div class="hbox-icon">1</div><div class="hbox-body"><h5>Belief 1</h5><p>Every shop owner who misses calls is bleeding revenue. Period. There is no debate, no maybe, no "depends on the business." If he has a phone and techs in the bays, he is bleeding.</p></div></div>
+  <div class="hbox hbox-em"><div class="hbox-icon">2</div><div class="hbox-body"><h5>Belief 2</h5><p>PureCode is the cheapest, fastest, highest-ROI fix to that bleed on the market. A human receptionist costs 10× more and sleeps 8 hours a night. Voicemail loses 80% of callers. We are objectively the best move.</p></div></div>
+  <div class="hbox hbox-sky"><div class="hbox-icon">3</div><div class="hbox-body"><h5>Belief 3</h5><p>If a shop owner says no, he didn't reject me — he rejected the math. Which means I didn't show him the math clearly enough. Always my failure of clarity, never his failure of judgment.</p></div></div>
+  <div class="hbox hbox-violet"><div class="hbox-icon">4</div><div class="hbox-body"><h5>Belief 4</h5><p>My calmness is the prospect's permission to relax. My panic is his permission to walk. The energy I bring to the call sets the temperature for both of us.</p></div></div>
+  <div class="hbox hbox-amber"><div class="hbox-icon">5</div><div class="hbox-body"><h5>Belief 5</h5><p>I close hard because hesitation hurts the prospect more than it hurts me. Letting a qualified shop owner walk away undecided is a disservice to him. I push because I care about his business, not because I need the commission.</p></div></div>
+
+  <div class="div"></div>
+  <h3>The Confidence Formula</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">Confidence is not personality. It is a byproduct. Three inputs stacked on top of each other:</p>
+  <div class="g3">
+    <div class="card card-gold">
+      <h4 style="color:var(--gold);">Reps</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">Calls made this week. You cannot fake confidence with 4 calls under your belt. You can fake nothing with 40. Volume is the foundation under everything else.</p>
+    </div>
+    <div class="card card-em">
+      <h4 style="color:var(--em);">Knowledge</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">Deep product mastery. If a shop owner asks anything and you have to say "let me check," your authority drops 40% on the spot. Section 4 is non-optional.</p>
+    </div>
+    <div class="card card-sky">
+      <h4 style="color:var(--sky);">Stories</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">A bank of real client outcomes you can pull from on command. Three minimum, ten ideal. If you cannot name a shop, a city, and a number — you have not earned the right to ask for the close.</p>
+    </div>
+  </div>
+
+  <div class="hbox hbox-rose"><div class="hbox-icon">⚠️</div><div class="hbox-body"><h5>Rule</h5><p>If you do not feel confident before a call, do not meditate. Make 3 dial-only calls to expired leads first. Confidence is a muscle that warms up with reps, not with breathing exercises.</p></div></div>
+
+  <div class="div"></div>
+  <h3>How to Remove the Fear of Rejection</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:16px;">The fear of rejection is a beginner emotion. It comes from believing the call is about <em>you</em>. The call is not about you. It is about whether this shop owner has a missed-call problem and whether we can solve it. Your job is to find out, not to be liked.</p>
+  <div class="g3">
+    <div class="card card-violet">
+      <h4>Reframe 1 · Not Personal</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">The shop owner doesn't know you. He's reacting to a pattern (cold caller). If he was rude, he was rude to a pattern, not to a person.</p>
+    </div>
+    <div class="card card-violet">
+      <h4>Reframe 2 · It's Information</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">Every "no" tells you what didn't land. Tighten the script and the next call gets sharper. The "no" is a teacher.</p>
+    </div>
+    <div class="card card-violet">
+      <h4>Reframe 3 · It's Statistical</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">~30 dials → 8 conversations → 2 demos → 1 close. The "no's" are not failures. They are the cost of getting to the "yes."</p>
+    </div>
+  </div>
+
+  <div class="pullquote">
+    "If you cannot get rejected 50 times in a row without your tonality changing, you are not yet a closer. You are a hopeful person with a phone."
+    <span>— PureCode Operating Truth</span>
+  </div>
+
+  <div class="div"></div>
+  <h3>Emotional Detachment · The $50K-vs-$250K Skill</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">Detachment is the single biggest separator between average reps and elite reps. Detachment does not mean apathy. It means you care intensely about the outcome of every call AND you are completely unattached to whether <em>this specific call</em> closes.</p>
+  <div class="step-row"><div class="step-n">1</div><div class="step-body"><h4>Pre-call mantra</h4><p>Before each dial, say out loud: "This call may close. It may not. Both are fine."</p></div></div>
+  <div class="step-row"><div class="step-n">2</div><div class="step-body"><h4>Post-no reset</h4><p>After every "no," wait 4 seconds. Breathe. Smile. Dial the next one. The reset prevents tonality leakage between calls.</p></div></div>
+  <div class="step-row"><div class="step-n">3</div><div class="step-body"><h4>Track the no's</h4><p>Track your daily "no" count. Celebrate hitting 30. The yes's come from the volume, not from gripping any one call.</p></div></div>
+
+  <div class="div"></div>
+  <h3>Daily Mindset Routine</h3>
+  <div class="g3">
+    <div class="card card-gold">
+      <h4>Morning</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">20 min cardio (tonality is physical) · re-read the 50 Rules · listen to one top-closer recording · set the daily numbers (dials, conversations, demos, closes).</p>
+    </div>
+    <div class="card card-em">
+      <h4>Pre-Call Block</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">Speak your top 3 client stories out loud · roleplay 1 hard objection with a teammate · stand up · smile · dial.</p>
+    </div>
+    <div class="card card-sky">
+      <h4>Evening Debrief</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">Review one lost call · find the exact 30 seconds the call slipped · write the better response · say it 3× out loud · plan tomorrow's first 10 dials.</p>
+    </div>
+  </div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">🎯</div><div class="hbox-body"><h5>Mindset Commitment</h5><p>I will out-rep, out-study, and out-care every other rep selling AI receptionists in this country. I will be the reason a shop owner's business stops leaking revenue. I will close from a place of certainty, not need.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 03 THE SHOP OWNER -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-shopowner" class="sec">
+  <div class="sec-head">Inside The <em>Shop Owner's Head</em></div>
+  <p class="sec-sub">You cannot sell to a man you do not understand. Auto repair shop owners are not your average buyer. This is your map of how they think, what they fear, and exactly what makes them buy.</p>
+
+  <div class="pullquote">
+    "If you call a shop owner like he is a SaaS director, you will lose every single time. He built this shop with grease under his nails. Respect that or go home."
+    <span>— Operating Principle for Trades Sales</span>
+  </div>
+
+  <h3>Who The Shop Owner Actually Is</h3>
+  <div class="g2">
+    <div class="card card-gold">
+      <h4>The Demographic</h4>
+      <p style="font-size:14px;color:var(--text2);margin-top:8px;">Male, 38–60. Started as a technician, now runs 2–8 employees. Average shop revenue $500K–$1.2M. Net profit margins range from 6% (average) to 20% (top performers). Average repair order is $500–$586. Gets 25–60 calls/day depending on shop size. Spends his day between the front counter, the bays, and parts runs — never sitting at a desk.</p>
+    </div>
+    <div class="card card-em">
+      <h4>The Identity</h4>
+      <p style="font-size:14px;color:var(--text2);margin-top:8px;">Trusts: other shop owners, his parts suppliers, ASE-certified peers, longtime customers. Distrusts: marketing people, smooth talkers, subscription services he can't control, anything that sounds "too techy." Built this business with wrenches, not websites. His phone IS the front door of his shop.</p>
+    </div>
+  </div>
+
+  <div class="div"></div>
+  <h3>The 5 Mental Rules Every Shop Owner Operates By</h3>
+  <div class="hbox hbox-rose"><div class="hbox-icon">📞</div><div class="hbox-body"><h5>Rule 1 · Miss the call, lose the customer</h5><p>Auto repair is a right-now business. A driver with a check engine light or a dead battery calls 3 shops. Whoever picks up first gets the job. 85% won't call back after a missed call. He knows this intuitively — he just hasn't measured it.</p></div></div>
+  <div class="hbox hbox-amber"><div class="hbox-icon">🚫</div><div class="hbox-body"><h5>Rule 2 · Marketing people lie. Show me proof.</h5><p>He has been burned. SEO guys, coupon companies, Groupon, ads agencies — all promised the world. He wants <strong>one</strong> thing: another shop owner he trusts saying it works. Until you give him that, every word is filtered through skepticism.</p></div></div>
+  <div class="hbox hbox-sky"><div class="hbox-icon">🛠️</div><div class="hbox-body"><h5>Rule 3 · "I'm not a tech guy"</h5><p>This is identity, not literal. He uses Shop-Ware or Tekmetric daily. But he frames himself as anti-tech because it is a defensive stance against being talked down to. Never use jargon. Never make him feel dumb. Say "answering service" not "AI voice agent."</p></div></div>
+  <div class="hbox hbox-em"><div class="hbox-icon">⏱️</div><div class="hbox-body"><h5>Rule 4 · Time is money. Literally.</h5><p>His service writer is slammed. The phone is ringing. A customer is waiting at the counter. A 45-minute sales call had better produce something useful in the first 90 seconds. Get to the math fast. Show him the leak fast. Or he's gone.</p></div></div>
+  <div class="hbox hbox-violet"><div class="hbox-icon">💰</div><div class="hbox-body"><h5>Rule 5 · Margins are thin. Every dollar matters.</h5><p>The average independent shop nets 6–10% profit. Tight margins mean he scrutinizes every subscription. "Another $500/month?" triggers immediate resistance. You must reframe: it's not $500 spent — it's $11,000 recovered. The math must be undeniable.</p></div></div>
+
+  <div class="div"></div>
+  <h3>His Real Pain Points · Ranked</h3>
+  <table class="tbl">
+    <thead><tr><th>#</th><th>Pain</th><th>What He Says</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Missed calls during the morning rush</td><td>"Between 8 and 10am the phones are going crazy and my service writer can only handle one at a time."</td></tr>
+      <tr><td>2</td><td>After-hours and weekend calls lost</td><td>"We close at 5. Everything after that hits voicemail. Saturdays too."</td></tr>
+      <tr><td>3</td><td>Customers on hold hang up</td><td>"They get put on hold, they hang up. I know it's happening. I just can't fix it."</td></tr>
+      <tr><td>4</td><td>No-shows destroying the schedule</td><td>"We book 12 appointments, 3 don't show. Kills the whole day."</td></tr>
+      <tr><td>5</td><td>Service writer overwhelmed</td><td>"My front counter guy is answering phones, writing tickets, checking people out, AND selling jobs. Something's gotta give."</td></tr>
+      <tr><td>6</td><td>No Google reviews growing</td><td>"We do great work but only have 40 reviews. The shop down the road has 300."</td></tr>
+      <tr><td>7</td><td>Can't find or afford a receptionist</td><td>"I posted for a receptionist. Got 3 applicants, none showed up for the interview."</td></tr>
+      <tr><td>8</td><td>No system to track missed calls</td><td>"Honestly? I have no idea how many calls I'm missing. I just know it's happening."</td></tr>
+    </tbody>
+  </table>
+
+  <div class="div"></div>
+  <h3>His Vocabulary · Use His Words Verbatim</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">When you echo a shop owner's own language back to him, he relaxes. He thinks: <em>"this person actually gets my business."</em> Memorize these phrases. Use them on calls.</p>
+  <div class="g2">
+    <div class="sblock">
+      <div class="who who-them">What he says about missing calls</div>
+      <div class="st">"Phones ring off the hook." · "My service writer can only take one call at a time." · "After 5pm it's voicemail." · "Customers hate being on hold." · "We lose people on weekends." · "I'm under a car, I can't answer."</div>
+    </div>
+    <div class="sblock">
+      <div class="who who-them">What he says about his business</div>
+      <div class="st">"Repair order." · "RO." · "Ticket." · "ARO" (average repair order). · "Bay." · "Lift." · "Check engine light." · "Diagnostic." · "Come-back." · "Warranty work." · "Brake job." · "Transmission." · "Timing belt."</div>
+    </div>
+    <div class="sblock">
+      <div class="who who-them">What he says about customers</div>
+      <div class="st">"Walk-in." · "Appointment." · "Waiter" (customer who waits for the car). · "Drop-off." · "Callback." · "Declined work." · "Upsell." · "DVI" (digital vehicle inspection). · "Approved vs declined."</div>
+    </div>
+    <div class="sblock">
+      <div class="who who-them">What he says about competitors</div>
+      <div class="st">"The dealer." · "The chain shops." · "Jiffy Lube." · "Midas." · "The guy in his garage." · "Mobile mechanic." · "Cheaper shop down the road."</div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+  <h3>The Cost of a Missed Call · Memorize This Math</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">This math is your weapon. You anchor every pitch on it. Run it in your sleep.</p>
+  <table class="tbl">
+    <thead><tr><th>Variable</th><th>Conservative</th><th>Realistic</th><th>Aggressive</th></tr></thead>
+    <tbody>
+      <tr><td>Missed calls per day</td><td>3</td><td>8</td><td>15+</td></tr>
+      <tr><td>% that are real appointment calls</td><td>40%</td><td>55%</td><td>70%</td></tr>
+      <tr><td>Avg repair order value</td><td>$428</td><td>$550</td><td>$750</td></tr>
+      <tr><td>Close rate on captured leads</td><td>50%</td><td>65%</td><td>80%</td></tr>
+      <tr><td><strong>Lost monthly revenue</strong></td><td><strong>$5,600</strong></td><td><strong>$16,500</strong></td><td><strong>$46,200</strong></td></tr>
+    </tbody>
+  </table>
+  <div class="hbox hbox-em"><div class="hbox-icon">💰</div><div class="hbox-body"><h5>Anchor Math For Every Pitch</h5><p>For a typical 4-bay independent shop: <strong>8 missed calls/day × 55% real appointment requests × $550 ARO × 65% close rate × 22 days = $16,500/month lost to unanswered phones.</strong> PureCode Growth tier: $497/mo. ROI: <strong>33× in month one.</strong> Drill this. Live this.</p></div></div>
+
+  <div class="div"></div>
+  <h3>The Customer Lifetime Value · Your Secret Weapon</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">This is the angle most reps miss. Auto repair is a <em>repeat business.</em> A missed call isn't one lost RO. It's a lost customer — forever.</p>
+
+  <div class="g3">
+    <div class="stat-card"><div class="sn" style="color:var(--gold);">$4,200</div><div class="sl">average lifetime value of one loyal auto repair customer (AAA research)</div></div>
+    <div class="stat-card"><div class="sn" style="color:var(--em);">3.2×</div><div class="sl">per year — average visits per retained customer</div></div>
+    <div class="stat-card"><div class="sn" style="color:var(--rose);">58%</div><div class="sl">of customers who experience a dropped call never return to that shop</div></div>
+  </div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">🎯</div><div class="hbox-body"><h5>The Pitch Angle That Kills</h5><p>"You're not losing a $550 repair order when that call goes to voicemail. You're losing $4,200 in lifetime value. That customer was going to bring you oil changes, brake jobs, timing belts, and referrals for the next 5 years. One missed call — gone. Forever."</p></div></div>
+
+  <div class="div"></div>
+  <h3>The Seasonality Lever — Auto Repair Edition</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">Auto repair runs year-round, but it has predictable demand spikes you can leverage on every call.</p>
+  <table class="tbl">
+    <thead><tr><th>Season</th><th>What's Happening</th><th>How To Use It On The Call</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Sep–Nov (Fall prep)</strong></td><td>Winter prep: brakes, tires, cooling systems, battery checks. Volume spikes 20–30%.</td><td>"Winter prep season is 6 weeks out. Your phones are about to get hammered. Get this live now or ride the wave without it."</td></tr>
+      <tr><td><strong>Mar–May (Spring surge)</strong></td><td>Post-winter damage: alignments, tire swaps, AC recharges, suspension. Biggest walk-in volume.</td><td>"Post-winter rush is starting. Every car that survived those potholes is calling for an alignment. Are you catching all those calls?"</td></tr>
+      <tr><td><strong>Jun–Aug (Road trip)</strong></td><td>Pre-vacation inspections, AC work, coolant flushes. Families prepping road trips.</td><td>"Road trip season. Families calling to get inspections before they drive to Florida. That's a $400-$800 ticket per car."</td></tr>
+      <tr><td><strong>Dec–Feb (Cold snap)</strong></td><td>Dead batteries, no-start conditions, heater core, defrost. Emergency calls spike.</td><td>"Cold snap hits and 30 cars won't start tomorrow morning. Those are emergency calls at 7am. Is your voicemail going to answer those?"</td></tr>
+    </tbody>
+  </table>
+
+  <div class="div"></div>
+  <h3>The Analogies That Land With Shop Owners</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">When a shop owner says "I don't get it" or "is this a robot?", reach for analogies, not specs. Speak his world.</p>
+  <div class="g2">
+    <div class="mono">"It's like having a service writer who never takes lunch, never calls in sick, never has a bad day, and works for $16 a day."</div>
+    <div class="mono">"It's the difference between a scan tool and a code reader. Same category, completely different capability."</div>
+    <div class="mono">"You wouldn't let a customer sit in the waiting room for 30 minutes with no one talking to them. Voicemail does the same thing to callers."</div>
+    <div class="mono">"It's not replacing your service writer. It's giving him a co-pilot so he doesn't crash during the morning rush."</div>
+    <div class="mono">"Voicemail is a leaky radiator. You can keep topping it off, or you can actually fix the leak."</div>
+    <div class="mono">"It's like hiring a $60K/year receptionist for $6K/year — who works nights, weekends, and holidays."</div>
+  </div>
+
+  <div class="div"></div>
+  <h3>ROI Stories To Have Ready · Memorize 3 Minimum</h3>
+
+  <div class="fw-card">
+    <div class="fw-head"><span class="fw-badge" style="background:var(--gold3);color:var(--gold);">Story A</span><h4 style="margin:0;">The Morning Rush Fix · Carlos, Dallas TX</h4></div>
+    <div class="fw-body">
+      <p style="font-size:14px;color:var(--text);margin-bottom:10px;"><strong>Setup:</strong> 5-bay independent shop in East Dallas. Service writer drowning between 8–10am. Missing 6–10 calls during the morning rush every day.</p>
+      <p style="font-size:14px;color:var(--text);margin-bottom:10px;"><strong>Result Month 1:</strong> Captured 142 missed calls · 67 booked appointments · 41 completed ROs · avg ticket $620 = <strong>$25,420 recovered revenue.</strong></p>
+      <p style="font-size:14px;color:var(--text);"><strong>ROI:</strong> 51× on a $497/mo investment. In one month.</p>
+    </div>
+  </div>
+
+  <div class="fw-card">
+    <div class="fw-head"><span class="fw-badge" style="background:var(--em2);color:var(--em);">Story B</span><h4 style="margin:0;">The Weekend Warrior · Ray, Nashville TN</h4></div>
+    <div class="fw-body">
+      <p style="font-size:14px;color:var(--text);margin-bottom:10px;"><strong>Setup:</strong> Closed Sat-Sun. All weekend calls were going to voicemail — roughly 25–35 calls per weekend.</p>
+      <p style="font-size:14px;color:var(--text);margin-bottom:10px;"><strong>Result:</strong> AI captured every weekend call. Monday morning, 15–20 pre-booked appointments were already on the calendar. Week started full instead of empty.</p>
+      <p style="font-size:14px;color:var(--text);"><strong>Ray's words:</strong> "Mondays used to be slow. Now we're booked before we open. This thing pays for itself before I finish my coffee."</p>
+    </div>
+  </div>
+
+  <div class="fw-card">
+    <div class="fw-head"><span class="fw-badge" style="background:var(--sky2);color:var(--sky);">Story C</span><h4 style="margin:0;">The No-Show Killer · Maria, Brea CA</h4></div>
+    <div class="fw-body">
+      <p style="font-size:14px;color:var(--text);margin-bottom:10px;"><strong>Setup:</strong> Running a 3-bay shop. Booking 12 appointments/day. 3–4 no-shows daily. Losing $1,500–$2,000/day in unfilled bay time.</p>
+      <p style="font-size:14px;color:var(--text);margin-bottom:10px;"><strong>Result:</strong> Automated reminders (24h email + 1h text) dropped no-shows from 28% to 8%. Recovered 3 extra ROs per day.</p>
+      <p style="font-size:14px;color:var(--text);"><strong>Maria's words:</strong> "We went from begging for work by 2pm to turning people away by noon. The reminders alone are worth the subscription."</p>
+    </div>
+  </div>
+
+  <div class="div"></div>
+  <h3>Why PureCode Beats Every Competitor</h3>
+  <table class="tbl">
+    <thead><tr><th>Competitor</th><th>Their Pitch</th><th>Why They Lose</th></tr></thead>
+    <tbody>
+      <tr><td>Human services (Ruby, Smith.ai)</td><td>"Real people answer."</td><td>$300–$600/mo for limited calls, slow setup, generic scripts, no CRM integration, no appointment booking, no after-hours.</td></tr>
+      <tr><td>Generic AI bots</td><td>"AI for everyone!"</td><td>Built for SaaS, sounds robotic, no auto repair vocabulary, doesn't know what a "check engine light" is, can't book around bay availability.</td></tr>
+      <tr><td>Voicemail + callback</td><td>"Free."</td><td>Loses 80%+ of callers. 85% won't call back after a missed call. The "free" option is the most expensive option in the market.</td></tr>
+      <tr><td>In-house receptionist</td><td>"Personal touch."</td><td>$3,500–4,500/mo, single shift only, sick days, training, turnover, can only handle one call at a time, no nights/weekends.</td></tr>
+      <tr><td>"My service writer answers"</td><td>"It's covered."</td><td>It isn't. Service writer is also writing tickets, selling jobs, checking people out, and ordering parts. When 3 calls come in at once during morning rush, 2 go to voicemail.</td></tr>
+      <tr><td>"I just answer myself"</td><td>"I got this."</td><td>He doesn't. He's under a car, driving between parts runs, or in the middle of a customer conversation. That's why he's on this call.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="div"></div>
+  <h3>The Onboarding Reality · Crushes "It's Too Complicated"</h3>
+  <div class="flow">
+    <div class="flow-step"><div class="fn" style="color:var(--gold);">Day 1</div><div class="fv" style="font-size:12px;">30-min discovery call</div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--sky);">Day 3–5</div><div class="fv" style="font-size:12px;">Voice + script tuned to shop</div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--violet);">Day 7–9</div><div class="fv" style="font-size:12px;">Calendar + CRM connection</div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--amber);">Day 10</div><div class="fv" style="font-size:12px;">Live test calls</div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--em);">Day 11–14</div><div class="fv" style="font-size:12px;">Live deploy + monitoring</div></div>
+  </div>
+  <div class="hbox hbox-em"><div class="hbox-icon">⏱️</div><div class="hbox-body"><h5>Total Shop Owner Time Investment</h5><p>About <strong>90 minutes</strong> across 2 weeks. We do everything. He shows up, signs off on the voice, and goes back to fixing cars.</p></div></div>
+
+  <div class="div"></div>
+  <h3>The One Framing Rule You Never Break</h3>
+  <div class="hbox hbox-rose"><div class="hbox-icon">⛔</div><div class="hbox-body"><h5>Never Sell Technology</h5><p>Every time you catch yourself talking about "AI" — STOP. Replace it with "your missed calls" or "the appointments you're losing." The shop owner cares about the outcome, never the engine. The word "AI" itself is a friction point. Use it sparingly. When you do use it, immediately pivot back to revenue and appointments.</p></div></div>
+</div>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 04 PRODUCT MASTERY -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-product" class="sec">
+  <div class="sec-head">Product <em>Mastery</em></div>
+  <p class="sec-sub">If a shop owner asks anything about our product and you hesitate, the call is over. You must know every feature, every limitation, and every answer cold — before you ever dial.</p>
+
+  <div class="pullquote">
+    "The moment a prospect asks a question and you pause, his brain re-classifies you from 'expert' to 'salesperson.' That reclassification is permanent and terminal."
+    <span>— Belfort · Straight Line System</span>
+  </div>
+
+  <h3>What PureCode Actually Does · The 60-Second Explanation</h3>
+  <div class="sblock">
+    <div class="who who-you">USE THIS ON CALLS</div>
+    <div class="st">"We give auto repair shops a 24/7 AI receptionist that answers every call — day, night, weekends, holidays. It books appointments directly into your calendar, texts customers who don't connect, sends review requests after jobs, and sends appointment reminders so your no-shows drop to nearly zero. Your service writer keeps doing what he does best — we just make sure the phone never goes unanswered."</div>
+  </div>
+
+  <div class="div"></div>
+  <h3>The Three Plans · Know These Cold</h3>
+
+  <div class="g3">
+    <div class="card card-sky">
+      <div class="tag" style="color:var(--sky);">Starter · $397/mo · $997 setup</div>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:10px;"><strong>AI receptionist on 1 line</strong> · unlimited calls · custom AI training · full dashboard · call transcripts & summaries · interactive appointment calendar · lead capture & CRM · missed-call text-back</p>
+      <p style="font-size:12px;color:var(--text3);margin-top:8px;"><em>Best for: solo operators, under 100 calls/month</em></p>
+    </div>
+    <div class="card card-gold" style="border:2px solid var(--gold);">
+      <div class="tag" style="color:var(--gold);">Growth · $497/mo · $997 setup ★</div>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:10px;"><strong>Everything in Starter PLUS:</strong> saved client info (repeat caller recognition) · automated review requests · automated appointment reminders</p>
+      <p style="font-size:12px;color:var(--text3);margin-top:8px;"><em>Best for: 1–3 person teams, 100–300 calls/month. Most popular.</em></p>
+    </div>
+    <div class="card card-violet">
+      <div class="tag" style="color:var(--violet);">Elite · $697/mo · $1,497 setup</div>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:10px;"><strong>Everything in Growth PLUS:</strong> AI review responses (good & bad) · voicemail drop · priority support + dedicated success manager</p>
+      <p style="font-size:12px;color:var(--text3);margin-top:8px;"><em>Best for: multi-bay shops, 300+ calls/month, $10K+ monthly phone-driven revenue</em></p>
+    </div>
+  </div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">★</div><div class="hbox-body"><h5>Pricing Anchor Rule</h5><p>Always mention Elite ($697) first, then Growth ($497). Growth becomes the obvious value pick when Elite is the anchor. Never lead with Starter — it signals you think they're small.</p></div></div>
+
+  <div class="div"></div>
+  <h3>Auto-Repair-Specific Product Knowledge</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">These are the questions shop owners specifically ask. Have answers memorized.</p>
+
+  <table class="tbl">
+    <thead><tr><th>Question</th><th>Your Answer</th></tr></thead>
+    <tbody>
+      <tr><td>"Can it book around my bay availability?"</td><td>"Yes — we train the AI on your shop's capacity. If you have 4 bays and 3 are booked Wednesday morning, it knows to offer Wednesday afternoon or Thursday."</td></tr>
+      <tr><td>"Does it know car stuff?"</td><td>"We train it specifically on auto repair. It knows the difference between a brake job and a timing belt. It can take symptoms ('car is making a grinding noise') and log them correctly for your service writer."</td></tr>
+      <tr><td>"What if someone calls with an emergency tow?"</td><td>"Escalation logic. Emergencies — breakdowns, tows, overheating — get routed to your cell or your on-call tech immediately. The AI never tries to schedule an emergency for next Tuesday."</td></tr>
+      <tr><td>"Does it work with Shop-Ware / Tekmetric / Mitchell?"</td><td>"We integrate with most major shop management systems. Tell me which one you use and I'll confirm. Most common: Shop-Ware, Tekmetric, Mitchell, ShopBoss, AutoFluent, and Protractor."</td></tr>
+      <tr><td>"What happens when we're closed?"</td><td>"That's where it shines. After hours, weekends, holidays — every call is answered, every appointment is booked, every customer gets a text confirmation. Monday morning you walk in to a full calendar."</td></tr>
+      <tr><td>"Can it handle warranty questions?"</td><td>"It can capture the question, log the VIN or service history request, and route it to your service writer for follow-up. It won't try to quote warranty coverage — it hands that to a human."</td></tr>
+      <tr><td>"What about Spanish speakers?"</td><td>"Bilingual add-on for $100/month. AI handles English and Spanish automatically. In markets like Texas, California, and Florida most shops add it."</td></tr>
+    </tbody>
+  </table>
+
+  <div class="div"></div>
+  <h3>Features Shop Owners Care About Most · Ranked</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">Not all features are created equal. These are ranked by how much they impact the shop owner's decision to buy.</p>
+
+  <div class="step-row"><div class="step-n" style="color:var(--gold);">1</div><div class="step-body"><h4>Missed-call text-back</h4><p>"If someone calls and we can't connect, we text them in 30 seconds." This is the #1 feature for shops because it directly saves lost customers. 85% of callers won't leave a voicemail — text-back catches them.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--gold);">2</div><div class="step-body"><h4>After-hours + weekend coverage</h4><p>"Every call answered 24/7." For shops that close at 5pm and are dark on weekends, this captures 25–35% of their total call volume they're currently losing.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--gold);">3</div><div class="step-body"><h4>Automated appointment reminders</h4><p>"No-shows drop from 25% to under 10%." Service writers universally cite no-shows as their biggest scheduling headache. This feature sells Growth over Starter every time.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--em);">4</div><div class="step-body"><h4>Automated review requests</h4><p>"Go from 2 reviews/month to 10–15." Google Maps ranking is life or death for local auto repair. The shop with 300 reviews gets 5× the call volume of the shop with 40.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--em);">5</div><div class="step-body"><h4>Repeat caller recognition</h4><p>"Hi Mr. Johnson, are you calling about the brake inspection we scheduled last week?" This is the feature that makes shop owners say "wait, it can do THAT?"</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--sky);">6</div><div class="step-body"><h4>Full dashboard with transcripts</h4><p>Less emotional but critical for proving ROI. "Look at your dashboard — 47 calls captured this week, 23 booked. That's $12,650 in revenue you would have lost."</p></div></div>
+
+  <div class="div"></div>
+  <h3>The Competitor Kill Sheet</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">When they compare, you must know the battlefield cold.</p>
+  <table class="tbl">
+    <thead><tr><th>What They Say</th><th>Who They Mean</th><th>Your Response</th></tr></thead>
+    <tbody>
+      <tr><td>"We use an answering service"</td><td>Ruby, Smith.ai, AnswerConnect, MAP</td><td>"What do they charge per call? Most services hit $300–600/mo and cap at 20–50 calls. We're unlimited at a flat rate. Plus — do they book appointments into your calendar? Send review requests? Remember returning customers? Or do they just take messages?"</td></tr>
+      <tr><td>"My service writer handles it"</td><td>Internal staff</td><td>"How many lines can he answer at once? During the 8–10am rush when 3 calls come in simultaneously, who gets the other 2? We handle the overflow so he focuses on the customers already in the shop."</td></tr>
+      <tr><td>"We already tried something like this"</td><td>Generic chatbot or IVR</td><td>"Was it specifically trained on auto repair? Could it tell the difference between a brake noise and a transmission issue? Ours is custom-trained on YOUR shop — services, pricing, scheduling, even your tech names."</td></tr>
+      <tr><td>"Voicemail works fine"</td><td>Default phone voicemail</td><td>"How many voicemails did you get last week? Industry average: 80% of callers who hit voicemail hang up without leaving one. They don't call back — they call the next shop in Google."</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 05 PSYCHOLOGY -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-psych" class="sec">
+  <div class="sec-head">The <em>Psychology</em> Behind Every Close</div>
+  <p class="sec-sub">Every framework in this playbook is built on proven psychological principles. Understand the engine, not just the accelerator. These principles explain <em>why</em> the scripts work — so when you go off-script, you stay dangerous.</p>
+
+  <div class="pullquote">
+    "People don't buy logically. They buy emotionally and then justify with logic. The sequence is: feel → decide → rationalize. If you start with logic, you're already dead."
+    <span>— Kahneman · Cialdini · Voss · Every Framework</span>
+  </div>
+
+  <h3>The 7 Principles That Make Shop Owners Buy</h3>
+
+  <div class="hbox hbox-rose"><div class="hbox-icon">1</div><div class="hbox-body"><h5>Loss Aversion · Kahneman</h5><p>The pain of losing $500 is 2× stronger than the joy of gaining $500. This is why we always frame PureCode as "recovering money you're already losing" — never "making you more money." The shop owner isn't gaining $16,500/month. He is <strong>stopping the bleeding</strong> of $16,500/month.</p></div></div>
+  <div class="hbox hbox-gold"><div class="hbox-icon">2</div><div class="hbox-body"><h5>Social Proof · Cialdini</h5><p>Shop owners trust other shop owners. Period. "We work with 60+ independent shops across DFW" does more selling than 30 minutes of feature talk. Named stories, specific numbers, real cities — that is social proof that converts.</p></div></div>
+  <div class="hbox hbox-em"><div class="hbox-icon">3</div><div class="hbox-body"><h5>Reciprocity · Cialdini</h5><p>Give value before asking. On the call, give them their own missed-call math. Give them the industry benchmarks. Give them the competitor insight. When you give first, they feel obligated to reciprocate with attention, time, and ultimately a purchase.</p></div></div>
+  <div class="hbox hbox-sky"><div class="hbox-icon">4</div><div class="hbox-body"><h5>Scarcity + Urgency · Cialdini / Cardone</h5><p>Seasonal urgency: "Winter prep calls start in 6 weeks. Get this live before the phones explode or ride the wave without it." Capacity urgency: "We onboard 10 shops per month per market. DFW has 6 slots left this month."</p></div></div>
+  <div class="hbox hbox-violet"><div class="hbox-icon">5</div><div class="hbox-body"><h5>Authority · Cialdini</h5><p>When you say "the average independent shop misses 23% of calls — that's industry data from the Automotive Management Institute" — you are not a salesperson anymore. You are an industry expert delivering research. Authority changes how every word lands.</p></div></div>
+  <div class="hbox hbox-amber"><div class="hbox-icon">6</div><div class="hbox-body"><h5>Commitment & Consistency · Cialdini</h5><p>Get micro-commitments early. "Would it be fair to say if you could stop losing $16K a month in missed calls, that would be worth looking at?" YES. Now he is committed to the logic. Walking away contradicts his own stated position. Every "yes" makes the next "yes" easier.</p></div></div>
+  <div class="hbox hbox-rose"><div class="hbox-icon">7</div><div class="hbox-body"><h5>Tactical Empathy · Voss</h5><p>"It sounds like you've been burned by marketing vendors before." This is not sympathy. This is labeling his emotion before he voices it. When you name what he feels, he feels understood — and understood people lower their guard.</p></div></div>
+
+  <div class="div"></div>
+  <h3>The Amygdala Problem · Why Shop Owners Hang Up</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">A shop owner's brain classifies every cold call in under 4 seconds. Two buckets: <strong>threat</strong> or <strong>relevant.</strong> If you trigger "threat," the amygdala hijacks the conversation and nothing logical can get through. The rest of the call is him looking for an excuse to hang up.</p>
+
+  <div class="g2">
+    <div class="card card-rose">
+      <h4 style="color:var(--rose);">Threat Triggers (Avoid)</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:8px;">Generic opener: "Hi, I'm calling from..." · Immediately pitching a product · Using jargon ("AI-powered solution") · Sounding rehearsed or scripted · Asking "how are you today" · Talking too fast · Sounding excited (signals commission-breath) · Name-dropping companies he doesn't know.</p>
+    </div>
+    <div class="card card-em">
+      <h4 style="color:var(--em);">Relevance Triggers (Use)</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:8px;">Naming his city or neighborhood · Referencing a specific shop owner he may know · Asking a question about HIS morning rush · Using auto repair vocabulary ("your service writer," "repair orders") · Matching his pace and energy · Sounding calm, direct, and peer-level — not salesy.</p>
+    </div>
+  </div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">🧠</div><div class="hbox-body"><h5>The 4-Second Rule</h5><p>Your opener's only job is to keep him on the phone for the next 20 seconds. Not to pitch. Not to explain. Not to introduce yourself. Just to prevent the amygdala classification of "threat." If you survive 20 seconds, you have 90 seconds. If you survive 90, you have 5 minutes. The first 4 seconds buy everything else.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 06 FIRST 5 SECONDS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-attention" class="sec">
+  <div class="sec-head">The First <em>5 Seconds</em></div>
+  <p class="sec-sub">If your opener doesn't survive the first 4 seconds, nothing else in this playbook matters. This section gives you 8 battle-tested openers specifically built for auto repair shop owners.</p>
+
+  <div class="pullquote">
+    "Within the first four seconds of meeting someone, or speaking to them on the telephone, they are going to make snap judgments about you based on how you look, the way you dress, how you carry yourself, and, most importantly, the initial words out of your mouth and the accompanying tonality."
+    <span>— Jordan Belfort · Way of the Wolf</span>
+  </div>
+
+  <h3>The 3 Rules Every Opener Must Follow</h3>
+  <div class="g3">
+    <div class="card card-gold">
+      <h4 style="color:var(--gold);">Rule 1 · No Pitch</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">Your first sentence must contain ZERO product information. The moment you mention AI, software, or "service," his brain classifies you as a vendor and the wall goes up.</p>
+    </div>
+    <div class="card card-em">
+      <h4 style="color:var(--em);">Rule 2 · Pattern Break</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">Every cold caller says "Hi, my name is X from Y." Your opener must be different from that pattern or it triggers the automatic rejection response.</p>
+    </div>
+    <div class="card card-sky">
+      <h4 style="color:var(--sky);">Rule 3 · Permission or Curiosity</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">End with a question that earns you 20 more seconds. Either ask permission ("got 20 seconds?") or trigger curiosity ("quick question about your morning rush").</p>
+    </div>
+  </div>
+
+  <div class="div"></div>
+  <h3>The 8 Openers · Auto Repair Edition</h3>
+
+  <div class="card card-gold">
+    <h4>Opener A · The Peer Reference</h4>
+    <div class="sblock" style="margin-top:10px;">
+      <div class="who who-you">YOU SAY</div>
+      <div class="st">"Hey — is this [Name]? Cool. I was just talking to [another shop name] over on [street], and he mentioned you guys stay pretty slammed on the phones during the morning rush. Quick question — how's your service writer handling it when 3 calls come in at once?"</div>
+    </div>
+    <div class="sblock">
+      <div class="who who-why">WHY IT WORKS</div>
+      <div class="st">Peer reference (Cialdini social proof) + specific local knowledge (pattern break) + question about HIS reality (curiosity). He answers because it's about his morning, not your product.</div>
+    </div>
+  </div>
+
+  <div class="card card-em">
+    <h4>Opener B · The Numbers Bomb</h4>
+    <div class="sblock" style="margin-top:10px;">
+      <div class="who who-you">YOU SAY</div>
+      <div class="st">"Hey [Name] — quick question, I'll be 20 seconds. Industry data says the average 4-bay shop is losing about $11,000 a month just from calls that hit voicemail. Do you guys track how many calls you miss during the day?"</div>
+    </div>
+    <div class="sblock">
+      <div class="who who-why">WHY IT WORKS</div>
+      <div class="st">Authority + loss aversion + specific number + question that requires thought. He can't answer with "not interested" because it's a diagnostic question about his own business.</div>
+    </div>
+  </div>
+
+  <div class="card card-sky">
+    <h4>Opener C · The After-Hours Angle</h4>
+    <div class="sblock" style="margin-top:10px;">
+      <div class="who who-you">YOU SAY</div>
+      <div class="st">"Hey [Name] — when you guys close at 5, what happens to the calls that come in between 5pm and 8am? Do those go to voicemail or do you have something catching them?"</div>
+    </div>
+    <div class="sblock">
+      <div class="who who-why">WHY IT WORKS</div>
+      <div class="st">Direct, no fluff, asks about a real gap he knows exists. Forces him to confront the problem in his own words. Most will say "voicemail" — and now you own the conversation.</div>
+    </div>
+  </div>
+
+  <div class="card card-violet">
+    <h4>Opener D · The No-Show Opener</h4>
+    <div class="sblock" style="margin-top:10px;">
+      <div class="who who-you">YOU SAY</div>
+      <div class="st">"Hey [Name] — quick one. I know this is a random call, but I've been talking to shops in [city] this week and no-shows keep coming up. You guys dealing with that? How many appointments per week just don't show up?"</div>
+    </div>
+    <div class="sblock">
+      <div class="who who-why">WHY IT WORKS</div>
+      <div class="st">Honesty ("random call") + peer context ("shops in your city") + universal pain point (every shop owner hates no-shows). He'll vent. Let him.</div>
+    </div>
+  </div>
+
+  <div class="card card-amber">
+    <h4>Opener E · The Google Reviews Angle</h4>
+    <div class="sblock" style="margin-top:10px;">
+      <div class="who who-you">YOU SAY</div>
+      <div class="st">"Hey [Name] — I was looking at your Google page and you guys have solid reviews but the shop on [competitor street] has like 300. Are you doing anything to get more reviews coming in, or has that been on the back burner?"</div>
+    </div>
+    <div class="sblock">
+      <div class="who who-why">WHY IT WORKS</div>
+      <div class="st">Specific research + competitive threat + compliment + honest question. He'll either say "yeah we need more" (opening) or "we're fine" (then pivot to missed calls).</div>
+    </div>
+  </div>
+
+  <div class="card card-rose">
+    <h4>Opener F · The Service Writer Sympathy</h4>
+    <div class="sblock" style="margin-top:10px;">
+      <div class="who who-you">YOU SAY</div>
+      <div class="st">"Hey [Name] — real quick. I talk to a lot of shop owners and the same thing keeps coming up — the service writer is writing tickets, checking people out, selling jobs, AND answering the phone all at once. Is that happening at your place too?"</div>
+    </div>
+    <div class="sblock">
+      <div class="who who-why">WHY IT WORKS</div>
+      <div class="st">Validates a pain he lives every day. He'll say "yeah, it's brutal" — and now he's telling you about his problem without you pitching anything.</div>
+    </div>
+  </div>
+
+  <div class="card card-gold">
+    <h4>Opener G · The Seasonal Trigger</h4>
+    <div class="sblock" style="margin-top:10px;">
+      <div class="who who-you">YOU SAY</div>
+      <div class="st">"Hey [Name] — I know winter prep season is about to hit. When the battery and brake calls start flooding in, are you set up to catch all those, or does the overflow just hit voicemail?"</div>
+    </div>
+    <div class="sblock">
+      <div class="who who-why">WHY IT WORKS</div>
+      <div class="st">Seasonal urgency + industry-specific knowledge + question about a gap he hasn't solved. Works best 4–6 weeks before seasonal peaks.</div>
+    </div>
+  </div>
+
+  <div class="card card-em">
+    <h4>Opener H · The Receptionist Gap</h4>
+    <div class="sblock" style="margin-top:10px;">
+      <div class="who who-you">YOU SAY</div>
+      <div class="st">"Hey [Name] — quick question. Do you have a dedicated receptionist at the front desk, or is your service writer doing double duty on the phones and the counter?"</div>
+    </div>
+    <div class="sblock">
+      <div class="who who-why">WHY IT WORKS</div>
+      <div class="st">Diagnostic question. If they say "service writer does both" — that's your entry. If they say "we have someone" — follow up: "What happens when she's at lunch or on the other line?"</div>
+    </div>
+  </div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">★</div><div class="hbox-body"><h5>Test All 8 · Kill The Losers · Scale The Winners</h5><p>Run each opener for 20 dials. Track the "stayed on the phone past 30 seconds" rate. Kill anything under 30%. Scale the top 2 to your primary rotation. What works in Nashville may not work in DFW — test by market.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 07 CALL FRAMEWORK -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-framework" class="sec">
+  <div class="sec-head">The Full <em>Call Framework</em></div>
+  <p class="sec-sub">Every call follows 6 stages. The order is sacred. Skip a stage and the call collapses. This is the complete script architecture from opener to close.</p>
+
+  <div class="pullquote">
+    "A sale is made in 6 acts. Each act sets up the next. If you rush to Act 5 before earning Act 3, you've lost."
+    <span>— PureCode Operating Framework</span>
+  </div>
+
+  <div class="flow">
+    <div class="flow-step"><div class="fn" style="color:var(--gold);">Stage 1</div><div class="fv">Open<br><span style="font-size:11px;color:var(--text3);">0–30 sec</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--sky);">Stage 2</div><div class="fv">Discover<br><span style="font-size:11px;color:var(--text3);">30 sec – 3 min</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--violet);">Stage 3</div><div class="fv">Pain<br><span style="font-size:11px;color:var(--text3);">3 – 5 min</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--em);">Stage 4</div><div class="fv">Impact<br><span style="font-size:11px;color:var(--text3);">5 – 7 min</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--amber);">Stage 5</div><div class="fv">Solution<br><span style="font-size:11px;color:var(--text3);">7 – 10 min</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--rose);">Stage 6</div><div class="fv">Close<br><span style="font-size:11px;color:var(--text3);">10 – 12 min</span></div></div>
+  </div>
+
+  <div class="div"></div>
+
+  <h3>Stage 1 · Open (0–30 sec)</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">Use any opener from Section 06. Your only goal: survive 30 seconds. Do NOT pitch. Do NOT explain who you are. Just ask a question that earns the next 60 seconds.</p>
+
+  <h3>Stage 2 · Discover (30 sec – 3 min)</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:12px;">Ask 3–4 diagnostic questions that map his situation. Keep it conversational. You're a doctor diagnosing, not a detective interrogating.</p>
+  <div class="sblock"><div class="who who-you">DISCOVERY QUESTIONS</div><div class="st">"How many bays are you running?"<br>"How many calls would you say come in on a typical day?"<br>"Who's answering the phone right now — service writer, receptionist, or you?"<br>"What happens after hours and weekends? Voicemail?"</div></div>
+  <div class="sblock"><div class="who who-note">NOTE</div><div class="st">Listen to his answers. Echo his language back. If he says "phones ring off the hook" — use that exact phrase later. Matching his words = trust.</div></div>
+
+  <h3>Stage 3 · Pain (3 – 5 min)</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:12px;">This is where the sale is made. Use NEPQ + Sandler pain questions to make HIM articulate the problem. When he says it out loud, it becomes real.</p>
+  <div class="sblock"><div class="who who-you">PAIN QUESTIONS</div><div class="st">"So when 3 calls come in during the morning rush and your service writer can only grab one — what happens to the other 2?"<br>"How does it feel knowing those callers are probably calling the next shop in Google right now?"<br>"Has that been going on for a while, or is it getting worse?"<br>"What does that cost you, roughly? Even a ballpark?"</div></div>
+  <div class="hbox hbox-rose" style="margin-top:12px;"><div class="hbox-icon">⚡</div><div class="hbox-body"><h5>The Pain Rule</h5><p>NEVER tell a shop owner he has a problem. ASK the questions that make him tell YOU he has a problem. Self-discovered pain is 10× more powerful than externally assigned pain. The question is the weapon.</p></div></div>
+
+  <h3>Stage 4 · Impact (5 – 7 min)</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:12px;">Quantify the pain in dollars. Make the invisible visible. Use his own numbers from Stage 2.</p>
+  <div class="sblock"><div class="who who-you">IMPACT SCRIPT</div><div class="st">"So let me make sure I've got this right. You said about [X] calls a day, and maybe [Y] are going to voicemail. At your average ticket of [Z], that's roughly [math] a month in appointments you're losing. Does that sound about right, or am I off?"</div></div>
+  <div class="sblock"><div class="who who-note">NOTE</div><div class="st">Always ask him to confirm the math. When HE confirms the number, he owns it. It stops being your pitch and starts being his problem. This is Sandler's "pain in the prospect's words" principle.</div></div>
+
+  <h3>Stage 5 · Solution (7 – 10 min)</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:12px;">Now — and ONLY now — do you introduce PureCode. Bridge from his pain to the fix. Use the value stack (Hormozi).</p>
+  <div class="sblock"><div class="who who-you">SOLUTION BRIDGE</div><div class="st">"So here's what we do. We give shops like yours a 24/7 AI receptionist — trained specifically on auto repair — that answers every call you're missing. Books appointments directly into your calendar. Texts customers who don't connect. Sends review requests after jobs. And sends reminders so your no-shows drop to under 10%. Your service writer keeps doing what he does best — we just make sure the phone never goes unanswered. We're working with [X] shops across [market] already and the average shop recovers $8,000 to $16,000 a month in their first 30 days."</div></div>
+
+  <h3>Stage 6 · Close (10 – 12 min)</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:12px;">Assume the close. Don't ask "are you interested?" — ask "when do you want this live?"</p>
+  <div class="sblock"><div class="who who-you">CLOSE</div><div class="st">"Most shops are on our Growth plan at $497 a month — that's the one with review automation and appointment reminders. Setup is $997 one-time and takes about 10–14 days. If we started this week, we could have you live before [specific date]. Does [day] or [day] work better for a 20-minute setup call?"</div></div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">★</div><div class="hbox-body"><h5>The Sequence Matters</h5><p>Open → Discover → Pain → Impact → Solution → Close. In that order. Every time. When a rep skips from Open to Solution, they get objections they wouldn't have gotten if they'd built the pain first. The order IS the system.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 08 DISCOVERY -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-discovery" class="sec">
+  <div class="sec-head">The <em>Discovery</em> Engine</div>
+  <p class="sec-sub">Discovery is not an interview. It is a guided conversation that leads the shop owner to say three things: "Yes, I have that problem." "Yes, it's costing me money." "Yes, I want it fixed." The questions do the selling for you.</p>
+
+  <h3>The 4 Layers of Discovery</h3>
+  <div class="step-row"><div class="step-n" style="color:var(--gold);">L1</div><div class="step-body"><h4>Situation Questions · Map the terrain</h4><p>"How many bays?" · "How many calls/day?" · "Who answers?" · "What hours?" · "What PMS do you use?"<br><strong>Purpose:</strong> Factual data. Quick. No pressure. Sets up the pain questions.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--sky);">L2</div><div class="step-body"><h4>Problem Questions · Surface the wound</h4><p>"What happens when 3 calls come in at once?" · "Are you tracking how many go to voicemail?" · "How many no-shows per week?"<br><strong>Purpose:</strong> Makes him articulate what's broken. He's thinking about the problem now.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--rose);">L3</div><div class="step-body"><h4>Implication Questions · Deepen the wound</h4><p>"What does that cost you per month, roughly?" · "If each missed call is a $550 repair order, how many of those can you afford to lose?" · "How long has this been happening?"<br><strong>Purpose:</strong> Turns a surface-level annoyance into a financially urgent problem. This is where the math gets real.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--em);">L4</div><div class="step-body"><h4>Need-Payoff Questions · Show the light</h4><p>"If every call got answered 24/7 and no-shows dropped 70%, what would that do for your business?" · "Would it help if Monday mornings you walked in to 15 pre-booked appointments from the weekend?"<br><strong>Purpose:</strong> He paints the positive picture in his own head. Now he wants the solution — you don't have to push it.</p></div></div>
+
+  <div class="div"></div>
+  <h3>The Auto Repair Discovery Script · Full Version</h3>
+  <div class="sblock"><div class="who who-you">AFTER THE OPENER LANDS</div><div class="st">"Cool — let me just ask a couple quick things so I'm not wasting your time. How many bays are you guys running?"</div></div>
+  <div class="sblock"><div class="who who-them">HE ANSWERS: "4 bays" (or whatever)</div><div class="st"></div></div>
+  <div class="sblock"><div class="who who-you">YOU</div><div class="st">"Got it. And on a busy day, roughly how many calls come in? Ballpark."</div></div>
+  <div class="sblock"><div class="who who-them">HE ANSWERS: "I don't know, maybe 30–40" (or whatever)</div><div class="st"></div></div>
+  <div class="sblock"><div class="who who-you">YOU</div><div class="st">"Who's handling those — you got a receptionist or is your service writer pulling double duty?"</div></div>
+  <div class="sblock"><div class="who who-them">HE ANSWERS: "Service writer does everything"</div><div class="st"></div></div>
+  <div class="sblock"><div class="who who-you">YOU · PAIN BRIDGE</div><div class="st">"Yeah, that's what I keep hearing. So during the morning rush — 8 to 10am — when he's got a customer at the counter, another one on the phone, and the line is ringing again... what happens to that third call?"</div></div>
+  <div class="sblock"><div class="who who-them">HE ANSWERS: "It goes to voicemail" or "they just have to wait"</div><div class="st"></div></div>
+  <div class="sblock"><div class="who who-you">YOU · IMPLICATION</div><div class="st">"And do those people call back, or do they usually just call the next shop?"</div></div>
+  <div class="sblock"><div class="who who-them">HE ANSWERS: "Honestly... most of them probably don't call back"</div><div class="st"></div></div>
+  <div class="sblock"><div class="who who-you">YOU · QUANTIFY</div><div class="st">"Yeah. Industry data says 85% don't. So if you're missing even 5 calls a day and your average repair order is... what, $500, $600?"</div></div>
+  <div class="sblock"><div class="who who-them">HE ANSWERS: "About $550 yeah"</div><div class="st"></div></div>
+  <div class="sblock"><div class="who who-you">YOU · IMPACT</div><div class="st">"So that's about $2,750 a day in potential revenue hitting voicemail. Over a month, that's north of $60,000. Even if half of those calls aren't real appointment requests — that's still $30,000 a month walking out the door. Does that math feel about right?"</div></div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">🎯</div><div class="hbox-body"><h5>The Magic Moment</h5><p>When the shop owner says "yeah... that sounds about right" to YOUR math using HIS numbers — the sale is 80% made. You didn't tell him he has a problem. He told you. And he just confirmed the price tag.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 09 TONALITY -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-tonality" class="sec">
+  <div class="sec-head">Tonality · <em>The Hidden Weapon</em></div>
+  <p class="sec-sub">Words are 20% of the sale. Tonality is 80%. The exact same script delivered in the wrong tone closes at 5%. In the right tone: 35%. This section rewires how you sound.</p>
+
+  <div class="pullquote">
+    "Every word that comes out of your mouth has an associated tonality. And the listener's unconscious mind will pick up on that tonality in less than a tenth of a second and use it to pass judgment on the words."
+    <span>— Jordan Belfort · Way of the Wolf</span>
+  </div>
+
+  <h3>The 5 Tones You Must Master</h3>
+  <div class="step-row"><div class="step-n" style="color:var(--gold);">1</div><div class="step-body"><h4>Curiosity · "Huh, that's interesting..."</h4><p>Use during discovery. When a shop owner tells you about his morning rush, your tone should sound genuinely fascinated — like you're learning something new. Not scripted. Not rehearsed. Curious.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--em);">2</div><div class="step-body"><h4>Calm Authority · "Here's what the data shows."</h4><p>Use when delivering the math. Slow down. Drop your voice 10%. Zero excitement. You're a doctor reading an X-ray, not a salesman closing a deal. Calm authority is the most powerful tone in B2B sales.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--sky);">3</div><div class="step-body"><h4>Empathy · "Yeah, I hear that a lot."</h4><p>Use when he shares pain. Match his emotional register. If he's frustrated, reflect frustration — gently. If he's resigned, reflect understanding. Never sound chipper when he's talking about losing money.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--rose);">4</div><div class="step-body"><h4>Scarcity · "We only onboard 10 shops per month in this market."</h4><p>Matter-of-fact, not desperate. You're stating a logistical reality, not creating fake urgency. The tone should feel like "I'm letting you know because it would be a shame if you missed the window" — not "BUY NOW."</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--amber);">5</div><div class="step-body"><h4>Certainty · "This is going to change your Mondays."</h4><p>Use during the close. This is Belfort's certainty transfer. You don't believe this might work. You KNOW it works. You've seen it work 60 times. That conviction must vibrate through every syllable.</p></div></div>
+
+  <div class="div"></div>
+  <h3>The Auto Repair Tonality Calibration</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:14px;">Shop owners are working-class guys who detect BS instantly. Your tone must be:</p>
+  <div class="g2">
+    <div class="card card-em">
+      <h4 style="color:var(--em);">Like This</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">Direct. Peer-level. Like you're talking to a buddy at a supply house. Slightly slower than your natural pace. No filler words. No "um" or "uh." Confident but not arrogant. A mechanic talking to another mechanic, not a consultant talking to a client.</p>
+    </div>
+    <div class="card card-rose">
+      <h4 style="color:var(--rose);">Not Like This</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">Over-enthusiastic ("This is SO exciting!"). Corporate jargon ("leveraging AI-powered solutions"). Too formal ("I'd like to schedule a consultation"). Too fast (signals nervousness). Too smooth (signals salesperson). Patronizing ("Let me explain how this works...").</p>
+    </div>
+  </div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">🎯</div><div class="hbox-body"><h5>The Golden Rule of Tonality for Auto Repair</h5><p>Sound like a shop owner who discovered something that made his business better and is telling another shop owner about it over a beer. That is the target tonality. Not a salesperson. Not a consultant. A peer sharing a win.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 10 OBJECTIONS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-objections" class="sec">
+  <div class="sec-head">The 16 <em>Objections</em></div>
+  <p class="sec-sub">Every objection is a request for more information, more certainty, or more trust. No shop owner has ever hung up because you handled his objection too well. Memorize these until they are reflexive.</p>
+
+  <div class="pullquote">
+    "An objection is not a rejection. It is a request for more conviction. When a prospect objects, he is saying: 'I need you to convince me harder.' Oblige him."
+    <span>— Belfort / Blount / Sandler · Common Thread</span>
+  </div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"Not interested."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"Totally fair — and I wouldn't expect you to be interested in something you haven't seen yet. Quick question though — if I could show you exactly how many calls your shop is missing and what that's costing you per month, would that at least be worth 90 seconds?"</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"We already have an answering service."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"Good — that tells me you take this seriously. Quick question: does your current service book appointments directly into your calendar, send automated review requests, and remember returning customers by name? Or does it just take messages? Because that's the difference between an answering service and what we do."</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"My service writer handles the phones."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"I hear that a lot. And I'm sure he's great — but here's what I keep seeing: during the morning rush, 8 to 10am, when he's got a customer at the counter, a ticket to write, AND the phone ringing — what happens to the second and third call? We don't replace your service writer. We catch the overflow so he can focus on the customers already in the shop."</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"Too expensive."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"Compared to what? A receptionist is $3,500 to $4,500 a month and only works one shift. Voicemail is free but it's losing you $11,000+ a month in missed appointments. Our Growth tier is $497 — and the average shop recovers that in the first week. The real question is: what's it costing you NOT to have this?"</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"Send me some info."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"I can — but honestly, info doesn't show you how it sounds or how it handles a real call. It takes 90 seconds to hear a live demo. Let me play one for you right now — if it doesn't blow you away, I'll send the info and leave you alone. Fair?"</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"I need to think about it."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"Of course. What specifically are you weighing? Is it the price, the features, or just wanting to make sure it's the right fit? Let me address whatever's on your mind so you have everything you need to make the call."</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"I need to talk to my partner/wife."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"Totally get it. When can we get them on a quick 15-minute call? I'd rather walk you both through it once than have you try to explain it secondhand. What's their availability tomorrow or Thursday?"</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"We tried something like this before."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"What did you try? [Listen.] Yeah — I hear that a lot. Most of those systems are generic bots that sound like a robot reading a menu. Ours is trained specifically on auto repair — it knows what a check engine light is, it knows the difference between a brake job and a transmission rebuild, and it's custom-trained on YOUR shop's services and scheduling. Totally different category."</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"Customers will know it's AI."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"That's what every shop owner says until they hear it. Let me call the demo line right now — you listen and tell me if you can tell. [Call demo.] Most of our clients' customers have no idea. The voice is natural, the conversation flows, and it's trained on YOUR shop specifically."</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"We don't get that many calls."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"How many calls would you say come in per day? [He says a number.] And after 5pm and weekends — how many hit voicemail? The shops I talk to are usually surprised when they actually count. Even 3 missed calls a day at a $550 average ticket is $5,600 a month. Want me to run the exact math on your numbers?"</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"I'm too busy right now."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"That actually tells me you need this. You're too busy to answer every call — which means calls are going to voicemail while you're under a car or at the counter. That's exactly the problem we solve. 90 seconds — let me show you the math on what that busy day is costing you."</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"Just call me back later."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"I can — but I know how shop days go. By the time I call back, you'll be under a car or dealing with a parts order. I've got 90 seconds of math that could save you $10K+ a month. Can I just run it real quick right now?"</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"Voicemail works fine for us."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"How many voicemails did you get last week? [He'll say a number.] Now — industry data says for every voicemail you get, 4 more people called, got voicemail, and hung up without leaving one. 80% of callers don't leave messages. They call the next shop in Google instead. Voicemail isn't free — it's the most expensive option you have."</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"How long is the contract?"</div><div class="obj-you">— You Say —</div><div class="obj-resp">"Month to month. No contracts. No early termination. We earn your business every single month. If we're not performing, you cancel. That's how confident we are it works."</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"Does it work with my shop management software?"</div><div class="obj-you">— You Say —</div><div class="obj-resp">"What are you using? [He answers.] Yes — we integrate with Shop-Ware, Tekmetric, Mitchell, ShopBoss, and most major systems. If yours isn't on the standard list, we connect through Zapier. What matters is: appointments go straight into your calendar and customer info goes straight into your CRM."</div></div>
+
+  <div class="obj"><div class="obj-they">— They Say —</div><div class="obj-text">"I answer my own phone."</div><div class="obj-you">— You Say —</div><div class="obj-resp">"I respect that. Quick question though — when you're elbow-deep in a timing belt job and the phone rings... do you stop, wipe your hands, and grab it? Or does it go to voicemail? Because every time it goes to voicemail, that's a $550 repair order calling the next shop. We catch those calls so you can stay focused on the work."</div></div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">★</div><div class="hbox-body"><h5>The Objection Handling Rule</h5><p>Every objection gets three things: <strong>Acknowledge</strong> ("I hear you"), <strong>Isolate</strong> ("Is that the only thing holding you back?"), <strong>Resolve</strong> (handle it). After resolving, go back to the close — don't restart the pitch. "So given that — does Monday or Wednesday work better for the setup call?"</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 11 DEMO -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-demo" class="sec">
+  <div class="sec-head">The 20-Minute <em>Demo</em></div>
+  <p class="sec-sub">The demo is where conviction turns into a signature. Follow this 7-stage structure exactly. The live AI call is the moment that sells — everything else is setup and close.</p>
+
+  <div class="flow">
+    <div class="flow-step"><div class="fn" style="color:var(--gold);">0–2</div><div class="fv">Rapport</div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--sky);">2–5</div><div class="fv">Math</div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--violet);">5–10</div><div class="fv">Live Demo</div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--em);">10–13</div><div class="fv">Dashboard</div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--amber);">13–16</div><div class="fv">Pricing</div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--rose);">16–18</div><div class="fv">Match Tier</div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--gold);">18–20</div><div class="fv">Close</div></div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="card card-gold"><h4>Minutes 0–2 · Rapport + Recap</h4><p style="font-size:14px;color:var(--text2);margin-top:8px;">"Before we dive in — just a quick recap. You mentioned your service writer is handling everything at the counter AND the phones, and after 5pm it all goes to voicemail. You're running 4 bays, about 35 calls a day. Did I miss anything?" — get him nodding.</p></div>
+
+  <div class="card card-sky"><h4>Minutes 2–5 · The Cost of Missed Calls (His Math)</h4><p style="font-size:14px;color:var(--text2);margin-top:8px;">"Quick math on your numbers. You said 35 calls a day. Industry average for missed calls at independent shops is 23%. That's 8 missed calls per day. At your $550 average repair order, and even a 50% conversion rate on those calls — you're looking at $2,200 a day. $48,400 a month. Going to voicemail or hold. Even if I cut that number in HALF — that's $24,000 a month."</p></div>
+
+  <div class="card card-violet"><h4>Minutes 5–10 · Live AI Demo</h4><p style="font-size:14px;color:var(--text2);margin-top:8px;">"Let me show you what this actually sounds like. I'm going to call our demo line set up for a shop like yours. Just listen." <strong>[Call the demo. Stay completely silent. Let the AI handle a realistic auto repair call — brake noise complaint, appointment booking, symptom capture. The silence is the selling.]</strong></p></div>
+
+  <div class="card card-em"><h4>Minutes 10–13 · Dashboard Walk-through</h4><p style="font-size:14px;color:var(--text2);margin-top:8px;">Screen-share the dashboard. "This is what your Monday morning would look like. Every call from the weekend — who called, what they needed, whether they booked, full transcript. Right here: 14 calls Saturday and Sunday, 9 appointments already booked. You walk in Monday with a full schedule."</p></div>
+
+  <div class="card card-amber"><h4>Minutes 13–16 · Pricing (Anchor with Elite)</h4><p style="font-size:14px;color:var(--text2);margin-top:8px;">"Three tiers. Elite is $697 a month — that's for high-volume shops with a dedicated success manager. Growth is $497 — that's the most popular, includes review automation and appointment reminders. Starter is $397 for solo operators. Setup is $997 to $1,497 one-time."</p></div>
+
+  <div class="card card-rose"><h4>Minutes 16–18 · Match Tier</h4><p style="font-size:14px;color:var(--text2);margin-top:8px;">"For a 4-bay shop at your volume, Growth at $497 makes the most sense. The appointment reminders alone will cut your no-shows in half, and the review automation will get you from 40 reviews to 100+ within 6 months."</p></div>
+
+  <div class="card card-gold"><h4>Minutes 18–20 · Close</h4><p style="font-size:14px;color:var(--text2);margin-top:8px;">"If we kick this off this week, we can have you live in about 10 to 14 days — right before [seasonal moment]. Does Tuesday or Thursday work better for the 30-minute setup call?"</p></div>
+
+  <div class="hbox hbox-rose"><div class="hbox-icon">⚠️</div><div class="hbox-body"><h5>The #1 Demo Mistake</h5><p>Talking over the AI during the live demo. <strong>Stay silent.</strong> The 5 minutes the prospect listens to the AI is the most powerful selling moment of the entire call. The temptation to explain, narrate, or add commentary will kill the wow factor. Silence sells.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 12 CLOSING -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-closing" class="sec">
+  <div class="sec-head">Closing <em>Techniques</em></div>
+  <p class="sec-sub">Closing is not a single moment. It is the natural outcome of a well-run call. If you did stages 1–5 correctly, closing is a formality. These techniques handle the 30% of calls where it isn't.</p>
+
+  <h3>The 6 Closes for Auto Repair</h3>
+
+  <div class="card card-gold"><h4>Close 1 · The Assumptive Close</h4><div class="sblock" style="margin-top:10px;"><div class="who who-you">YOU SAY</div><div class="st">"Great — so if we kick off setup this week, we'll have you live before [date]. Does Tuesday or Thursday afternoon work better for the 30-minute onboarding call?"</div></div><div class="sblock"><div class="who who-why">WHY</div><div class="st">Assumes the decision is made. Forces him to choose between two "yes" options, not between "yes" and "no." Default close for 70% of calls.</div></div></div>
+
+  <div class="card card-em"><h4>Close 2 · The ROI Close</h4><div class="sblock" style="margin-top:10px;"><div class="who who-you">YOU SAY</div><div class="st">"So we agreed your missed calls are costing you somewhere around $16,000 a month. Growth tier is $497. That's a 33× return in month one alone. Even if we only capture a third of what the math says — you're still making 10× your investment. Want to get this going before winter prep hits?"</div></div><div class="sblock"><div class="who who-why">WHY</div><div class="st">Uses his own confirmed numbers against his hesitation. He already agreed to the math — walking away now contradicts his own logic.</div></div></div>
+
+  <div class="card card-sky"><h4>Close 3 · The Risk Reversal Close</h4><div class="sblock" style="margin-top:10px;"><div class="who who-you">YOU SAY</div><div class="st">"Here's what I'd suggest. Start with Growth. Month to month, no contract. 30-day money-back guarantee on the setup. If it doesn't perform — you cancel, you get refunded, and you've lost nothing except 30 minutes of my time. What's the downside?"</div></div><div class="sblock"><div class="who who-why">WHY</div><div class="st">Removes all perceived risk. Forces him to articulate what, specifically, could go wrong — and usually he can't.</div></div></div>
+
+  <div class="card card-violet"><h4>Close 4 · The Cost of Inaction Close</h4><div class="sblock" style="margin-top:10px;"><div class="who who-you">YOU SAY</div><div class="st">"I totally understand wanting to think about it. Just keep in mind — every day you wait, those calls are still going to voicemail. At $550 per missed appointment, that's $2,750 a day. By this time next month, that's another $60,000 that walked. The setup takes 10 days. The sooner we start, the sooner the bleeding stops."</div></div><div class="sblock"><div class="who who-why">WHY</div><div class="st">Loss aversion on a timeline. Makes the cost of inaction concrete and daily. "Think about it" becomes "lose money while you think."</div></div></div>
+
+  <div class="card card-amber"><h4>Close 5 · The Peer Pressure Close</h4><div class="sblock" style="margin-top:10px;"><div class="who who-you">YOU SAY</div><div class="st">"I'll be straight with you — [competitor shop name or area] already has this running. Every call they catch that you miss is a customer you lose permanently. The shops that move first in a market own the phone traffic. Want to be the leader or the one catching up?"</div></div><div class="sblock"><div class="who who-why">WHY</div><div class="st">Competitive pressure. Shop owners are fiercely competitive. The idea that the shop down the street has a technological advantage they don't is deeply uncomfortable.</div></div></div>
+
+  <div class="card card-rose"><h4>Close 6 · The Puppy Dog Close</h4><div class="sblock" style="margin-top:10px;"><div class="who who-you">YOU SAY</div><div class="st">"Tell you what — let's just set it up. Give it 30 days. If at any point you feel like it's not pulling its weight, you cancel. No fees, no hassle. I'm betting that after week one, you're going to wonder how you ran the shop without it."</div></div><div class="sblock"><div class="who who-why">WHY</div><div class="st">Low-commitment entry. Works on shop owners who are convinced on the logic but scared of commitment. Once it's running, inertia keeps them.</div></div></div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">★</div><div class="hbox-body"><h5>Post-Close Rule</h5><p>After he says yes — <strong>stop selling.</strong> Confirm the details, schedule the setup call, and get off the phone. Every word you say after the "yes" is an opportunity for buyer's remorse. "Awesome. Let me get you booked for the setup call on [day]. You'll hear from our onboarding team within 24 hours. Welcome aboard."</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 13 ROLEPLAY -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-roleplay" class="sec">
+  <div class="sec-head">Roleplay <em>Scenarios</em></div>
+  <p class="sec-sub">You do not get good at sales by reading. You get good by practicing live against resistance. Run these 8 scenarios with a partner until you can handle each in your sleep.</p>
+
+  <h3>How To Run Roleplay</h3>
+  <div class="g3">
+    <div class="card card-gold"><h4>1 · Set The Scene</h4><p style="font-size:13px;color:var(--text2);margin-top:6px;">One person is the shop owner. Read the persona card out loud. The other is the rep.</p></div>
+    <div class="card card-em"><h4>2 · Run It Live</h4><p style="font-size:13px;color:var(--text2);margin-top:6px;">Full call simulation. Opener through close. The "shop owner" stays in character — pushes back hard.</p></div>
+    <div class="card card-sky"><h4>3 · Debrief</h4><p style="font-size:13px;color:var(--text2);margin-top:6px;">Where did the call slip? What tone was off? Which objection could have been handled better? Be specific.</p></div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="fw-card"><div class="fw-head"><span class="fw-badge" style="background:var(--gold3);color:var(--gold);">Scenario 1</span><h4 style="margin:0;">The Skeptical Veteran · Mike, 55, owns 6-bay shop for 22 years</h4></div><div class="fw-body"><p style="font-size:14px;color:var(--text);margin-bottom:8px;"><strong>Persona:</strong> Crusty. Distrustful. "Kid, I've been doing this longer than you've been alive." Has been burned by 3 marketing companies. Service writer has been with him 12 years.</p><p style="font-size:14px;color:var(--text);"><strong>His objections:</strong> "We don't need technology." · "My guy handles the phones fine." · "I've wasted money on this stuff before." · Won't commit to a demo — keeps saying "send me info."</p></div></div>
+
+  <div class="fw-card"><div class="fw-head"><span class="fw-badge" style="background:var(--em2);color:var(--em);">Scenario 2</span><h4 style="margin:0;">The Overwhelmed Owner · Sarah, 38, solo owner of 3-bay shop</h4></div><div class="fw-body"><p style="font-size:14px;color:var(--text);margin-bottom:8px;"><strong>Persona:</strong> Doing everything herself. Answers phones, writes tickets, manages techs, runs parts. Exhausted. Wants help but scared of another bill.</p><p style="font-size:14px;color:var(--text);"><strong>Her objections:</strong> "I can't afford anything extra right now." · "Will it really sound professional?" · "I don't have time to learn something new." · Budget anxiety is the real issue.</p></div></div>
+
+  <div class="fw-card"><div class="fw-head"><span class="fw-badge" style="background:var(--sky2);color:var(--sky);">Scenario 3</span><h4 style="margin:0;">The Multi-Shop Owner · Derek, 45, owns 2 locations</h4></div><div class="fw-body"><p style="font-size:14px;color:var(--text);margin-bottom:8px;"><strong>Persona:</strong> Business-minded. Thinks in ROI. Has a service manager at each location. Currently using an answering service he's not happy with.</p><p style="font-size:14px;color:var(--text);"><strong>His objections:</strong> "How does this compare to my current service?" · "Can it handle both locations?" · "What's the total cost for 2 shops?" · Will want data and specifics.</p></div></div>
+
+  <div class="fw-card"><div class="fw-head"><span class="fw-badge" style="background:var(--amber2);color:var(--amber);">Scenario 4</span><h4 style="margin:0;">The Gatekeeper · You reach the service writer, not the owner</h4></div><div class="fw-body"><p style="font-size:14px;color:var(--text);margin-bottom:8px;"><strong>Persona:</strong> Service writer Jason. Protective of the owner's time. Doesn't want to look bad by letting another sales call through. But secretly overwhelmed by the phone load himself.</p><p style="font-size:14px;color:var(--text);"><strong>Challenge:</strong> Get through to the owner OR sell Jason on the idea so HE brings it to the owner. "This would actually make your job easier" is the angle.</p></div></div>
+
+  <div class="fw-card"><div class="fw-head"><span class="fw-badge" style="background:var(--rose2);color:var(--rose);">Scenario 5</span><h4 style="margin:0;">The Price Shopper · Dave, 42, comparing 3 vendors</h4></div><div class="fw-body"><p style="font-size:14px;color:var(--text);margin-bottom:8px;"><strong>Persona:</strong> Already looking at competitors. Has quotes from 2 other services. Treats the call like a procurement exercise — feature checklist, price comparison.</p><p style="font-size:14px;color:var(--text);"><strong>His objections:</strong> "The other company is cheaper." · "Can you match their price?" · "What makes you different?" · Wants a spreadsheet comparison.</p></div></div>
+
+  <div class="fw-card"><div class="fw-head"><span class="fw-badge" style="background:var(--violet2);color:var(--violet);">Scenario 6</span><h4 style="margin:0;">The Happy Camper · Tony, 50, shop is doing well</h4></div><div class="fw-body"><p style="font-size:14px;color:var(--text);margin-bottom:8px;"><strong>Persona:</strong> Business is good. Full calendar. Doesn't feel a burning need. "We're doing fine." His pain is invisible to him — he doesn't know what he's losing because he's never measured it.</p><p style="font-size:14px;color:var(--text);"><strong>Challenge:</strong> Make the invisible visible. Use the missed-call math to show him the revenue he doesn't know he's losing. "Doing fine" and "doing $16K/month better" are two different things.</p></div></div>
+
+  <div class="fw-card"><div class="fw-head"><span class="fw-badge" style="background:var(--gold3);color:var(--gold);">Scenario 7</span><h4 style="margin:0;">The Tech-Phobe · Bobby, 58, paper tickets, flip phone</h4></div><div class="fw-body"><p style="font-size:14px;color:var(--text);margin-bottom:8px;"><strong>Persona:</strong> Doesn't trust technology. Still writes tickets by hand. "I don't do computers." Genuinely afraid of AI. Suspects it's a scam.</p><p style="font-size:14px;color:var(--text);"><strong>Challenge:</strong> Frame it as a phone answering service, not technology. "It's like hiring a receptionist who works 24/7 for $16 a day." Never say AI first — say "answering service" and let him experience the demo before labeling it.</p></div></div>
+
+  <div class="fw-card"><div class="fw-head"><span class="fw-badge" style="background:var(--em2);color:var(--em);">Scenario 8</span><h4 style="margin:0;">The Aggressive Hang-Up · First 5 seconds: "NOT INTERESTED" *click*</h4></div><div class="fw-body"><p style="font-size:14px;color:var(--text);margin-bottom:8px;"><strong>Persona:</strong> Reflexive hang-up. Doesn't even let you finish the opener. Has been cold-called 10 times today.</p><p style="font-size:14px;color:var(--text);"><strong>Challenge:</strong> This is a pattern, not a person. Schedule a callback for a different time of day. Or: try a different opener on the next attempt. If your peer-reference opener triggered a hang-up, try the after-hours question next time. Different pattern, different result.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 14 TRAINING -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-training" class="sec">
+  <div class="sec-head">Daily <em>Training</em> Protocol</div>
+  <p class="sec-sub">Top closers train every single day. Not weekly. Not when they feel like it. Daily. 30 minutes of focused practice before you dial.</p>
+
+  <h3>The Daily 30-Minute Warm-Up</h3>
+  <div class="step-row"><div class="step-n" style="color:var(--gold);">5m</div><div class="step-body"><h4>Re-read 3 objection responses</h4><p>Pick 3 from Section 10. Say them out loud — not in your head. Your mouth needs the muscle memory.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--em);">5m</div><div class="step-body"><h4>Practice one opener</h4><p>Stand up. Dial an imaginary number. Deliver the opener with full tonality. Record yourself. Listen. Adjust.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--sky);">10m</div><div class="step-body"><h4>Roleplay one scenario</h4><p>Partner up. Run a full scenario from Section 13. The "shop owner" pushes back hard. Debrief for 2 minutes after.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--violet);">5m</div><div class="step-body"><h4>Review one lost call from yesterday</h4><p>Listen to the recording. Find the exact 30 seconds where the call slipped. Write the better response. Say it out loud 3 times.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--rose);">5m</div><div class="step-body"><h4>Mindset reset</h4><p>Re-read the 5 Beliefs from Section 02. Set your daily targets (dials, conversations, demos, closes). Stand up. Smile. Dial.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 15 THE 50 RULES -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-rules" class="sec">
+  <div class="sec-head">The 50 <em>Non-Negotiable</em> Rules</div>
+  <p class="sec-sub">These are not suggestions. They are laws. Break any one and your close rate drops. Follow all 50 and you become the most dangerous AI receptionist closer in the auto repair market.</p>
+
+  <div class="g2">
+    <div class="card"><h4 style="color:var(--gold);">1.</h4><p style="font-size:13px;margin:4px 0 0;">Never open with your company name.</p></div>
+    <div class="card"><h4 style="color:var(--gold);">2.</h4><p style="font-size:13px;margin:4px 0 0;">Never say "AI" in the first 30 seconds.</p></div>
+    <div class="card"><h4 style="color:var(--gold);">3.</h4><p style="font-size:13px;margin:4px 0 0;">Every call opens with a question, never a statement.</p></div>
+    <div class="card"><h4 style="color:var(--gold);">4.</h4><p style="font-size:13px;margin:4px 0 0;">Use the shop owner's first name within the first 5 seconds.</p></div>
+    <div class="card"><h4 style="color:var(--gold);">5.</h4><p style="font-size:13px;margin:4px 0 0;">Match his pace. If he talks slow, you talk slow.</p></div>
+    <div class="card"><h4 style="color:var(--gold);">6.</h4><p style="font-size:13px;margin:4px 0 0;">Never interrupt. Let him finish every sentence.</p></div>
+    <div class="card"><h4 style="color:var(--gold);">7.</h4><p style="font-size:13px;margin:4px 0 0;">Echo his exact words back. If he says "phones ring off the hook," you say "phones ring off the hook."</p></div>
+    <div class="card"><h4 style="color:var(--gold);">8.</h4><p style="font-size:13px;margin:4px 0 0;">Frame everything as revenue recovered, never revenue gained.</p></div>
+    <div class="card"><h4 style="color:var(--gold);">9.</h4><p style="font-size:13px;margin:4px 0 0;">Always have 3 client stories ready with specific numbers.</p></div>
+    <div class="card"><h4 style="color:var(--gold);">10.</h4><p style="font-size:13px;margin:4px 0 0;">Anchor with Elite pricing first. Growth is the target.</p></div>
+    <div class="card"><h4 style="color:var(--em);">11.</h4><p style="font-size:13px;margin:4px 0 0;">Ask permission before running the math — he'll always say yes.</p></div>
+    <div class="card"><h4 style="color:var(--em);">12.</h4><p style="font-size:13px;margin:4px 0 0;">Use HIS numbers, not industry averages.</p></div>
+    <div class="card"><h4 style="color:var(--em);">13.</h4><p style="font-size:13px;margin:4px 0 0;">Let the live AI demo sell itself. Stay silent during it.</p></div>
+    <div class="card"><h4 style="color:var(--em);">14.</h4><p style="font-size:13px;margin:4px 0 0;">Never defend. Always redirect.</p></div>
+    <div class="card"><h4 style="color:var(--em);">15.</h4><p style="font-size:13px;margin:4px 0 0;">Treat objections as questions, not walls.</p></div>
+    <div class="card"><h4 style="color:var(--em);">16.</h4><p style="font-size:13px;margin:4px 0 0;">Close on a date, not a "yes."</p></div>
+    <div class="card"><h4 style="color:var(--em);">17.</h4><p style="font-size:13px;margin:4px 0 0;">After the close, stop talking.</p></div>
+    <div class="card"><h4 style="color:var(--em);">18.</h4><p style="font-size:13px;margin:4px 0 0;">Never discount the monthly fee without approval.</p></div>
+    <div class="card"><h4 style="color:var(--em);">19.</h4><p style="font-size:13px;margin:4px 0 0;">Setup fee discount max $200 without approval.</p></div>
+    <div class="card"><h4 style="color:var(--em);">20.</h4><p style="font-size:13px;margin:4px 0 0;">Record every call. Review one per day minimum.</p></div>
+    <div class="card"><h4 style="color:var(--sky);">21.</h4><p style="font-size:13px;margin:4px 0 0;">Stand during calls. Your voice projects 30% better.</p></div>
+    <div class="card"><h4 style="color:var(--sky);">22.</h4><p style="font-size:13px;margin:4px 0 0;">Smile before dialing. It changes your tone physically.</p></div>
+    <div class="card"><h4 style="color:var(--sky);">23.</h4><p style="font-size:13px;margin:4px 0 0;">Hydrate. Dehydration kills vocal quality by call 40.</p></div>
+    <div class="card"><h4 style="color:var(--sky);">24.</h4><p style="font-size:13px;margin:4px 0 0;">4-second reset between calls. Breathe. Reset. Dial.</p></div>
+    <div class="card"><h4 style="color:var(--sky);">25.</h4><p style="font-size:13px;margin:4px 0 0;">Never carry a bad call's energy into the next one.</p></div>
+    <div class="card"><h4 style="color:var(--sky);">26.</h4><p style="font-size:13px;margin:4px 0 0;">Name the city or neighborhood in the first sentence.</p></div>
+    <div class="card"><h4 style="color:var(--sky);">27.</h4><p style="font-size:13px;margin:4px 0 0;">Use seasonal urgency when available — but don't fake it.</p></div>
+    <div class="card"><h4 style="color:var(--sky);">28.</h4><p style="font-size:13px;margin:4px 0 0;">Know the top 5 competitors in every niche you sell.</p></div>
+    <div class="card"><h4 style="color:var(--sky);">29.</h4><p style="font-size:13px;margin:4px 0 0;">Track: dials, conversations, demos, closes. Every day.</p></div>
+    <div class="card"><h4 style="color:var(--sky);">30.</h4><p style="font-size:13px;margin:4px 0 0;">150 dials minimum per day. Non-negotiable.</p></div>
+    <div class="card"><h4 style="color:var(--violet);">31.</h4><p style="font-size:13px;margin:4px 0 0;">Say "service writer" not "receptionist" unless he does.</p></div>
+    <div class="card"><h4 style="color:var(--violet);">32.</h4><p style="font-size:13px;margin:4px 0 0;">Say "repair order" not "sale." Say "bay" not "garage."</p></div>
+    <div class="card"><h4 style="color:var(--violet);">33.</h4><p style="font-size:13px;margin:4px 0 0;">Always log disposition after every call. No exceptions.</p></div>
+    <div class="card"><h4 style="color:var(--violet);">34.</h4><p style="font-size:13px;margin:4px 0 0;">Follow up on callbacks within 2 hours of the agreed time.</p></div>
+    <div class="card"><h4 style="color:var(--violet);">35.</h4><p style="font-size:13px;margin:4px 0 0;">Never promise features you haven't confirmed.</p></div>
+    <div class="card"><h4 style="color:var(--violet);">36.</h4><p style="font-size:13px;margin:4px 0 0;">Speak to the owner, not the gatekeeper. Always ask.</p></div>
+    <div class="card"><h4 style="color:var(--violet);">37.</h4><p style="font-size:13px;margin:4px 0 0;">If the gatekeeper won't transfer, sell the gatekeeper.</p></div>
+    <div class="card"><h4 style="color:var(--violet);">38.</h4><p style="font-size:13px;margin:4px 0 0;">The best call time for shops: 11am–1pm or 4pm–5:30pm.</p></div>
+    <div class="card"><h4 style="color:var(--violet);">39.</h4><p style="font-size:13px;margin:4px 0 0;">Avoid calling during the 8–10am morning rush.</p></div>
+    <div class="card"><h4 style="color:var(--violet);">40.</h4><p style="font-size:13px;margin:4px 0 0;">When in doubt, ask: "What would need to be true for this to be a no-brainer?"</p></div>
+    <div class="card"><h4 style="color:var(--amber);">41.</h4><p style="font-size:13px;margin:4px 0 0;">Silence after a question is power. Don't fill it.</p></div>
+    <div class="card"><h4 style="color:var(--amber);">42.</h4><p style="font-size:13px;margin:4px 0 0;">Label emotions: "It sounds like you've been burned before."</p></div>
+    <div class="card"><h4 style="color:var(--amber);">43.</h4><p style="font-size:13px;margin:4px 0 0;">Use "we" not "I" — you're part of a team.</p></div>
+    <div class="card"><h4 style="color:var(--amber);">44.</h4><p style="font-size:13px;margin:4px 0 0;">End every call with a next step. No open loops.</p></div>
+    <div class="card"><h4 style="color:var(--amber);">45.</h4><p style="font-size:13px;margin:4px 0 0;">Celebrate closes — but debrief losses harder.</p></div>
+    <div class="card"><h4 style="color:var(--amber);">46.</h4><p style="font-size:13px;margin:4px 0 0;">Read this playbook once a week. Every week.</p></div>
+    <div class="card"><h4 style="color:var(--amber);">47.</h4><p style="font-size:13px;margin:4px 0 0;">Morning cardio before dials. Tonality is physical.</p></div>
+    <div class="card"><h4 style="color:var(--amber);">48.</h4><p style="font-size:13px;margin:4px 0 0;">Your confidence is a function of reps, not talent.</p></div>
+    <div class="card"><h4 style="color:var(--amber);">49.</h4><p style="font-size:13px;margin:4px 0 0;">If you're scared to call, make 3 dial-only warmup calls first.</p></div>
+    <div class="card"><h4 style="color:var(--amber);">50.</h4><p style="font-size:13px;margin:4px 0 0;">Close hard because hesitation hurts the prospect more than it hurts you.</p></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 16 30-DAY PLAN -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-thirtydays" class="sec">
+  <div class="sec-head">The 30-Day <em>Mastery Plan</em></div>
+  <p class="sec-sub">From zero to dangerous in 30 days. Follow this week-by-week plan exactly. By Day 30, you should be closing independently with confidence.</p>
+
+  <h3>Week 1 · Foundation (Days 1–7)</h3>
+  <div class="hbox hbox-gold"><div class="hbox-icon">📖</div><div class="hbox-body"><h5>Study + Absorb</h5><p>Read this entire playbook cover to cover — twice. Memorize: the 8 openers, the discovery script, the 5 top objection responses, and the 3 client stories. By end of Week 1 you should be able to run the full call framework from memory without looking at notes.</p></div></div>
+  <div class="step-row"><div class="step-n">D1</div><div class="step-body"><p>Read Sections 01–04. Memorize the 60-second product explanation. Write it out by hand.</p></div></div>
+  <div class="step-row"><div class="step-n">D2</div><div class="step-body"><p>Read Sections 05–06. Practice all 8 openers out loud 5× each. Record yourself. Listen.</p></div></div>
+  <div class="step-row"><div class="step-n">D3</div><div class="step-body"><p>Read Sections 07–08. Run the full call framework as a roleplay with a partner. Debrief.</p></div></div>
+  <div class="step-row"><div class="step-n">D4</div><div class="step-body"><p>Read Sections 09–10. Memorize the top 5 objection responses. Practice with tonality.</p></div></div>
+  <div class="step-row"><div class="step-n">D5</div><div class="step-body"><p>Read Sections 11–12. Run a full demo simulation. Practice the 6 closing techniques.</p></div></div>
+  <div class="step-row"><div class="step-n">D6</div><div class="step-body"><p>Full roleplay day. Run 3 different scenarios from Section 13. Get feedback from a teammate or manager.</p></div></div>
+  <div class="step-row"><div class="step-n">D7</div><div class="step-body"><p>Re-read the entire playbook. Identify 3 areas that still feel weak. Practice those specifically.</p></div></div>
+
+  <div class="div"></div>
+  <h3>Week 2 · Live Fire (Days 8–14)</h3>
+  <div class="hbox hbox-em"><div class="hbox-icon">📞</div><div class="hbox-body"><h5>Start Dialing</h5><p>50 dials per day minimum. Focus on opener survival rate — track how many conversations last past 30 seconds. Target: 25%+ survival rate by end of Week 2. Don't worry about closes yet — worry about staying on the phone.</p></div></div>
+  <div class="step-row"><div class="step-n">D8-9</div><div class="step-body"><p>50 dials/day. Test Openers A, B, C. Track which one keeps them past 30 seconds. Kill the loser.</p></div></div>
+  <div class="step-row"><div class="step-n">D10-11</div><div class="step-body"><p>75 dials/day. Focus on running the full discovery (Stages 1–3) on every conversation. Don't try to close yet.</p></div></div>
+  <div class="step-row"><div class="step-n">D12-14</div><div class="step-body"><p>100 dials/day. Full call framework on every conversation. First demos should be happening. First close attempts.</p></div></div>
+
+  <div class="div"></div>
+  <h3>Week 3 · Volume + Refinement (Days 15–21)</h3>
+  <div class="hbox hbox-sky"><div class="hbox-icon">📊</div><div class="hbox-body"><h5>Scale + Tune</h5><p>150 dials/day. Review one lost call recording per day — find the 30-second window where the call slipped. Write the better response. By end of Week 3, you should have 2–5 demos completed and 1–3 closes.</p></div></div>
+
+  <div class="div"></div>
+  <h3>Week 4 · Full Output (Days 22–30)</h3>
+  <div class="hbox hbox-violet"><div class="hbox-icon">🎯</div><div class="hbox-body"><h5>Peak Performance</h5><p>150+ dials/day. 2–3 demos/day. Targeting 5–10 closes this week. Every objection should feel automatic. Tonality should be calibrated. The call framework should be muscle memory. You are now a closer.</p></div></div>
+
+  <div class="div"></div>
+  <h3>End of Month 1 · Targets</h3>
+  <div class="g3">
+    <div class="stat-card"><div class="sn" style="color:var(--gold);">2,500+</div><div class="sl">total dials made</div></div>
+    <div class="stat-card"><div class="sn" style="color:var(--em);">400+</div><div class="sl">conversations held</div></div>
+    <div class="stat-card"><div class="sn" style="color:var(--rose);">5–10</div><div class="sl">closes landed</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 17 MASTER -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-master" class="sec">
+  <div class="sec-head">The Master <em>System</em></div>
+  <p class="sec-sub">Everything in this playbook distilled into one operating system you can run in your head during every call.</p>
+
+  <div class="pullquote">
+    "The master has failed more times than the beginner has tried."
+    <span>— Operating Truth</span>
+  </div>
+
+  <h3>The 6-Stage System · One Card</h3>
+  <div class="flow">
+    <div class="flow-step"><div class="fn" style="color:var(--gold);">1</div><div class="fv">OPEN<br><span style="font-size:10px;color:var(--text3);">Pattern break + question. Survive 30 seconds.</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--sky);">2</div><div class="fv">DISCOVER<br><span style="font-size:10px;color:var(--text3);">Map his shop. Bays, calls, staffing, hours.</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--violet);">3</div><div class="fv">PAIN<br><span style="font-size:10px;color:var(--text3);">Make HIM say it's a problem. NEPQ questions.</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--em);">4</div><div class="fv">IMPACT<br><span style="font-size:10px;color:var(--text3);">Quantify in dollars. Use HIS numbers.</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--amber);">5</div><div class="fv">SOLUTION<br><span style="font-size:10px;color:var(--text3);">Bridge pain → PureCode. Value stack.</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--rose);">6</div><div class="fv">CLOSE<br><span style="font-size:10px;color:var(--text3);">Assume the close. Date, not "yes."</span></div></div>
+  </div>
+
+  <div class="div"></div>
+  <h3>The Auto Repair Closer's Creed</h3>
+  <div class="closer">
+    <div class="closer-line">I do not sell AI. I recover lost revenue.</div>
+    <div class="closer-line">I do not pitch features. I show the math.</div>
+    <div class="closer-line">I do not beg for the sale. I earn the certainty.</div>
+    <div class="closer-line">I close hard because hesitation hurts the prospect more than it hurts me.</div>
+    <div class="closer-line">Every missed call is a family that needed a car fixed — and didn't get helped.</div>
+    <div class="closer-line">I fix that.</div>
+  </div>
+
+  <div class="div"></div>
+  <p style="text-align:center;color:var(--text3);font-size:12px;margin-top:24px;">PureCode Agency · Brea, California · purecodeagency.com<br>Auto Repair Sales Playbook · v1.0 · Confidential</p>
+</div>
+
+</div><!-- /main -->
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(b => b.classList.remove('on'));
+  document.getElementById('sec-' + id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+
+</body>
+</html>

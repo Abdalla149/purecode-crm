@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PureCode Agency — The NEPQ Method · Jeremy Miner Questioning System</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#07080a;
+  --bg2:#0d0f12;
+  --bg3:#13151a;
+  --bg4:#1a1d24;
+  --bg5:#21252e;
+  --gold:#c9a84c;
+  --gold2:#e8c97a;
+  --gold3:rgba(201,168,76,0.12);
+  --em:#10b981;
+  --em2:rgba(16,185,129,0.12);
+  --rose:#f43f5e;
+  --rose2:rgba(244,63,94,0.1);
+  --sky:#38bdf8;
+  --sky2:rgba(56,189,248,0.1);
+  --amber:#f59e0b;
+  --amber2:rgba(245,158,11,0.1);
+  --violet:#a78bfa;
+  --violet2:rgba(167,139,250,0.1);
+  --text:#eeeae0;
+  --text2:#9a9588;
+  --text3:#5a5650;
+  --border:rgba(255,255,255,0.06);
+  --border2:rgba(255,255,255,0.1);
+  --r:8px;
+  --r2:12px;
+}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  font-size:15px;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+
+/* ── HERO ── */
+.hero{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:60px 48px 48px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;
+  width:800px;height:800px;
+  background:radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 65%);
+  top:-300px;right:-200px;pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;
+  width:500px;height:500px;
+  background:radial-gradient(circle,rgba(16,185,129,0.04) 0%,transparent 65%);
+  bottom:-200px;left:-100px;pointer-events:none;
+}
+
+.hero-kicker{
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-kicker::before{content:'';width:24px;height:1px;background:var(--gold);}
+
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(40px,6vw,72px);
+  font-weight:900;
+  line-height:1.05;
+  letter-spacing:-0.02em;
+  margin-bottom:16px;
+}
+.hero h1 em{
+  font-style:italic;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.hero-desc{
+  color:var(--text2);
+  font-size:16px;
+  max-width:600px;
+  margin-bottom:36px;
+  line-height:1.75;
+}
+
+.hero-authors{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px;
+}
+.ha{
+  padding:5px 14px;
+  border-radius:100px;
+  border:1px solid var(--border2);
+  font-size:12px;font-weight:500;
+  color:var(--text2);
+  background:var(--bg3);
+}
+
+.hero-stats{display:flex;gap:40px;flex-wrap:wrap;}
+.hs{display:flex;flex-direction:column;}
+.hs .n{
+  font-family:'Playfair Display',serif;
+  font-size:36px;font-weight:700;
+  color:var(--gold2);line-height:1;
+}
+.hs .l{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;}
+
+/* ── NAV ── */
+.nav-wrap{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+}
+.nav-scroll{
+  display:flex;gap:0;
+  overflow-x:auto;
+  padding:0 48px;
+}
+.nav-scroll::-webkit-scrollbar{height:0;}
+.ntab{
+  padding:14px 18px;
+  border:none;
+  background:transparent;
+  color:var(--text3);
+  cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;
+  white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:all 0.15s;
+}
+.ntab:hover{color:var(--text2);}
+.ntab.on{color:var(--gold);border-bottom-color:var(--gold);}
+
+/* ── MAIN ── */
+.main{max-width:1020px;margin:0 auto;padding:48px;}
+.sec{display:none;animation:fadeIn 0.2s ease;}
+.sec.on{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── TYPOGRAPHY ── */
+.sec-head{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,4vw,42px);
+  font-weight:900;
+  letter-spacing:-0.02em;
+  line-height:1.1;
+  margin-bottom:8px;
+}
+.sec-head em{font-style:italic;color:var(--gold);}
+
+.sec-sub{color:var(--text2);font-size:15px;margin-bottom:36px;max-width:680px;line-height:1.75;}
+
+h3{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:700;
+  margin-bottom:10px;color:var(--text);
+}
+h4{font-size:15px;font-weight:600;margin-bottom:6px;color:var(--text);}
+
+.div{height:1px;background:var(--border);margin:36px 0;}
+
+/* ── CARDS ── */
+.card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:24px 28px;
+  margin-bottom:16px;
+}
+.card-gold{border-left:3px solid var(--gold);}
+.card-em{border-left:3px solid var(--em);}
+.card-rose{border-left:3px solid var(--rose);}
+.card-sky{border-left:3px solid var(--sky);}
+.card-amber{border-left:3px solid var(--amber);}
+.card-violet{border-left:3px solid var(--violet);}
+
+/* ── HIGHLIGHT BOXES ── */
+.hbox{
+  border-radius:var(--r);
+  padding:18px 22px;
+  margin-bottom:16px;
+  display:flex;gap:14px;align-items:flex-start;
+}
+.hbox-gold{background:var(--gold3);border:1px solid rgba(201,168,76,0.2);}
+.hbox-em{background:var(--em2);border:1px solid rgba(16,185,129,0.2);}
+.hbox-rose{background:var(--rose2);border:1px solid rgba(244,63,94,0.2);}
+.hbox-sky{background:var(--sky2);border:1px solid rgba(56,189,248,0.2);}
+.hbox-amber{background:var(--amber2);border:1px solid rgba(245,158,11,0.2);}
+.hbox-violet{background:var(--violet2);border:1px solid rgba(167,139,250,0.2);}
+
+.hbox-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.hbox-body h5{
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.1em;
+  margin-bottom:6px;
+}
+.hbox-gold .hbox-body h5{color:var(--gold);}
+.hbox-em .hbox-body h5{color:var(--em);}
+.hbox-rose .hbox-body h5{color:var(--rose);}
+.hbox-sky .hbox-body h5{color:var(--sky);}
+.hbox-amber .hbox-body h5{color:var(--amber);}
+.hbox-violet .hbox-body h5{color:var(--violet);}
+.hbox-body p{font-size:14px;color:var(--text2);line-height:1.65;}
+
+/* ── SCRIPT LINES ── */
+.sblock{
+  background:var(--bg3);
+  border-radius:var(--r);
+  padding:16px 20px;
+  margin-bottom:10px;
+}
+.sblock .who{
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:0.1em;
+  font-weight:500;text-transform:uppercase;
+  margin-bottom:7px;
+}
+.who-you{color:var(--gold);}
+.who-them{color:var(--sky);}
+.who-note{color:var(--amber);}
+.who-why{color:var(--em);}
+.who-bad{color:var(--rose);}
+
+.sblock .st{font-size:14.5px;line-height:1.65;color:var(--text);}
+.sblock .sn{font-size:12px;color:var(--text3);font-style:italic;margin-top:6px;}
+
+/* ── OBJECTION CARDS ── */
+.obj{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--rose);border-radius:12px;padding:22px 26px;margin-bottom:16px;}
+.obj-they{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--rose);margin-bottom:6px;}
+.obj-text{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--text);margin-bottom:16px;line-height:1.35;}
+.obj-you{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--em);margin-bottom:8px;}
+.obj-resp{font-size:14.5px;color:var(--text2);line-height:1.75;}
+.obj-resp em{color:var(--text3);font-size:13.5px;display:block;margin-top:8px;}
+
+/* ── CLOSER BLOCK ── */
+.closer{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:14px;padding:40px;text-align:center;margin-top:32px;}
+.closer-line{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;font-style:italic;color:var(--gold);margin-bottom:10px;line-height:1.4;}
+.closer-line:last-child{margin-bottom:0;}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+@media(max-width:720px){.g2,.g3,.g4{grid-template-columns:1fr;}.main{padding:24px 20px;}.hero{padding:36px 20px 32px;}.nav-scroll{padding:0 20px;}}
+
+/* ── QUOTE ── */
+.pullquote{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:600;
+  font-style:italic;
+  color:var(--gold2);
+  padding:24px 32px;
+  border-left:4px solid var(--gold);
+  background:var(--gold3);
+  border-radius:0 var(--r2) var(--r2) 0;
+  margin-bottom:24px;
+  line-height:1.4;
+}
+.pullquote span{
+  display:block;
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;font-style:normal;
+  color:var(--text3);margin-top:8px;
+  font-weight:500;letter-spacing:0.05em;text-transform:uppercase;
+}
+
+/* ── TAGS ── */
+.tag{
+  display:inline-block;padding:3px 11px;
+  border-radius:100px;font-size:11px;font-weight:600;
+  margin-right:6px;margin-bottom:4px;
+}
+.tg{background:var(--gold3);color:var(--gold);}
+.te{background:var(--em2);color:var(--em);}
+.tr{background:var(--rose2);color:var(--rose);}
+.ts{background:var(--sky2);color:var(--sky);}
+.ta{background:var(--amber2);color:var(--amber);}
+.tv{background:var(--violet2);color:var(--violet);}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:16px;}
+.tbl th{
+  text-align:left;padding:11px 16px;
+  background:var(--bg3);color:var(--text2);
+  font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:0.07em;
+  border-bottom:1px solid var(--border);
+}
+.tbl td{
+  padding:11px 16px;
+  border-bottom:1px solid var(--border);
+  vertical-align:top;color:var(--text);
+}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(255,255,255,0.015);}
+
+/* ── STEP ROW ── */
+.step-row{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px;}
+.step-n{
+  width:32px;height:32px;flex-shrink:0;
+  background:var(--gold);color:var(--bg);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;
+  font-size:15px;font-weight:700;
+}
+.step-body h4{margin-bottom:4px;}
+.step-body p{font-size:13.5px;color:var(--text2);}
+
+/* ── FRAMEWORK CARD ── */
+.fw-card{
+  background:var(--bg3);
+  border-radius:var(--r2);
+  overflow:hidden;
+  margin-bottom:16px;
+  border:1px solid var(--border);
+}
+.fw-head{
+  padding:14px 20px;
+  background:var(--bg4);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+}
+.fw-badge{
+  padding:3px 12px;border-radius:100px;
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.07em;
+}
+.fw-body{padding:20px;}
+.fw-body p{font-size:14px;color:var(--text2);margin-bottom:12px;}
+
+/* ── MONO SCRIPT ── */
+.mono{
+  background:var(--bg4);
+  border-radius:var(--r);
+  padding:14px 18px;
+  font-family:'DM Mono',monospace;
+  font-size:13px;
+  line-height:1.6;
+  color:var(--text);
+  border-left:3px solid var(--gold);
+  margin-bottom:10px;
+}
+
+/* ── STAT CARD ── */
+.stat-card{
+  background:var(--bg3);
+  border-radius:var(--r2);
+  padding:20px;
+  text-align:center;
+}
+.stat-card .sn{
+  font-family:'Playfair Display',serif;
+  font-size:42px;font-weight:700;
+  line-height:1;margin-bottom:6px;
+}
+.stat-card .sl{font-size:12px;color:var(--text2);}
+
+/* ── COMPARISON ── */
+.vs-row{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  gap:12px;align-items:center;margin-bottom:12px;
+}
+.vs-l,.vs-r{
+  background:var(--bg3);
+  border-radius:var(--r);
+  padding:12px 16px;
+  font-size:13.5px;
+}
+.vs-mid{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-weight:700;
+  color:var(--text3);text-align:center;
+}
+
+/* ── SYSTEM FLOW ── */
+.flow{
+  display:flex;align-items:center;
+  gap:0;flex-wrap:wrap;
+  background:var(--bg3);
+  border-radius:var(--r2);
+  overflow:hidden;
+  margin-bottom:20px;
+  border:1px solid var(--border);
+}
+.flow-step{
+  flex:1;min-width:120px;
+  padding:16px 14px;
+  text-align:center;
+  border-right:1px solid var(--border);
+  position:relative;
+}
+.flow-step:last-child{border-right:none;}
+.flow-step .fn{
+  font-family:'DM Mono',monospace;
+  font-size:10px;text-transform:uppercase;
+  letter-spacing:0.08em;margin-bottom:4px;
+}
+.flow-step .fv{
+  font-size:13px;font-weight:600;
+  line-height:1.3;
+}
+
+/* ── CHECKLIST ── */
+.ck-item{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:10px 0;border-bottom:1px solid var(--border);
+  font-size:14px;
+}
+.ck-item:last-child{border-bottom:none;}
+.ck-box{
+  width:19px;height:19px;
+  border:1.5px solid var(--border2);
+  border-radius:4px;flex-shrink:0;
+  cursor:pointer;transition:all 0.15s;
+  display:flex;align-items:center;justify-content:center;
+  margin-top:2px;
+}
+.ck-box.on{background:var(--em);border-color:var(--em);}
+.ck-box.on::after{
+  content:'';width:10px;height:6px;
+  border-left:2px solid #fff;
+  border-bottom:2px solid #fff;
+  transform:rotate(-45deg) translateY(-1px);
+}
+
+/* ── VERTICAL PILLS ── */
+.vpills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;}
+.vpill{
+  padding:7px 16px;border-radius:100px;
+  border:1px solid var(--border);
+  background:transparent;color:var(--text2);
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;transition:all 0.15s;
+}
+.vpill:hover{background:var(--bg3);color:var(--text);}
+.vpill.on{background:var(--gold);border-color:var(--gold);color:var(--bg);font-weight:600;}
+
+.vc{display:none;}
+.vc.on{display:block;}
+
+/* ── PROGRESS BAR ── */
+.pbar{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.pb-label{width:140px;flex-shrink:0;font-size:13px;color:var(--text2);}
+.pb-track{flex:1;height:6px;background:var(--bg4);border-radius:100px;overflow:hidden;}
+.pb-fill{height:100%;border-radius:100px;}
+.pb-note{width:160px;font-size:11px;color:var(--text3);}
+
+/* ── 30-DAY GRID ── */
+.day-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:10px;margin-bottom:24px;
+}
+.day-card{
+  background:var(--bg3);
+  border-radius:var(--r);
+  padding:14px;
+  border:1px solid var(--border);
+  cursor:pointer;transition:border-color 0.15s;
+}
+.day-card:hover{border-color:var(--gold);}
+.day-card .dc-day{
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.08em;
+  margin-bottom:4px;
+}
+.day-card .dc-title{font-size:13px;font-weight:600;margin-bottom:4px;}
+.day-card .dc-focus{font-size:11px;color:var(--text2);}
+
+.phase-label{
+  font-family:'DM Mono',monospace;
+  font-size:11px;letter-spacing:0.1em;
+  text-transform:uppercase;
+  padding:4px 14px;
+  border-radius:100px;
+  margin-bottom:12px;
+  display:inline-block;
+}
+</style>
+
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-kicker">PureCode Agency · The Questioning System · Jeremy Miner NEPQ Method</div>
+  <h1>The <em>NEPQ</em><br>Playbook</h1>
+  <p class="hero-desc">The complete curiosity-based questioning system for selling AI receptionists — built entirely on Jeremy Miner's NEPQ method. Stop pitching. Stop pushing. Start asking the questions that make the prospect sell himself. This is how you get a shop owner to lean in, open up, and talk himself into buying.</p>
+  <div class="hero-authors">
+    <span class="ha">Connection Questions</span><span class="ha">Situation Questions</span>
+    <span class="ha">Problem Awareness</span><span class="ha">Solution Awareness</span>
+    <span class="ha">Consequence Questions</span><span class="ha">Qualifying Questions</span>
+    <span class="ha">Transition Questions</span><span class="ha">Commitment Questions</span>
+    <span class="ha">Neutral Tonality</span><span class="ha">Curiosity Tone</span>
+    <span class="ha">The 3-Second Pause</span><span class="ha">Verbal Pacing</span>
+  </div>
+  <div class="hero-stats">
+    <div class="hs"><span class="n">7</span><span class="l">Question Types</span></div>
+    <div class="hs"><span class="n">3</span><span class="l">Stages of the Sale</span></div>
+    <div class="hs"><span class="n">40+</span><span class="l">Word-for-Word Questions</span></div>
+    <div class="hs"><span class="n">1</span><span class="l">Core Skill: Curiosity</span></div>
+    <div class="hs"><span class="n">0</span><span class="l">Pitching Required</span></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-wrap">
+<div class="nav-scroll">
+  <button class="ntab on" onclick="show('intro',this)">01 · What Is NEPQ</button>
+  <button class="ntab" onclick="show('why',this)">02 · Why It Works</button>
+  <button class="ntab" onclick="show('tonality',this)">03 · Tonality &amp; Curiosity</button>
+  <button class="ntab" onclick="show('threestage',this)">04 · The 3 Stages</button>
+  <button class="ntab" onclick="show('connection',this)">05 · Connection Q's</button>
+  <button class="ntab" onclick="show('situation',this)">06 · Situation Q's</button>
+  <button class="ntab" onclick="show('problem',this)">07 · Problem Awareness</button>
+  <button class="ntab" onclick="show('solution',this)">08 · Solution Awareness</button>
+  <button class="ntab" onclick="show('consequence',this)">09 · Consequence Q's</button>
+  <button class="ntab" onclick="show('transition',this)">10 · Transition &amp; Commit</button>
+  <button class="ntab" onclick="show('objections',this)">11 · Objections The NEPQ Way</button>
+  <button class="ntab" onclick="show('fullcall',this)">12 · Full Call Script</button>
+  <button class="ntab" onclick="show('practice',this)">13 · Drills &amp; Practice</button>
+</div>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 01 WHAT IS NEPQ -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-intro" class="sec on">
+  <div class="sec-head">What Is <em>NEPQ</em>?</div>
+  <p class="sec-sub">NEPQ stands for Neuro-Emotional Persuasion Questioning. It is Jeremy Miner's complete reversal of old-school selling. Instead of pitching, convincing, and handling objections — you ask calm, curious questions that let the prospect persuade himself. The prospect does 80% of the talking. You do 80% of the listening. And he talks himself into the sale.</p>
+
+  <div class="pullquote">
+    "The person asking the questions is always the one in control of the conversation. Not the person talking the most."
+    <span>— Jeremy Miner · NEPQ</span>
+  </div>
+
+  <h3>The Core Idea In One Sentence</h3>
+  <div class="hbox hbox-gold"><div class="hbox-icon">🎯</div><div class="hbox-body"><h5>The Whole Method</h5><p>People are not persuaded by what WE say. They are only persuaded by what THEY say. So your entire job is to ask the questions that get the shop owner to say — out loud, in his own words — that he has a problem, that it's costing him money, and that he wants it fixed. When he says it, he believes it. When you say it, he resists it.</p></div></div>
+
+  <div class="div"></div>
+  <h3>The Old Way vs The NEPQ Way</h3>
+  <div class="g2">
+    <div class="card card-rose">
+      <div class="tag tr">Old-School Selling (Dead)</div>
+      <p style="font-size:14px;color:var(--text2);margin-top:10px;">Talk 80% of the time. Pitch features. Build "value." Overcome objections by pushing back. Create pressure. "Convince" the prospect. Sound excited and high-energy. The prospect feels sold TO — and his guard goes up. Every word you say, he mentally argues against.</p>
+    </div>
+    <div class="card card-em">
+      <div class="tag te">The NEPQ Way (Works)</div>
+      <p style="font-size:14px;color:var(--text2);margin-top:10px;">Listen 80% of the time. Ask curious questions. Let the prospect discover his own pain. Let objections dissolve through questions. Zero pressure. The prospect "convinces" himself. Sound calm, curious, relaxed. The prospect feels understood — and his guard comes down. Every answer he gives, he believes completely.</p>
+    </div>
+  </div>
+
+  <div class="div"></div>
+  <h3>Why Curiosity Is The Engine</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:16px;">The magic of NEPQ is that a genuinely curious question makes the prospect <em>want</em> to answer. It doesn't feel like an interrogation. It feels like someone finally cares enough to ask. When you ask, "Huh — so how's that been working for you?" with real curiosity in your tone, the shop owner leans in. He wants to explain. He wants to be part of the conversation. That is the entire game.</p>
+
+  <div class="g3">
+    <div class="stat-card"><div class="sn" style="color:var(--gold);">80%</div><div class="sl">of the talking should be done by the prospect, not you</div></div>
+    <div class="stat-card"><div class="sn" style="color:var(--em);">3 sec</div><div class="sl">the pause after each answer that makes him keep talking</div></div>
+    <div class="stat-card"><div class="sn" style="color:var(--sky);">0</div><div class="sl">pitches, features, or "value props" until he asks for them</div></div>
+  </div>
+
+  <div class="hbox hbox-sky"><div class="hbox-icon">💡</div><div class="hbox-body"><h5>The Feeling You're Going For</h5><p>Think about the last time someone asked you a question you actually wanted to answer — and really listened. You opened up. You said more than you planned. You felt understood. That is exactly the feeling NEPQ creates in the shop owner. He doesn't feel "sold." He feels heard. And feeling heard is what lowers his defenses.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 02 WHY IT WORKS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-why" class="sec">
+  <div class="sec-head">Why NEPQ <em>Works</em> On The Brain</div>
+  <p class="sec-sub">NEPQ is not a trick. It works because of how the human brain is wired. Understand the mechanism and you'll never go back to pitching.</p>
+
+  <div class="pullquote">
+    "When you trigger someone's curiosity, they can't NOT think about the answer. Their brain is hijacked by the open loop until it gets closed."
+    <span>— Jeremy Miner · NEPQ</span>
+  </div>
+
+  <h3>The 4 Brain Reasons NEPQ Wins</h3>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">1</div><div class="hbox-body"><h5>Self-Persuasion Is Permanent</h5><p>When a person hears an idea from someone else, the brain flags it as "external — verify before trusting." When the person says the idea themselves, the brain flags it as "mine — already true." A shop owner who says "yeah, I'm probably losing a lot of calls" believes it 100%. If YOU say it, he believes it 30% and argues the rest.</p></div></div>
+
+  <div class="hbox hbox-em"><div class="hbox-icon">2</div><div class="hbox-body"><h5>Curiosity Creates An Open Loop</h5><p>A curious question opens a loop in the brain that demands closure. "Huh — I'm curious, how are you currently handling all the calls that come in after you close?" His brain cannot ignore that. It has to answer — even if just internally. That pull into the conversation is involuntary.</p></div></div>
+
+  <div class="hbox hbox-sky"><div class="hbox-icon">3</div><div class="hbox-body"><h5>Lowered Defenses = Open Ears</h5><p>The moment a prospect feels "sold to," his amygdala fires and logic shuts off. NEPQ never triggers that response because you're not selling — you're asking. No pitch means no threat. No threat means the guard stays down and he actually hears you.</p></div></div>
+
+  <div class="hbox hbox-violet"><div class="hbox-icon">4</div><div class="hbox-body"><h5>Emotion Drives, Logic Justifies</h5><p>People buy on emotion and justify with logic. NEPQ questions are engineered to surface the EMOTION first — the frustration of missed calls, the stress of an overwhelmed service writer, the fear of the competitor down the street. Once the emotion is active, the logic (the price, the ROI) becomes easy to accept.</p></div></div>
+
+  <div class="div"></div>
+  <h3>The Single Biggest Mistake Reps Make</h3>
+  <div class="hbox hbox-rose"><div class="hbox-icon">⛔</div><div class="hbox-body"><h5>Answering Your Own Question</h5><p>A rep asks a great curious question... then panics in the silence and answers it himself. "So how are you handling after-hours calls — I mean, probably voicemail, right?" NO. You just stole his self-persuasion. Ask the question. Then <strong>shut up.</strong> Let the silence do the work. The 3-second pause is where the sale happens.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 03 TONALITY & CURIOSITY -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-tonality" class="sec">
+  <div class="sec-head">Tonality &amp; <em>The Curiosity Tone</em></div>
+  <p class="sec-sub">In NEPQ, HOW you ask matters more than WHAT you ask. The exact same question asked in a salesy tone gets a wall. Asked in a curious, neutral tone, it gets an open, honest answer. This is the skill that takes the longest to master — and matters the most.</p>
+
+  <div class="pullquote">
+    "It's not what you say. It's how you say it. Tonality is 3 to 5 times more important than the words themselves."
+    <span>— Jeremy Miner · NEPQ</span>
+  </div>
+
+  <h3>The 3 Tones That Run The Whole Method</h3>
+
+  <div class="card card-gold">
+    <h4>1 · The Curious Tone</h4>
+    <p style="font-size:14px;color:var(--text2);margin-top:8px;">Your voice goes slightly UP at the end, like you genuinely wonder about the answer. It sounds like a friend who's actually interested — not a salesperson reading a script. This is the tone for almost every question in NEPQ.</p>
+    <div class="sblock" style="margin-top:10px;"><div class="who who-you">SOUNDS LIKE</div><div class="st">"Huh... so how's that been working out for you?" (voice lifts, genuinely wondering)</div></div>
+  </div>
+
+  <div class="card card-sky">
+    <h4>2 · The Concerned Tone</h4>
+    <p style="font-size:14px;color:var(--text2);margin-top:8px;">Softer, slower, slightly lower. Used when he reveals a pain. It communicates "I actually care about this problem you just described." It makes him feel the weight of the problem without you having to say a word about it.</p>
+    <div class="sblock" style="margin-top:10px;"><div class="who who-you">SOUNDS LIKE</div><div class="st">"Oh wow... so those calls are just... going to voicemail?" (slow, soft, a little concerned)</div></div>
+  </div>
+
+  <div class="card card-violet">
+    <h4>3 · The Neutral Tone</h4>
+    <p style="font-size:14px;color:var(--text2);margin-top:8px;">Flat, calm, unattached. Used when discussing price or commitment. It communicates zero desperation. You're not excited for the sale — you're just laying out facts. This calmness is what makes you trustworthy and non-threatening.</p>
+    <div class="sblock" style="margin-top:10px;"><div class="who who-you">SOUNDS LIKE</div><div class="st">"Yeah, so most shops go with the Growth plan, it's $497 a month... [pause]" (calm, matter-of-fact, no push)</div></div>
+  </div>
+
+  <div class="div"></div>
+  <h3>The Power Tools of NEPQ Tonality</h3>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">⏸️</div><div class="hbox-body"><h5>The 3-Second Pause</h5><p>After he answers, don't respond immediately. Pause for 3 full seconds. It feels like an eternity to you. To him, it feels like you're thinking carefully about what he said — AND it pulls more words out of him. People hate silence. He'll fill it with more truth. The pause is your most powerful tool.</p></div></div>
+
+  <div class="hbox hbox-sky"><div class="hbox-icon">🔁</div><div class="hbox-body"><h5>The Echo</h5><p>Repeat his last few words back as a question. He says "we're losing a lot of weekend calls." You say "...losing a lot of weekend calls?" He'll expand: "Yeah, probably 20, 30 a weekend, all voicemail." The echo makes him elaborate without you asking a new question.</p></div></div>
+
+  <div class="hbox hbox-em"><div class="hbox-icon">🌊</div><div class="hbox-body"><h5>Softening Words</h5><p>Start questions with softeners: "I'm curious..." · "Just out of curiosity..." · "Do you mind if I ask..." · "Help me understand..." · "I'm wondering..." These remove all pressure and make the question feel safe to answer. They signal you're exploring, not attacking.</p></div></div>
+
+  <div class="hbox hbox-violet"><div class="hbox-icon">🐢</div><div class="hbox-body"><h5>Slow Down</h5><p>Talk slower than feels natural. Speed signals nervousness and "commission breath." A slow, relaxed pace signals confidence and calm. It also gives your questions room to land. Rushed questions feel like an interrogation. Slow questions feel like a conversation.</p></div></div>
+
+  <div class="div"></div>
+  <h3>Same Words, Different Tone — The Difference</h3>
+  <div class="g2">
+    <div class="card card-rose">
+      <h4 style="color:var(--rose);">❌ Salesy Tone</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">"So how are you handling your missed calls right now?" — said fast, flat, and eager. He hears: "here comes a pitch." Wall goes up. Short answer: "We're fine."</p>
+    </div>
+    <div class="card card-em">
+      <h4 style="color:var(--em);">✓ Curious Tone</h4>
+      <p style="font-size:13.5px;color:var(--text2);margin-top:6px;">"I'm curious... how are you guys handling all those calls that come in when you're slammed?" — said slow, warm, genuinely wondering, then silence. He hears: "someone's interested in my world." Guard drops. Long answer: "Honestly, it's a mess during the morning rush..."</p>
+    </div>
+  </div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">🎯</div><div class="hbox-body"><h5>The Practice That Builds This</h5><p>Record yourself asking the same question in 3 tones — salesy, neutral, curious. Play it back. You'll immediately hear the difference. Then practice the curious tone until it's your default. This is the #1 skill to drill. Words are easy. Tone is the craft.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 04 THE 3 STAGES -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-threestage" class="sec">
+  <div class="sec-head">The 3 Stages <em>Of An NEPQ Call</em></div>
+  <p class="sec-sub">Every NEPQ call moves through three stages, driven entirely by questions. You never leave a stage until the prospect's own words tell you he's ready for the next one.</p>
+
+  <div class="flow">
+    <div class="flow-step"><div class="fn" style="color:var(--gold);">Stage 1</div><div class="fv">Connection<br><span style="font-size:11px;color:var(--text3);">Lower the guard</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--sky);">Stage 2</div><div class="fv">Engagement<br><span style="font-size:11px;color:var(--text3);">Surface the pain</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--em);">Stage 3</div><div class="fv">Transition<br><span style="font-size:11px;color:var(--text3);">Commit to next step</span></div></div>
+  </div>
+
+  <div class="div"></div>
+
+  <h3>Stage 1 · Connection (The First 60 Seconds)</h3>
+  <div class="hbox hbox-gold"><div class="hbox-icon">🤝</div><div class="hbox-body"><h5>Goal: Become Non-Threatening</h5><p>The prospect's guard is highest at the start. Your job in Stage 1 is not to pitch — it's to sound so calm and curious that his brain doesn't classify you as "salesperson." You use Connection Questions to disarm and Situation Questions to gently start mapping his world.</p></div></div>
+  <p style="font-size:13.5px;color:var(--text2);"><strong>Question types used:</strong> Connection Questions → Situation Questions. Covered in Sections 05 and 06.</p>
+
+  <div class="div"></div>
+  <h3>Stage 2 · Engagement (The Heart of the Call)</h3>
+  <div class="hbox hbox-sky"><div class="hbox-icon">🔥</div><div class="hbox-body"><h5>Goal: Let Him Discover His Own Pain</h5><p>This is where 80% of the call happens and where the sale is truly made. Through Problem Awareness, Solution Awareness, and Consequence Questions, you guide the shop owner to realize — on his own — that he has a costly problem and that fixing it matters. You never tell him. You ask until he tells you.</p></div></div>
+  <p style="font-size:13.5px;color:var(--text2);"><strong>Question types used:</strong> Problem Awareness → Solution Awareness → Consequence Questions. Covered in Sections 07, 08, and 09.</p>
+
+  <div class="div"></div>
+  <h3>Stage 3 · Transition (The Close That Isn't a Close)</h3>
+  <div class="hbox hbox-em"><div class="hbox-icon">✅</div><div class="hbox-body"><h5>Goal: Let Him Ask For The Solution</h5><p>By the time you reach Stage 3, the shop owner has talked himself into needing help. Now you use Transition and Commitment Questions to move naturally into showing the solution and booking the next step. There's no hard close — because he's already sold himself. You just make it easy to say yes.</p></div></div>
+  <p style="font-size:13.5px;color:var(--text2);"><strong>Question types used:</strong> Transition Questions → Commitment Questions. Covered in Section 10.</p>
+
+  <div class="div"></div>
+  <h3>The 7 Question Types · The Complete Arsenal</h3>
+  <table class="tbl">
+    <thead><tr><th>#</th><th>Question Type</th><th>What It Does</th><th>Stage</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Connection</td><td>Lowers the guard, builds rapport, sounds human</td><td>1</td></tr>
+      <tr><td>2</td><td>Situation</td><td>Maps his current setup — bays, calls, staffing</td><td>1</td></tr>
+      <tr><td>3</td><td>Problem Awareness</td><td>Makes him notice a problem he's been ignoring</td><td>2</td></tr>
+      <tr><td>4</td><td>Solution Awareness</td><td>Makes him picture what "fixed" looks like</td><td>2</td></tr>
+      <tr><td>5</td><td>Consequence</td><td>Makes him feel the cost of NOT fixing it</td><td>2</td></tr>
+      <tr><td>6</td><td>Transition</td><td>Moves naturally from problem to solution</td><td>3</td></tr>
+      <tr><td>7</td><td>Commitment</td><td>Gets him to commit to the next step himself</td><td>3</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 05 CONNECTION QUESTIONS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-connection" class="sec">
+  <div class="sec-head">Connection <em>Questions</em></div>
+  <p class="sec-sub">Stage 1 · The first questions of the call. Their only job is to lower the guard and make you sound like a curious human, not a cold caller. Zero pressure. Zero pitch.</p>
+
+  <div class="pullquote">
+    "You have to disarm before you can engage. The prospect can't hear a single thing you say until he stops seeing you as a threat."
+    <span>— Jeremy Miner · NEPQ</span>
+  </div>
+
+  <h3>The NEPQ Opener For A Shop Owner</h3>
+  <div class="sblock"><div class="who who-you">CONNECTION OPENER</div><div class="st">"Hey [Name]... I was actually hoping you could help me out for a second. [pause] I'm not totally sure if this is even a fit for your shop — but do you mind if I ask you a couple quick questions about how you guys handle your calls? And if it's not a fit, no worries at all, I'll let you go."</div></div>
+  <div class="sblock"><div class="who who-why">WHY THIS WORKS</div><div class="st">"Hoping you could help me out" flips the power dynamic — now HE feels in control. "Not sure if it's a fit" removes all pressure. "I'll let you go" gives him an exit, which paradoxically makes him stay. This is pure NEPQ disarming.</div></div>
+
+  <div class="div"></div>
+  <h3>The Rules of Connection Questions</h3>
+  <div class="hbox hbox-gold"><div class="hbox-icon">1</div><div class="hbox-body"><h5>Ask For Help</h5><p>"I was hoping you could help me..." People are wired to help when asked directly and humbly. It lowers the guard instantly because helpers aren't targets.</p></div></div>
+  <div class="hbox hbox-sky"><div class="hbox-icon">2</div><div class="hbox-body"><h5>Take The Pressure Off</h5><p>"Not sure if this is even a fit..." — when you remove the assumption that you WANT the sale, he stops defending against being sold. He relaxes.</p></div></div>
+  <div class="hbox hbox-em"><div class="hbox-icon">3</div><div class="hbox-body"><h5>Give Him An Out</h5><p>"If it's not a fit, I'll let you go." A prospect who feels trapped fights. A prospect who feels free to leave... stays and listens.</p></div></div>
+  <div class="hbox hbox-violet"><div class="hbox-icon">4</div><div class="hbox-body"><h5>Stay Calm And Slow</h5><p>Connection is destroyed by eagerness. Slow down. Sound relaxed. You have all the time in the world. That calm is contagious.</p></div></div>
+
+  <div class="div"></div>
+  <h3>More Connection Question Options</h3>
+  <div class="g2">
+    <div class="sblock"><div class="who who-you">OPTION A</div><div class="st">"Hey [Name] — quick one, and totally fine if now's not a good time... I've been talking to a few shops in [city] and wanted to ask you something. Got a sec?"</div></div>
+    <div class="sblock"><div class="who who-you">OPTION B</div><div class="st">"Hey [Name]... I'll be honest, this is a bit of a cold call — but I promise I'm not going to pitch you anything. I actually just had a couple questions about how your shop runs its phones. That cool?"</div></div>
+    <div class="sblock"><div class="who who-you">OPTION C</div><div class="st">"Hi [Name] — do you mind helping me understand something real quick? I'm curious how a shop your size handles the calls that come in when everybody's already slammed."</div></div>
+    <div class="sblock"><div class="who who-you">OPTION D</div><div class="st">"Hey [Name] — random question, and no worries if it's not relevant... when you guys get busy, who ends up catching the phones?"</div></div>
+  </div>
+
+  <div class="hbox hbox-rose"><div class="hbox-icon">⛔</div><div class="hbox-body"><h5>Never Do This In Connection</h5><p>Never say "How are you today?" (screams cold call). Never say your company name first (triggers the wall). Never sound excited (signals commission). Never launch into what you do. The Connection stage is about HIM, not you. Not one word about your product yet.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 06 SITUATION QUESTIONS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-situation" class="sec">
+  <div class="sec-head">Situation <em>Questions</em></div>
+  <p class="sec-sub">Stage 1 → 2 · Gentle, low-pressure questions that map the shop owner's current world. These feel easy to answer because they're just about facts. But every answer is quietly setting up the pain you'll surface next.</p>
+
+  <div class="pullquote">
+    "Situation questions gather the information you need — but more importantly, they get the prospect comfortable talking to you. Every answer is a small yes."
+    <span>— Jeremy Miner · NEPQ</span>
+  </div>
+
+  <h3>The Auto Repair Situation Questions</h3>
+  <div class="sblock"><div class="who who-you">Q1 · The Setup</div><div class="st">"So just so I understand your shop a little better — how many bays are you running over there?"</div></div>
+  <div class="sblock"><div class="who who-you">Q2 · The Volume</div><div class="st">"Got it... and on a typical busy day, how many calls would you say come through? Just a ballpark."</div></div>
+  <div class="sblock"><div class="who who-you">Q3 · The Staffing</div><div class="st">"And right now — who's the one actually picking up the phone? You got a dedicated front desk person, or is your service writer kind of doing it all?"</div></div>
+  <div class="sblock"><div class="who who-you">Q4 · The Hours</div><div class="st">"What are your hours? And I'm curious — what happens to calls that come in after you close, or on the weekend?"</div></div>
+  <div class="sblock"><div class="who who-you">Q5 · The System</div><div class="st">"Are you using any kind of system to catch or track those calls right now, or is it mostly just... whoever's free grabs it?"</div></div>
+
+  <div class="div"></div>
+  <h3>The Secret Of Situation Questions</h3>
+  <div class="hbox hbox-gold"><div class="hbox-icon">🔑</div><div class="hbox-body"><h5>Every Answer Is A Setup</h5><p>When he says "my service writer does it all" — you've just planted the seed for the morning-rush pain. When he says "after hours goes to voicemail" — you've planted the after-hours pain. You're not just gathering info. You're loading the questions you'll fire in Stage 2. He's handing you the ammunition.</p></div></div>
+
+  <div class="hbox hbox-sky"><div class="hbox-icon">📝</div><div class="hbox-body"><h5>Write Down His Words</h5><p>As he answers, note his EXACT words and numbers. "35 calls a day." "Service writer does everything." "$550 average ticket." You will feed these exact numbers back to him in the Consequence stage. Using his own words and numbers is what makes the pain undeniable.</p></div></div>
+
+  <div class="hbox hbox-em"><div class="hbox-icon">⏸️</div><div class="hbox-body"><h5>Don't Rush To The Pain</h5><p>Reps get excited and jump to problem questions too fast. Stay in Situation until he's comfortable and talking freely. The more small answers he gives you, the more momentum you build. Each easy answer makes the next, harder answer feel natural.</p></div></div>
+
+  <div class="div"></div>
+  <h3>The Bridge From Situation To Problem</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:12px;">Once you've mapped his world, you bridge into the pain with a soft, curious transition:</p>
+  <div class="sblock"><div class="who who-you">THE BRIDGE</div><div class="st">"Okay, that makes sense... So can I ask you — when it gets really busy, like that morning rush, and your service writer's already got a customer at the counter and the phone's ringing... [pause] what usually happens to that call?"</div></div>
+  <div class="sblock"><div class="who who-note">NOTE</div><div class="st">Notice — you didn't tell him he's missing calls. You asked what happens. He's about to tell YOU he's missing calls. That's the whole method in one move.</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 07 PROBLEM AWARENESS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-problem" class="sec">
+  <div class="sec-head">Problem Awareness <em>Questions</em></div>
+  <p class="sec-sub">Stage 2 · The heart of NEPQ. These questions make the shop owner NOTICE a problem he's been living with but never really examined. You're holding up a mirror — and letting him see the leak for himself.</p>
+
+  <div class="pullquote">
+    "You never tell someone they have a problem. You ask questions that help them discover it on their own. Discovered pain sells. Assigned pain gets resisted."
+    <span>— Jeremy Miner · NEPQ</span>
+  </div>
+
+  <h3>The Problem Awareness Questions For Auto Repair</h3>
+
+  <div class="sblock"><div class="who who-you">Q1 · The Morning Rush</div><div class="st">"When 3 calls come in at the same time during that morning rush... how do you feel that's being handled right now? Like, honestly?"</div></div>
+  <div class="sblock"><div class="who who-you">Q2 · The Callback Reality</div><div class="st">"And those folks who get sent to voicemail — I'm curious, in your experience, do most of them call back later? Or do they kind of just... move on?"</div></div>
+  <div class="sblock"><div class="who who-you">Q3 · The Awareness Gap</div><div class="st">"Do you actually have a way to know how many calls you're missing? Or is it more of a... you know it's happening but you can't really see it kind of thing?"</div></div>
+  <div class="sblock"><div class="who who-you">Q4 · The Weekend Hole</div><div class="st">"On the weekends when you're closed — those calls coming in, do you have any idea roughly how many that is? And where do they end up?"</div></div>
+  <div class="sblock"><div class="who who-you">Q5 · The No-Show Sting</div><div class="st">"How's the no-show situation been for you? Like when someone books and just doesn't show up — how often is that happening, and what's that do to your day?"</div></div>
+
+  <div class="div"></div>
+  <h3>How To Ask These The Right Way</h3>
+  <div class="hbox hbox-gold"><div class="hbox-icon">🎭</div><div class="hbox-body"><h5>Curious, Never Accusatory</h5><p>The difference between "So you're just letting calls go to voicemail?" (accusatory — he defends) and "I'm curious, where do those calls end up when everyone's slammed?" (curious — he explains) is everything. Same information. Opposite reaction. Always choose curious.</p></div></div>
+
+  <div class="hbox hbox-sky"><div class="hbox-icon">⏸️</div><div class="hbox-body"><h5>Then The Pause</h5><p>After each problem question — silence. Let him sit with it. This is uncomfortable but essential. In that pause, he's realizing something he's been avoiding. Don't rescue him from that realization. The discomfort IS the awareness forming.</p></div></div>
+
+  <div class="hbox hbox-em"><div class="hbox-icon">🔁</div><div class="hbox-body"><h5>Echo And Deepen</h5><p>When he says "yeah, they probably don't call back" — echo it: "...they don't call back." [pause] Then deepen: "So what do you think that's costing you, roughly?" You're layering awareness on awareness. Each echo makes the problem more real to him.</p></div></div>
+
+  <div class="div"></div>
+  <h3>What You're Listening For</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:12px;">You know Problem Awareness is working when the shop owner starts saying things like:</p>
+  <div class="g2">
+    <div class="mono">"Yeah, honestly it's probably worse than I think."</div>
+    <div class="mono">"I know we're losing calls, I just don't know how many."</div>
+    <div class="mono">"The weekends are definitely a problem."</div>
+    <div class="mono">"No-shows are killing me, actually."</div>
+  </div>
+  <div class="hbox hbox-gold" style="margin-top:16px;"><div class="hbox-icon">🎯</div><div class="hbox-body"><h5>The Shift</h5><p>When he goes from "we're fine" at the start of the call to "yeah, it's probably worse than I think" — you've done your job. He's now AWARE. He owns the problem. And you never had to tell him a thing. Now he's ready for the questions that make him feel the cost.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 08 SOLUTION AWARENESS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-solution" class="sec">
+  <div class="sec-head">Solution Awareness <em>Questions</em></div>
+  <p class="sec-sub">Stage 2 · Now that he sees the problem, these questions make him picture what "fixed" looks like — and want it. You're getting him to describe his ideal outcome in his own words, so the solution feels like HIS idea.</p>
+
+  <div class="pullquote">
+    "Get them to tell you what the perfect solution looks like. Then when you present, you're just handing them exactly what they described wanting."
+    <span>— Jeremy Miner · NEPQ</span>
+  </div>
+
+  <h3>The Solution Awareness Questions For Auto Repair</h3>
+
+  <div class="sblock"><div class="who who-you">Q1 · The Ideal Picture</div><div class="st">"So let me ask you this... if you could wave a magic wand and every single call got answered — day, night, weekend, holidays — what do you think that would do for the shop?"</div></div>
+  <div class="sblock"><div class="who who-you">Q2 · The Monday Morning</div><div class="st">"Imagine you walk in Monday morning and there's already 15 appointments booked from the weekend, sitting on your calendar. [pause] How would that change how your week starts?"</div></div>
+  <div class="sblock"><div class="who who-you">Q3 · The Service Writer Relief</div><div class="st">"What if your service writer never had to choose between the customer at the counter and the phone ringing — because something else was catching every call? What would that free him up to do?"</div></div>
+  <div class="sblock"><div class="who who-you">Q4 · The No-Show Fix</div><div class="st">"And if your no-shows dropped from — what'd you say, 3 or 4 a day — down to almost none, because everyone got automatic reminders... what's that worth to you in a week?"</div></div>
+
+  <div class="div"></div>
+  <h3>Why This Stage Is So Powerful</h3>
+  <div class="hbox hbox-gold"><div class="hbox-icon">🧠</div><div class="hbox-body"><h5>He Builds The Solution In His Own Head</h5><p>When the shop owner describes what "every call answered" would do for his business, HE is building the case for buying. He's not hearing your pitch — he's making his own. By the time you show him PureCode, he's already decided he wants exactly what it does. You're just confirming it exists.</p></div></div>
+
+  <div class="hbox hbox-sky"><div class="hbox-icon">💭</div><div class="hbox-body"><h5>Emotion Through Imagination</h5><p>"Imagine you walk in Monday to 15 booked appointments" makes him FEEL the relief and excitement of that outcome before he owns it. That emotional preview is what creates desire. He now wants that feeling. And there's only one way to get it.</p></div></div>
+
+  <div class="hbox hbox-em"><div class="hbox-icon">🔗</div><div class="hbox-body"><h5>His Words Become Your Pitch</h5><p>Whatever he says here — "it'd take a huge weight off," "I could actually focus on the cars," "we'd book way more work" — write it down. When you transition to the solution, you use HIS exact phrases: "You said it'd take a weight off your service writer — that's exactly what this does."</p></div></div>
+
+  <div class="div"></div>
+  <h3>The Micro-Commitment Question</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:12px;">Before moving on, lock in a small yes that sets up everything after:</p>
+  <div class="sblock"><div class="who who-you">MICRO-COMMITMENT</div><div class="st">"So it sounds like if there was a way to catch every one of those calls — without hiring another person or adding work for your service writer — that's something you'd at least want to take a look at? [pause]"</div></div>
+  <div class="sblock"><div class="who who-note">NOTE</div><div class="st">When he says "yeah, I'd look at it" — he's given you permission to show the solution. He asked for it. Now the presentation isn't a pitch — it's a response to his request. That's the NEPQ close setting itself up.</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 09 CONSEQUENCE QUESTIONS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-consequence" class="sec">
+  <div class="sec-head">Consequence <em>Questions</em></div>
+  <p class="sec-sub">Stage 2 · The most powerful questions in NEPQ. These make the shop owner feel the real cost of NOT fixing the problem. This is where the urgency comes from — not from you pushing, but from him realizing what inaction is costing him.</p>
+
+  <div class="pullquote">
+    "Consequence questions are where the deal is won. When the prospect feels the pain of staying the same, change becomes the only logical option."
+    <span>— Jeremy Miner · NEPQ</span>
+  </div>
+
+  <h3>The Consequence Questions For Auto Repair</h3>
+
+  <div class="sblock"><div class="who who-you">Q1 · The Money Math</div><div class="st">"So if you're missing — let's say even just 5 calls a day — and your average repair order is $550 like you mentioned... [pause] have you ever added up what that's costing you over a month?"</div></div>
+  <div class="sblock"><div class="who who-you">Q2 · The Lifetime Loss</div><div class="st">"And here's the part that gets me — that's not just one $550 job you're losing. That customer would've come back for oil changes, brakes, everything, for years. What do you think a loyal customer is worth to you over their lifetime?"</div></div>
+  <div class="sblock"><div class="who who-you">Q3 · The Competitor Reality</div><div class="st">"When that customer can't reach you and calls the shop down the road instead... and they answer... [pause] whose customer is that now, going forward?"</div></div>
+  <div class="sblock"><div class="who who-you">Q4 · The Time Cost</div><div class="st">"If this keeps going the way it's going — same as the last year — where does that leave you 12 months from now? Is that a direction you're okay with?"</div></div>
+  <div class="sblock"><div class="who who-you">Q5 · The Emotional Cost</div><div class="st">"How does it sit with you knowing that every day, there's customers trying to give you money and just... not getting through?"</div></div>
+
+  <div class="div"></div>
+  <h3>The Rules of Consequence Questions</h3>
+  <div class="hbox hbox-rose"><div class="hbox-icon">⚡</div><div class="hbox-body"><h5>This Is Where Urgency Is Born</h5><p>Old-school reps manufacture fake urgency ("this deal expires today!"). NEPQ creates REAL urgency by helping the prospect feel the ongoing cost of doing nothing. He's not rushing because you pushed. He's moving because he finally sees the bleeding won't stop on its own.</p></div></div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">💰</div><div class="hbox-body"><h5>Let HIM Do The Math</h5><p>Don't say "you're losing $16,000 a month." Ask "have you ever added up what that costs?" and let him calculate — or calculate WITH him, guiding gently. When the number comes out of his mouth, it's real. When it comes out of yours, it's a sales tactic.</p></div></div>
+
+  <div class="hbox hbox-sky"><div class="hbox-icon">🎭</div><div class="hbox-body"><h5>Stay Gentle, Not Aggressive</h5><p>These questions are heavy — so your tone must be soft and concerned, never gloating or pushy. You're a friend pointing out something painful because you care, not a salesman twisting the knife. The concern in your voice is what makes the hard question land without triggering defense.</p></div></div>
+
+  <div class="hbox hbox-violet"><div class="hbox-icon">⏸️</div><div class="hbox-body"><h5>The Longest Pause Goes Here</h5><p>After "where does that leave you 12 months from now?" — say NOTHING. Let it hang. This is the most important silence in the entire call. He's staring down the barrel of another year of losses. Let him sit in that. Then he'll be the one to say "yeah, I need to fix this."</p></div></div>
+
+  <div class="div"></div>
+  <h3>The Transition That Follows Consequence</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:12px;">Once he's felt the cost, you don't pounce. You ask permission with total calm:</p>
+  <div class="sblock"><div class="who who-you">THE CALM TRANSITION</div><div class="st">"Yeah... [pause] So, would it be helpful if I showed you how a few other shops in [city] are catching all those calls now? It might be a fit, it might not — but at least you'd see how it works."</div></div>
+  <div class="sblock"><div class="who who-why">WHY</div><div class="st">After all that consequence, he WANTS the solution. But you stay neutral — "might be a fit, might not." That calm detachment makes you more trustworthy and makes him want it more. You're not desperate. You're just offering to show him.</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 10 TRANSITION & COMMITMENT -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-transition" class="sec">
+  <div class="sec-head">Transition &amp; <em>Commitment Questions</em></div>
+  <p class="sec-sub">Stage 3 · The prospect has sold himself. Now you move smoothly into the solution and let him commit to the next step. In NEPQ, there is no hard close — there's a natural conclusion the prospect reaches on his own.</p>
+
+  <div class="pullquote">
+    "If you've asked the right questions, the close is just a formality. The prospect closes himself. You just hold the door open."
+    <span>— Jeremy Miner · NEPQ</span>
+  </div>
+
+  <h3>Presenting The Solution The NEPQ Way</h3>
+  <div class="hbox hbox-gold"><div class="hbox-icon">🎯</div><div class="hbox-body"><h5>Present In His Words, Not Yours</h5><p>When you show PureCode, tie every feature back to something HE said. "You mentioned the weekends are a black hole — so here's what handles that. You said your service writer's drowning in the morning — this is what catches the overflow." You're not pitching features. You're solving the exact problems he described.</p></div></div>
+
+  <div class="sblock"><div class="who who-you">THE SOLUTION BRIDGE</div><div class="st">"So based on everything you just told me — the morning rush, the weekend calls, the no-shows — here's what we'd set up for you. A 24/7 AI receptionist, trained on your shop, that answers every call, books appointments straight into your calendar, texts back anyone who doesn't connect, and sends reminders so the no-shows basically disappear. [pause] Everything you said was a problem — this handles it."</div></div>
+
+  <div class="div"></div>
+  <h3>Transition Questions</h3>
+  <div class="sblock"><div class="who who-you">T1 · Check Understanding</div><div class="st">"Does that make sense so far? Or is there any part of that you'd want me to walk through again?"</div></div>
+  <div class="sblock"><div class="who who-you">T2 · Gauge Fit</div><div class="st">"How does that line up with what you were picturing when I asked about the magic wand earlier?"</div></div>
+  <div class="sblock"><div class="who who-you">T3 · Surface Concerns</div><div class="st">"I'm curious — what's your honest first reaction to all this?"</div></div>
+
+  <div class="div"></div>
+  <h3>Commitment Questions</h3>
+  <p style="font-size:14px;color:var(--text2);margin-bottom:12px;">These get him to commit to the next step in his own words — no pressure, no hard close.</p>
+  <div class="sblock"><div class="who who-you">C1 · The Natural Close</div><div class="st">"So where do you feel like we should go from here?"</div></div>
+  <div class="sblock"><div class="who who-note">NOTE</div><div class="st">This is the most powerful close in NEPQ. You ask HIM where to go next. If you've built the pain and shown the fit, he'll say "well, how do we get started?" — and he just closed himself.</div></div>
+  <div class="sblock"><div class="who who-you">C2 · The Soft Assumption</div><div class="st">"The way it usually works is we do a quick 30-minute setup call, get you live in about 10 days. Would something early next week work, or is later in the week better for you?"</div></div>
+  <div class="sblock"><div class="who who-you">C3 · The Value Confirm</div><div class="st">"Just so I'm clear on my end — from what you've seen, is this something you feel would actually help the shop? [pause] ...Yeah? What makes you say that?"</div></div>
+  <div class="sblock"><div class="who who-why">WHY C3 IS GENIUS</div><div class="st">"What makes you say that?" gets him to list the reasons he wants it — out loud, to himself. He's now verbally reinforcing his own decision. He talks himself past his own hesitation. This is self-persuasion closing the deal.</div></div>
+
+  <div class="div"></div>
+  <h3>When He Hesitates — The NEPQ Response</h3>
+  <div class="hbox hbox-sky"><div class="hbox-icon">🌊</div><div class="hbox-body"><h5>Never Push. Ask.</h5><p>If he says "let me think about it," you don't push back. You get curious: "Totally fair — I'm curious, what specifically would you want to think through?" This surfaces the REAL concern (which is never "thinking") so you can ask questions around it. You dissolve hesitation with curiosity, never with pressure.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 11 OBJECTIONS THE NEPQ WAY -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-objections" class="sec">
+  <div class="sec-head">Objections · <em>The NEPQ Way</em></div>
+  <p class="sec-sub">In old-school selling, you "overcome" objections by pushing back. In NEPQ, you dissolve them with questions. You never argue. You get curious about the objection until the prospect talks himself out of it.</p>
+
+  <div class="pullquote">
+    "Never answer an objection with a statement. Answer it with a question. The moment you push back, you're in a fight. The moment you get curious, you're on the same side."
+    <span>— Jeremy Miner · NEPQ</span>
+  </div>
+
+  <h3>The NEPQ Objection Formula</h3>
+  <div class="flow">
+    <div class="flow-step"><div class="fn" style="color:var(--gold);">1</div><div class="fv">Clarify<br><span style="font-size:11px;color:var(--text3);">"What do you mean by that?"</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--sky);">2</div><div class="fv">Discuss<br><span style="font-size:11px;color:var(--text3);">Get curious about it</span></div></div>
+    <div class="flow-step"><div class="fn" style="color:var(--em);">3</div><div class="fv">Diffuse<br><span style="font-size:11px;color:var(--text3);">He resolves it himself</span></div></div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="obj"><div class="obj-they">— He Says —</div><div class="obj-text">"It's too expensive."</div><div class="obj-you">— You Ask (calm, curious) —</div><div class="obj-resp">"Yeah, I hear you... I'm curious though — when you say expensive, is it that the price itself feels high, or is it more that you're not yet sure it'd pay for itself? [pause]" <br><br><em>Then, whatever he says, go deeper: "Gotcha. So if you knew for a fact it'd bring in more than it costs — would the price still feel like the issue?" He'll say no. Now it's about value, not price — and you've already built the value.</em></div></div>
+
+  <div class="obj"><div class="obj-they">— He Says —</div><div class="obj-text">"I need to think about it."</div><div class="obj-you">— You Ask —</div><div class="obj-resp">"Totally fair... I'm curious, when you say think about it — what specifically are you wanting to think through? Because sometimes it's the price, sometimes it's whether it'll actually work, sometimes it's just timing. [pause] What is it for you?" <br><br><em>This surfaces the REAL objection hiding behind "think about it." Then you ask questions around that real thing.</em></div></div>
+
+  <div class="obj"><div class="obj-they">— He Says —</div><div class="obj-text">"My service writer handles the calls."</div><div class="obj-you">— You Ask —</div><div class="obj-resp">"That's good he's on it... help me understand though — when he's got a customer standing right in front of him AND two lines ringing, which one does he pick? [pause] ...And where do the other two go?" <br><br><em>You didn't argue. You asked a question that makes him see the gap himself.</em></div></div>
+
+  <div class="obj"><div class="obj-they">— He Says —</div><div class="obj-text">"We're doing fine without it."</div><div class="obj-you">— You Ask —</div><div class="obj-resp">"Yeah, sounds like the shop's doing well... I'm just curious — 'fine' compared to what? Like, do you actually know how many calls slip through, or is it more of a feeling that things are okay? [pause]" <br><br><em>Gently challenges "fine" by asking if it's measured or assumed. Usually it's assumed — and now he's curious too.</em></div></div>
+
+  <div class="obj"><div class="obj-they">— He Says —</div><div class="obj-text">"I've tried something like this before and it didn't work."</div><div class="obj-you">— You Ask —</div><div class="obj-resp">"Oh interesting — what happened with the last one? [pause, listen] ...Yeah, that would frustrate me too. So what would need to be different this time for you to feel good about trying again?" <br><br><em>You validate, get the full story, then let HIM define what a good solution looks like — which you then match.</em></div></div>
+
+  <div class="obj"><div class="obj-they">— He Says —</div><div class="obj-text">"Just send me some info."</div><div class="obj-you">— You Ask —</div><div class="obj-resp">"Happy to... I'm curious though, when you say send info — what exactly would you be looking for in it? Because I could send a generic brochure, but that probably won't tell you what you actually want to know. What's the real question you'd want answered? [pause]" <br><br><em>"Send info" is usually a soft brush-off. This turns it into a real conversation about his actual concern.</em></div></div>
+
+  <div class="obj"><div class="obj-they">— He Says —</div><div class="obj-text">"I don't have time for this right now."</div><div class="obj-you">— You Ask —</div><div class="obj-resp">"Totally get it, you're slammed — and honestly, that's kind of the whole point, right? [pause] If you're too busy to catch every call, I'm curious... where do you think those calls are going while you're heads-down? [pause]" <br><br><em>You reframe his objection AS the problem, gently, with a question. His lack of time IS the pain.</em></div></div>
+
+  <div class="obj"><div class="obj-they">— He Says —</div><div class="obj-text">"I need to talk to my partner."</div><div class="obj-you">— You Ask —</div><div class="obj-resp">"Makes sense, that's a smart way to run it... I'm curious, what do you think your partner's biggest question is going to be when you bring it to them? [pause] ...Let's make sure you've got a solid answer for that before you talk to them." <br><br><em>You help him prepare to sell it internally — and surface any hidden objections he's holding.</em></div></div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">🎯</div><div class="hbox-body"><h5>The Golden Rule Of NEPQ Objections</h5><p>The prospect is never wrong, and you never argue. You just get genuinely curious about WHY he feels that way — and keep asking soft questions until the objection either dissolves or reveals the real concern underneath. Curiosity is the solvent that dissolves every wall. Pressure is the glue that makes them harder.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 12 FULL CALL SCRIPT -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-fullcall" class="sec">
+  <div class="sec-head">The Full <em>NEPQ Call</em> · Start To Finish</div>
+  <p class="sec-sub">Here is a complete NEPQ call for an auto repair shop, from the first hello to the booked appointment — every question in sequence. This is your master script. Internalize the flow, not the exact words.</p>
+
+  <div class="sblock"><div class="who who-you">YOU · CONNECTION</div><div class="st">"Hey, is this [Name]? ...Hey [Name], I was hoping you could help me out for a sec. I'll be honest, this is a bit of a cold call — but I promise I'm not gonna pitch you. I just had a couple questions about how your shop handles its calls. That cool?"</div></div>
+  <div class="sblock"><div class="who who-them">HIM</div><div class="st">"Uh... yeah, I got a minute."</div></div>
+  <div class="sblock"><div class="who who-you">YOU · SITUATION</div><div class="st">"Appreciate it. So just to understand your setup — how many bays you running over there?"</div></div>
+  <div class="sblock"><div class="who who-them">HIM</div><div class="st">"We got 4 bays."</div></div>
+  <div class="sblock"><div class="who who-you">YOU · SITUATION</div><div class="st">"Nice. And on a busy day, ballpark, how many calls come through?"</div></div>
+  <div class="sblock"><div class="who who-them">HIM</div><div class="st">"Eh, 30, 40 maybe."</div></div>
+  <div class="sblock"><div class="who who-you">YOU · SITUATION</div><div class="st">"Got it. And who's grabbing the phone right now — you got a front desk person, or is your service writer doing it all?"</div></div>
+  <div class="sblock"><div class="who who-them">HIM</div><div class="st">"Service writer handles everything. It's just him up front."</div></div>
+  <div class="sblock"><div class="who who-you">YOU · PROBLEM AWARENESS + BRIDGE</div><div class="st">"Okay... so can I ask — during that morning rush, when he's already got a customer at the counter and the phone's ringing... [pause] what usually happens to that call?"</div></div>
+  <div class="sblock"><div class="who who-them">HIM</div><div class="st">"Honestly? It probably goes to voicemail. He can't do everything."</div></div>
+  <div class="sblock"><div class="who who-you">YOU · PROBLEM AWARENESS</div><div class="st">"Yeah... [pause] And those voicemail folks — in your experience, do most of them call back? Or do they kinda just move on to the next shop?"</div></div>
+  <div class="sblock"><div class="who who-them">HIM</div><div class="st">"...Probably move on, yeah. I don't get a ton of voicemails."</div></div>
+  <div class="sblock"><div class="who who-you">YOU · CONSEQUENCE</div><div class="st">"So here's what I'm curious about — if even 5 of those a day are real appointment calls, and your average repair order is what, 500-ish?"</div></div>
+  <div class="sblock"><div class="who who-them">HIM</div><div class="st">"About $550, yeah."</div></div>
+  <div class="sblock"><div class="who who-you">YOU · CONSEQUENCE (let him do the math)</div><div class="st">"So 5 calls a day at $550... [pause] ...that's like $2,700 a day. Over a month? Have you ever added that up?"</div></div>
+  <div class="sblock"><div class="who who-them">HIM</div><div class="st">"...Damn. No, I never really did the math on it."</div></div>
+  <div class="sblock"><div class="who who-you">YOU · CONSEQUENCE (deepen, soft tone)</div><div class="st">"And that's not even counting that each of those was gonna be a repeat customer for years, right? [pause] How does it sit with you, knowing there's people trying to give you money every day and just... not getting through?"</div></div>
+  <div class="sblock"><div class="who who-them">HIM</div><div class="st">"Yeah, that's... that's not great. I know it's a problem."</div></div>
+  <div class="sblock"><div class="who who-you">YOU · SOLUTION AWARENESS</div><div class="st">"So let me ask you this — if every one of those calls got answered, day, night, weekends, and booked right into your calendar... what would that do for the shop?"</div></div>
+  <div class="sblock"><div class="who who-them">HIM</div><div class="st">"I mean, that'd be huge. We'd probably book 20, 30% more work."</div></div>
+  <div class="sblock"><div class="who who-you">YOU · MICRO-COMMITMENT</div><div class="st">"So if there was a way to catch every one of those calls — without you hiring another person or piling more on your service writer — that's something you'd wanna at least look at?"</div></div>
+  <div class="sblock"><div class="who who-them">HIM</div><div class="st">"Yeah, for sure."</div></div>
+  <div class="sblock"><div class="who who-you">YOU · SOLUTION (in his words)</div><div class="st">"Cool. So based on what you just told me — the morning rush, the voicemail thing, wanting to book more work — here's what we'd set up. A 24/7 AI receptionist trained on your shop. Answers every call, books straight into your calendar, texts back anyone who doesn't connect, and sends reminders so no-shows drop off. Everything you just said was a problem — this handles it."</div></div>
+  <div class="sblock"><div class="who who-you">YOU · COMMITMENT (the natural close)</div><div class="st">"So where do you feel like we should go from here?"</div></div>
+  <div class="sblock"><div class="who who-them">HIM</div><div class="st">"I mean... how do we get started?"</div></div>
+  <div class="sblock"><div class="who who-note">HE JUST CLOSED HIMSELF</div><div class="st">You never pitched. You never pushed. You asked questions until he arrived at the decision on his own. That's NEPQ.</div></div>
+
+  <div class="hbox hbox-gold"><div class="hbox-icon">🎯</div><div class="hbox-body"><h5>Notice What Never Happened</h5><p>You never said "our product is great." You never listed features to convince him. You never fought an objection. You asked. He answered. He realized. He decided. Every important conclusion came out of HIS mouth. That's why it works — and why it doesn't feel like being sold.</p></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 13 DRILLS & PRACTICE -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-practice" class="sec">
+  <div class="sec-head">Drills &amp; <em>Practice</em></div>
+  <p class="sec-sub">NEPQ is a skill, and skills are built through reps. These drills train the two hardest parts: asking with genuine curiosity, and staying silent after you ask.</p>
+
+  <h3>Drill 1 · The Tonality Recorder</h3>
+  <div class="hbox hbox-gold"><div class="hbox-icon">🎙️</div><div class="hbox-body"><h5>Record The Same Question 3 Ways</h5><p>Take one question — "how are you handling those calls right now?" Record it three times: once salesy, once flat/neutral, once genuinely curious. Play them back. Train your ear to hear the difference, then drill the curious version until it's automatic. Do this daily with a new question each time.</p></div></div>
+
+  <h3>Drill 2 · The Silence Challenge</h3>
+  <div class="hbox hbox-sky"><div class="hbox-icon">⏸️</div><div class="hbox-body"><h5>Ask, Then Count To 3</h5><p>The hardest NEPQ skill is shutting up after a question. Partner up. Ask a question, then silently count "one-one-thousand, two-one-thousand, three-one-thousand" before you're allowed to speak. It'll feel unbearable at first. That discomfort is exactly what you're training through. The pause pulls out gold.</p></div></div>
+
+  <h3>Drill 3 · No Statements Allowed</h3>
+  <div class="hbox hbox-em"><div class="hbox-icon">❓</div><div class="hbox-body"><h5>Roleplay Where You Can ONLY Ask Questions</h5><p>Run a full mock call where you are physically not allowed to make a single statement — only questions. It forces you out of pitch mode and into question mode. If you catch yourself about to explain something, turn it into a question instead. This rewires your instinct.</p></div></div>
+
+  <h3>Drill 4 · The Echo Drill</h3>
+  <div class="hbox hbox-violet"><div class="hbox-icon">🔁</div><div class="hbox-body"><h5>Repeat Their Last 3 Words</h5><p>Partner says something. You respond only by echoing their last few words as a question, then pausing. "...going to voicemail?" [pause] Watch how much more they say. Train this until echoing becomes reflexive — it's the easiest way to keep them talking without thinking of a new question.</p></div></div>
+
+  <h3>Drill 5 · Objection Curiosity</h3>
+  <div class="hbox hbox-rose"><div class="hbox-icon">🌊</div><div class="hbox-body"><h5>Answer Every Objection With A Question</h5><p>Have a partner throw objections at you rapid-fire. Your only rule: you must respond to each one with a curious question, never a statement, never a defense. "Too expensive" → "What makes you say that?" Drill until your reflex to any objection is a question, not an argument.</p></div></div>
+
+  <div class="div"></div>
+  <h3>The Daily NEPQ Warm-Up (15 Minutes)</h3>
+  <div class="step-row"><div class="step-n" style="color:var(--gold);">5m</div><div class="step-body"><h4>Tonality reps</h4><p>Record and replay 3 questions in the curious tone. Match the target sound.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--sky);">5m</div><div class="step-body"><h4>Silence practice</h4><p>Roleplay 5 questions with a full 3-second pause after each. Get comfortable in the quiet.</p></div></div>
+  <div class="step-row"><div class="step-n" style="color:var(--em);">5m</div><div class="step-body"><h4>Objection-to-question</h4><p>Partner fires 5 objections. You convert each to a curious question instantly.</p></div></div>
+
+  <div class="div"></div>
+  <h3>The 5 Signs You're Doing NEPQ Right</h3>
+  <div class="g2">
+    <div class="card card-em"><h4 style="color:var(--em);">✓ The prospect is talking more than you</h4><p style="font-size:13px;color:var(--text2);margin-top:4px;">If you're talking more than 20-30% of the call, you've slipped back into pitching.</p></div>
+    <div class="card card-em"><h4 style="color:var(--em);">✓ He's telling YOU his problems</h4><p style="font-size:13px;color:var(--text2);margin-top:4px;">You never had to inform him of anything. He's discovering it out loud.</p></div>
+    <div class="card card-em"><h4 style="color:var(--em);">✓ There are comfortable silences</h4><p style="font-size:13px;color:var(--text2);margin-top:4px;">The pauses don't feel awkward — they feel like thinking. That's trust.</p></div>
+    <div class="card card-em"><h4 style="color:var(--em);">✓ He asks "so how does this work?"</h4><p style="font-size:13px;color:var(--text2);margin-top:4px;">When HE asks for the solution, you've done it right. He's pulling, not being pushed.</p></div>
+    <div class="card card-em"><h4 style="color:var(--em);">✓ It didn't feel like selling</h4><p style="font-size:13px;color:var(--text2);margin-top:4px;">The best NEPQ calls feel like two people having an honest conversation. Because they are.</p></div>
+    <div class="card card-em"><h4 style="color:var(--em);">✓ He closes himself</h4><p style="font-size:13px;color:var(--text2);margin-top:4px;">"How do we get started?" comes from him. You just answer it.</p></div>
+  </div>
+
+  <div class="div"></div>
+  <div class="closer">
+    <div class="closer-line">Don't pitch. Ask.</div>
+    <div class="closer-line">Don't convince. Get curious.</div>
+    <div class="closer-line">Don't push. Pause.</div>
+    <div class="closer-line">Let him persuade himself — and he'll thank you for it.</div>
+  </div>
+
+  <p style="text-align:center;color:var(--text3);font-size:12px;margin-top:24px;">PureCode Agency · The NEPQ Method · Based on Jeremy Miner's Neuro-Emotional Persuasion Questioning<br>Auto Repair Edition · v1.0 · Confidential · Internal Team Use Only</p>
+</div>
+
+</div><!-- /main -->
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(b => b.classList.remove('on'));
+  document.getElementById('sec-' + id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+
+</body>
+</html>

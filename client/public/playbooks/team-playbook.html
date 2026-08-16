@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PureCode Agency — The Team Playbook</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#07080a;
+  --bg2:#0d0f12;
+  --bg3:#13151a;
+  --bg4:#1a1d24;
+  --bg5:#21252e;
+  --gold:#c9a84c;
+  --gold2:#e8c97a;
+  --gold3:rgba(201,168,76,0.12);
+  --em:#10b981;
+  --em2:rgba(16,185,129,0.12);
+  --rose:#f43f5e;
+  --rose2:rgba(244,63,94,0.1);
+  --sky:#38bdf8;
+  --sky2:rgba(56,189,248,0.1);
+  --amber:#f59e0b;
+  --amber2:rgba(245,158,11,0.1);
+  --violet:#a78bfa;
+  --violet2:rgba(167,139,250,0.1);
+  --teal:#2dd4bf;
+  --teal2:rgba(45,212,191,0.12);
+  --text:#eeeae0;
+  --text2:#9a9588;
+  --text3:#5a5650;
+  --border:rgba(255,255,255,0.06);
+  --border2:rgba(255,255,255,0.1);
+  --r:8px;
+  --r2:12px;
+}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  font-size:15px;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+
+/* ── HERO ── */
+.hero{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:60px 48px 48px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;
+  width:800px;height:800px;
+  background:radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 65%);
+  top:-300px;right:-200px;pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;
+  width:500px;height:500px;
+  background:radial-gradient(circle,rgba(45,212,191,0.05) 0%,transparent 65%);
+  bottom:-200px;left:-100px;pointer-events:none;
+}
+
+.hero-kicker{
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+  position:relative;z-index:1;
+}
+.hero-kicker::before{content:'';width:24px;height:1px;background:var(--gold);}
+
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(40px,6vw,72px);
+  font-weight:900;
+  line-height:1.05;
+  letter-spacing:-0.02em;
+  margin-bottom:16px;
+  position:relative;z-index:1;
+}
+.hero h1 em{
+  font-style:italic;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.hero-desc{
+  color:var(--text2);
+  font-size:16px;
+  max-width:680px;
+  margin-bottom:36px;
+  line-height:1.75;
+  position:relative;z-index:1;
+}
+
+.hero-tags{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px;
+  position:relative;z-index:1;
+}
+.htag{
+  padding:5px 14px;
+  border-radius:100px;
+  border:1px solid var(--border2);
+  font-size:12px;font-weight:500;
+  color:var(--text2);
+  background:var(--bg3);
+}
+
+.hero-stats{display:flex;gap:40px;flex-wrap:wrap;position:relative;z-index:1;}
+.hs{display:flex;flex-direction:column;}
+.hs .n{
+  font-family:'Playfair Display',serif;
+  font-size:36px;font-weight:700;
+  color:var(--gold2);line-height:1;
+}
+.hs .l{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;}
+
+/* ── NAV ── */
+.nav-wrap{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+}
+.nav-scroll{
+  display:flex;gap:0;
+  overflow-x:auto;
+  padding:0 48px;
+}
+.nav-scroll::-webkit-scrollbar{height:0;}
+.ntab{
+  padding:14px 18px;
+  border:none;
+  background:transparent;
+  color:var(--text3);
+  cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;
+  white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:all 0.15s;
+}
+.ntab:hover{color:var(--text2);}
+.ntab.on{color:var(--gold);border-bottom-color:var(--gold);}
+
+/* ── MAIN ── */
+.main{max-width:1100px;margin:0 auto;padding:48px;}
+.sec{display:none;animation:fadeIn 0.2s ease;}
+.sec.on{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── TYPOGRAPHY ── */
+.sec-head{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,4vw,42px);
+  font-weight:900;
+  letter-spacing:-0.02em;
+  line-height:1.1;
+  margin-bottom:8px;
+}
+.sec-head em{font-style:italic;color:var(--gold);}
+
+.sec-sub{color:var(--text2);font-size:15px;margin-bottom:36px;max-width:720px;line-height:1.75;}
+
+h3{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:700;
+  margin-bottom:12px;color:var(--text);
+}
+h4{font-size:15px;font-weight:600;margin-bottom:6px;color:var(--text);}
+
+.div{height:1px;background:var(--border);margin:40px 0;}
+
+p{margin-bottom:14px;color:var(--text2);}
+strong{color:var(--text);font-weight:600;}
+
+/* ── CARDS ── */
+.card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:24px 28px;
+  margin-bottom:16px;
+}
+.card-gold{border-left:3px solid var(--gold);}
+.card-em{border-left:3px solid var(--em);}
+.card-rose{border-left:3px solid var(--rose);}
+.card-sky{border-left:3px solid var(--sky);}
+.card-amber{border-left:3px solid var(--amber);}
+.card-violet{border-left:3px solid var(--violet);}
+.card-teal{border-left:3px solid var(--teal);}
+
+/* ── HIGHLIGHT BOXES ── */
+.hbox{
+  border-radius:var(--r);
+  padding:18px 22px;
+  margin-bottom:16px;
+  display:flex;gap:14px;align-items:flex-start;
+}
+.hbox-gold{background:var(--gold3);border:1px solid rgba(201,168,76,0.2);}
+.hbox-em{background:var(--em2);border:1px solid rgba(16,185,129,0.2);}
+.hbox-rose{background:var(--rose2);border:1px solid rgba(244,63,94,0.2);}
+.hbox-sky{background:var(--sky2);border:1px solid rgba(56,189,248,0.2);}
+.hbox-amber{background:var(--amber2);border:1px solid rgba(245,158,11,0.2);}
+.hbox-violet{background:var(--violet2);border:1px solid rgba(167,139,250,0.2);}
+.hbox-teal{background:var(--teal2);border:1px solid rgba(45,212,191,0.2);}
+
+.hbox-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.hbox-body h5{
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.1em;
+  margin-bottom:6px;
+}
+.hbox-gold .hbox-body h5{color:var(--gold);}
+.hbox-em .hbox-body h5{color:var(--em);}
+.hbox-rose .hbox-body h5{color:var(--rose);}
+.hbox-sky .hbox-body h5{color:var(--sky);}
+.hbox-amber .hbox-body h5{color:var(--amber);}
+.hbox-violet .hbox-body h5{color:var(--violet);}
+.hbox-teal .hbox-body h5{color:var(--teal);}
+.hbox-body p{font-size:14px;color:var(--text2);line-height:1.65;margin:0;}
+.hbox-body strong{color:var(--text);}
+
+/* ── SCRIPT BLOCKS ── */
+.sblock{
+  background:var(--bg3);
+  border-radius:var(--r);
+  padding:18px 22px;
+  margin-bottom:12px;
+}
+.sblock .who{
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:0.12em;
+  font-weight:500;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.who-you{color:var(--gold);}
+.who-them{color:var(--sky);}
+.who-note{color:var(--amber);}
+.who-why{color:var(--em);}
+.who-bad{color:var(--rose);}
+
+.sblock .st{font-size:14.5px;line-height:1.7;color:var(--text);}
+.sblock .sn{font-size:12px;color:var(--text3);font-style:italic;margin-top:8px;}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+
+/* ── PRICING TIERS — THE BIG ONES ── */
+.tier-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:20px;
+  margin-bottom:32px;
+}
+.tier{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  overflow:hidden;
+  position:relative;
+  display:flex;flex-direction:column;
+}
+.tier.popular{
+  border:2px solid var(--gold);
+  box-shadow:0 0 40px rgba(201,168,76,0.15);
+  transform:scale(1.02);
+}
+.tier-popular-badge{
+  position:absolute;top:14px;right:14px;
+  background:var(--gold);
+  color:var(--bg);
+  font-family:'DM Mono',monospace;
+  font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.1em;
+  padding:4px 10px;
+  border-radius:100px;
+}
+.tier-head{
+  padding:32px 28px 24px;
+  border-bottom:1px solid var(--border);
+}
+.tier-name{
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.15em;
+  margin-bottom:14px;
+}
+.tier-starter .tier-name{color:var(--sky);}
+.tier-growth .tier-name{color:var(--gold);}
+.tier-elite .tier-name{color:var(--violet);}
+.tier-price{
+  font-family:'Playfair Display',serif;
+  font-size:54px;font-weight:900;
+  line-height:1;
+  margin-bottom:4px;
+}
+.tier-price-period{
+  font-size:14px;color:var(--text3);
+  margin-bottom:16px;
+}
+.tier-setup{
+  font-size:13px;
+  color:var(--text2);
+  padding:10px 14px;
+  background:var(--bg3);
+  border-radius:var(--r);
+  margin-bottom:16px;
+  text-align:center;
+}
+.tier-setup strong{color:var(--text);font-weight:600;}
+.tier-tagline{
+  font-size:13px;
+  color:var(--text2);
+  font-style:italic;
+  line-height:1.6;
+}
+
+.tier-features{
+  padding:24px 28px 32px;
+  flex:1;
+}
+.tier-features-label{
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:var(--text3);
+  margin-bottom:14px;
+}
+.tier-feature{
+  display:flex;gap:10px;align-items:flex-start;
+  margin-bottom:11px;
+  font-size:13.5px;
+  line-height:1.55;
+  color:var(--text);
+}
+.tier-feature::before{
+  content:'✓';
+  flex-shrink:0;
+  font-weight:700;
+  font-size:14px;
+  margin-top:1px;
+}
+.tier-starter .tier-feature::before{color:var(--sky);}
+.tier-growth .tier-feature::before{color:var(--gold);}
+.tier-elite .tier-feature::before{color:var(--violet);}
+.tier-feature-dim{color:var(--text3);}
+.tier-feature-dim::before{color:var(--text3) !important;content:'—' !important;}
+
+/* ── ADDONS ── */
+.addon-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.addon{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-left:3px solid var(--em);
+  border-radius:var(--r);
+  padding:22px 26px;
+}
+.addon.gold{border-left-color:var(--gold);}
+.addon-label{
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:var(--em);
+  margin-bottom:10px;
+}
+.addon.gold .addon-label{color:var(--gold);}
+.addon-price{
+  font-family:'Playfair Display',serif;
+  font-size:24px;font-weight:700;
+  margin-bottom:8px;
+  color:var(--text);
+}
+.addon-desc{
+  font-size:13.5px;
+  color:var(--text2);
+  line-height:1.65;
+  margin-bottom:12px;
+}
+.addon-when{
+  font-size:12px;
+  color:var(--text3);
+  font-style:italic;
+}
+
+/* ── OBJECTION CARDS ── */
+.obj{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-left:3px solid var(--rose);
+  border-radius:var(--r);
+  padding:22px 26px;
+  margin-bottom:14px;
+}
+.obj-they{
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:var(--rose);
+  margin-bottom:6px;
+}
+.obj-text{
+  font-family:'Playfair Display',serif;
+  font-size:18px;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:18px;
+  line-height:1.4;
+}
+.obj-you{
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:var(--em);
+  margin-bottom:8px;
+}
+.obj-resp{
+  font-size:14.5px;
+  color:var(--text);
+  line-height:1.7;
+  font-style:italic;
+}
+
+/* ── DEMO STAGES ── */
+.stage{
+  display:flex;gap:20px;
+  padding:18px 22px;
+  background:var(--bg3);
+  border-radius:var(--r);
+  margin-bottom:10px;
+}
+.stage-time{
+  flex-shrink:0;
+  font-family:'Playfair Display',serif;
+  font-size:22px;
+  font-weight:700;
+  color:var(--gold);
+  width:70px;
+  text-align:center;
+  padding-top:3px;
+}
+.stage-body h4{
+  font-size:15px;
+  font-weight:600;
+  margin-bottom:6px;
+  color:var(--text);
+}
+.stage-body p{
+  margin:0;
+  font-size:13.5px;
+  line-height:1.65;
+}
+
+/* ── RULES ── */
+.rule{
+  display:flex;gap:24px;
+  padding:24px 0;
+  border-bottom:1px solid var(--border);
+}
+.rule:last-child{border-bottom:none;}
+.rule-num{
+  flex-shrink:0;
+  font-family:'Playfair Display',serif;
+  font-size:48px;
+  font-weight:900;
+  color:var(--gold);
+  line-height:1;
+  width:60px;
+}
+.rule-body h4{
+  font-family:'Playfair Display',serif;
+  font-size:20px;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:8px;
+}
+.rule-body p{margin:0;font-size:14px;line-height:1.7;}
+
+/* ── FAQ ── */
+.faq{
+  border-bottom:1px solid var(--border);
+  padding:18px 0;
+}
+.faq:last-child{border-bottom:none;}
+.faq-q{
+  font-family:'Playfair Display',serif;
+  font-size:17px;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:8px;
+}
+.faq-a{
+  font-size:14px;
+  color:var(--text2);
+  line-height:1.7;
+  margin:0;
+}
+
+/* ── MATCHING ── */
+.match-group{margin-bottom:32px;}
+.match-group h3{margin-bottom:14px;}
+.match-list{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:8px 0;
+}
+.match-list-starter{border-left:3px solid var(--sky);}
+.match-list-growth{border-left:3px solid var(--gold);}
+.match-list-elite{border-left:3px solid var(--violet);}
+.match-item{
+  padding:12px 22px;
+  font-size:14px;
+  color:var(--text);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+}
+.match-item:last-child{border-bottom:none;}
+.match-item::before{
+  content:'→';
+  color:var(--gold);
+  font-weight:700;
+  flex-shrink:0;
+}
+
+/* ── STAT ROW ── */
+.stat-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:18px 24px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-left:3px solid var(--gold);
+  border-radius:var(--r);
+  margin-bottom:10px;
+}
+.stat-label{font-size:13.5px;color:var(--text2);font-weight:500;}
+.stat-value{
+  font-family:'Playfair Display',serif;
+  font-size:22px;
+  font-weight:700;
+  color:var(--gold2);
+}
+
+/* ── PULL QUOTE ── */
+.pullquote{
+  background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:36px 40px;
+  margin:32px 0;
+  position:relative;
+}
+.pullquote::before{
+  content:'"';
+  position:absolute;
+  top:-20px;left:24px;
+  font-family:'Playfair Display',serif;
+  font-size:120px;
+  color:var(--gold);
+  opacity:0.25;
+  line-height:1;
+}
+.pullquote-text{
+  font-family:'Playfair Display',serif;
+  font-size:22px;
+  font-weight:600;
+  font-style:italic;
+  line-height:1.5;
+  color:var(--text);
+  position:relative;z-index:1;
+}
+.pullquote-author{
+  margin-top:14px;
+  font-size:12px;
+  color:var(--text3);
+  font-family:'DM Mono',monospace;
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+}
+
+/* ── CLOSER ── */
+.closer{
+  background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:48px 40px;
+  text-align:center;
+  margin-top:40px;
+}
+.closer-line{
+  font-family:'Playfair Display',serif;
+  font-size:24px;
+  font-weight:700;
+  color:var(--gold);
+  margin-bottom:8px;
+  font-style:italic;
+}
+.closer-line:last-of-type{margin-bottom:0;}
+
+@media(max-width:900px){
+  .tier-grid{grid-template-columns:1fr;}
+  .tier.popular{transform:none;}
+  .addon-grid{grid-template-columns:1fr;}
+  .g2,.g3,.g4{grid-template-columns:1fr;}
+  .main{padding:24px 20px;}
+  .hero{padding:36px 20px 32px;}
+  .nav-scroll{padding:0 20px;}
+  .stage{flex-direction:column;gap:8px;}
+  .stage-time{text-align:left;width:auto;}
+  .rule{flex-direction:column;gap:8px;}
+  .rule-num{width:auto;}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-kicker">PureCode Agency · Internal Team Use Only · v1.0</div>
+  <h1>The Team <em>Playbook</em></h1>
+  <p class="hero-desc">Three plans. Every feature. Every objection. Every script. The single source of truth for closing AI receptionist deals at PureCode Agency. Read it once. Then keep it open during every call.</p>
+  <div class="hero-tags">
+    <span class="htag">3 Pricing Tiers</span>
+    <span class="htag">14 Features</span>
+    <span class="htag">12 Objections</span>
+    <span class="htag">2 Add-Ons</span>
+    <span class="htag">7-Stage Demo Flow</span>
+    <span class="htag">5 Closing Rules</span>
+  </div>
+  <div class="hero-stats">
+    <div class="hs"><span class="n">$397</span><span class="l">Starter Tier</span></div>
+    <div class="hs"><span class="n">$497</span><span class="l">Growth · Most Popular</span></div>
+    <div class="hs"><span class="n">$697</span><span class="l">Elite Tier</span></div>
+    <div class="hs"><span class="n">$997+</span><span class="l">Setup Fee</span></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-wrap">
+<div class="nav-scroll">
+  <button class="ntab on" onclick="show('plans',this)">01 · The 3 Plans</button>
+  <button class="ntab" onclick="show('starter',this)">02 · Starter Deep Dive</button>
+  <button class="ntab" onclick="show('growth',this)">03 · Growth Deep Dive</button>
+  <button class="ntab" onclick="show('elite',this)">04 · Elite Deep Dive</button>
+  <button class="ntab" onclick="show('addons',this)">05 · Add-Ons</button>
+  <button class="ntab" onclick="show('matching',this)">06 · Match Tier To Client</button>
+  <button class="ntab" onclick="show('roi',this)">07 · ROI Math</button>
+  <button class="ntab" onclick="show('demo',this)">08 · Demo Flow</button>
+  <button class="ntab" onclick="show('objections',this)">09 · Objections</button>
+  <button class="ntab" onclick="show('rules',this)">10 · The 5 Rules</button>
+  <button class="ntab" onclick="show('faq',this)">11 · Internal FAQ</button>
+</div>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 01 THE 3 PLANS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-plans" class="sec on">
+  <div class="sec-head">The Three <em>Plans</em></div>
+  <p class="sec-sub">Same core AI receptionist across all tiers. The differences are in automation, intelligence, and support. Every feature included is listed below each plan. This is the page to bookmark.</p>
+
+  <div class="tier-grid">
+
+    <!-- STARTER -->
+    <div class="tier tier-starter">
+      <div class="tier-head">
+        <div class="tier-name">Tier 01 · Starter</div>
+        <div class="tier-price">$397</div>
+        <div class="tier-price-period">per month</div>
+        <div class="tier-setup"><strong>$997</strong> one-time setup</div>
+        <div class="tier-tagline">For solo operators getting started with AI. Under 100 calls/month.</div>
+      </div>
+      <div class="tier-features">
+        <div class="tier-features-label">— What's Included —</div>
+        <div class="tier-feature">AI Receptionist on 1 line</div>
+        <div class="tier-feature">Unlimited calls</div>
+        <div class="tier-feature">Custom AI training for the business</div>
+        <div class="tier-feature">Full dashboard with all calls</div>
+        <div class="tier-feature">Call transcripts &amp; AI summaries</div>
+        <div class="tier-feature">Interactive appointment calendar</div>
+        <div class="tier-feature">Lead capture &amp; CRM</div>
+        <div class="tier-feature">Missed-call text-back</div>
+        <div class="tier-feature tier-feature-dim">Saved client info (repeat callers)</div>
+        <div class="tier-feature tier-feature-dim">Automated review requests</div>
+        <div class="tier-feature tier-feature-dim">Automated appointment reminders</div>
+        <div class="tier-feature tier-feature-dim">AI review responses</div>
+        <div class="tier-feature tier-feature-dim">Voicemail drop</div>
+        <div class="tier-feature tier-feature-dim">Dedicated success manager</div>
+      </div>
+    </div>
+
+    <!-- GROWTH (POPULAR) -->
+    <div class="tier tier-growth popular">
+      <div class="tier-popular-badge">Most Popular</div>
+      <div class="tier-head">
+        <div class="tier-name">Tier 02 · Growth</div>
+        <div class="tier-price">$497</div>
+        <div class="tier-price-period">per month</div>
+        <div class="tier-setup"><strong>$997</strong> one-time setup</div>
+        <div class="tier-tagline">Where most clients land. 1-3 person teams, 100-300 calls/month.</div>
+      </div>
+      <div class="tier-features">
+        <div class="tier-features-label">— Everything In Starter, Plus —</div>
+        <div class="tier-feature">AI Receptionist on 1 line</div>
+        <div class="tier-feature">Unlimited calls</div>
+        <div class="tier-feature">Custom AI training for the business</div>
+        <div class="tier-feature">Full dashboard with all calls</div>
+        <div class="tier-feature">Call transcripts &amp; AI summaries</div>
+        <div class="tier-feature">Interactive appointment calendar</div>
+        <div class="tier-feature">Lead capture &amp; CRM</div>
+        <div class="tier-feature">Missed-call text-back</div>
+        <div class="tier-feature"><strong>Saved client info (repeat callers)</strong></div>
+        <div class="tier-feature"><strong>Automated review requests</strong></div>
+        <div class="tier-feature"><strong>Automated appointment reminders</strong></div>
+        <div class="tier-feature tier-feature-dim">AI review responses</div>
+        <div class="tier-feature tier-feature-dim">Voicemail drop</div>
+        <div class="tier-feature tier-feature-dim">Dedicated success manager</div>
+      </div>
+    </div>
+
+    <!-- ELITE -->
+    <div class="tier tier-elite">
+      <div class="tier-head">
+        <div class="tier-name">Tier 03 · Elite</div>
+        <div class="tier-price">$697</div>
+        <div class="tier-price-period">per month</div>
+        <div class="tier-setup"><strong>$1,497</strong> one-time setup</div>
+        <div class="tier-tagline">Premium AI plus a real human dedicated to the account. 300+ calls/month.</div>
+      </div>
+      <div class="tier-features">
+        <div class="tier-features-label">— Everything In Growth, Plus —</div>
+        <div class="tier-feature">AI Receptionist on 1 line</div>
+        <div class="tier-feature">Unlimited calls</div>
+        <div class="tier-feature">Custom AI training for the business</div>
+        <div class="tier-feature">Full dashboard with all calls</div>
+        <div class="tier-feature">Call transcripts &amp; AI summaries</div>
+        <div class="tier-feature">Interactive appointment calendar</div>
+        <div class="tier-feature">Lead capture &amp; CRM</div>
+        <div class="tier-feature">Missed-call text-back</div>
+        <div class="tier-feature">Saved client info (repeat callers)</div>
+        <div class="tier-feature">Automated review requests</div>
+        <div class="tier-feature">Automated appointment reminders</div>
+        <div class="tier-feature"><strong>AI review responses (good &amp; bad)</strong></div>
+        <div class="tier-feature"><strong>Voicemail drop</strong></div>
+        <div class="tier-feature"><strong>Priority Support + Dedicated Success Manager</strong></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="hbox hbox-gold">
+    <div class="hbox-icon">★</div>
+    <div class="hbox-body">
+      <h5>The Anchor Strategy</h5>
+      <p>Always present <strong>Elite first</strong>. Mention it. Then drop to Growth. The middle option becomes the obvious value pick when Elite is the anchor. Without the Elite anchor, Growth feels expensive. With it, Growth feels like a deal.</p>
+    </div>
+  </div>
+
+  <div class="hbox hbox-em">
+    <div class="hbox-icon">→</div>
+    <div class="hbox-body">
+      <h5>The Default Recommendation</h5>
+      <p>When in doubt, recommend <strong>Growth</strong>. It's the right answer for 60-70% of trades clients. Only push Starter if they're price-sensitive AND low-volume. Only push Elite if they have clear high-volume signals or premium-buyer signals.</p>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <h3>The Killer Feature Of Each Tier</h3>
+  <div class="g3">
+    <div class="card card-sky">
+      <div class="tier-name" style="color:var(--sky);margin-bottom:10px;">Starter</div>
+        <h4 style="margin-bottom:8px;">AI + Missed-Call Text-Back</h4>
+      <p style="font-size:13px;margin:0;color:var(--text2);">"Stop missing calls. Period. Every customer who reaches voicemail today gets a real conversation tomorrow."</p>
+    </div>
+    <div class="card card-gold">
+      <div class="tier-name" style="color:var(--gold);margin-bottom:10px;">Growth ★</div>
+      <h4 style="margin-bottom:8px;">Reviews + No-Show Reduction</h4>
+      <p style="font-size:13px;margin:0;color:var(--text2);">"Stop missing calls AND grow the business automatically. Reviews go from 1-2/month to 8-15. No-shows drop to under 10%."</p>
+    </div>
+    <div class="card card-violet">
+      <div class="tier-name" style="color:var(--violet);margin-bottom:10px;">Elite</div>
+      <h4 style="margin-bottom:8px;">Dedicated Success Manager</h4>
+      <p style="font-size:13px;margin:0;color:var(--text2);">"Premium AI plus a real human dedicated to your account. No support tickets. Direct text/call access."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 02 STARTER DEEP DIVE -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-starter" class="sec">
+  <div class="sec-head">Starter — <em>The Foundation</em></div>
+  <p class="sec-sub">$397/month plus $997 setup. The right plan for solo operators and husband-wife teams who answer their own phone today and just want to stop missing calls.</p>
+
+  <div class="hbox hbox-sky">
+    <div class="hbox-icon">◆</div>
+    <div class="hbox-body">
+      <h5>Who This Is For</h5>
+      <p>Solo operators or husband-and-wife teams. Under 100 incoming calls per month. Owner answers their own phone today. Just wants the after-hours and overflow calls captured. Doesn't need fancy automation — just wants to stop missing calls.</p>
+    </div>
+  </div>
+
+  <h3>How To Pitch It</h3>
+  <div class="sblock">
+    <div class="who who-you">YOU SAY</div>
+    <div class="st">"Starter is for guys who answer their own phone but lose calls when they're on a job or after hours. You get the AI receptionist that handles every missed call, books appointments, and texts the customer back instantly so they don't call your competitor instead."</div>
+  </div>
+
+  <div class="div"></div>
+
+  <h3>All 8 Features — What They Do &amp; Why They Matter</h3>
+
+  <div class="card card-sky">
+    <h4>1. AI Receptionist On 1 Line</h4>
+    <p><strong>What it does:</strong> The AI answers every incoming call on the client's business number — 24/7, no breaks, no sick days, no missed calls.</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>They stop losing the $5,000-15,000 storm jobs that go to voicemail at 7pm. Every call gets a real conversation, not a beep.</p></div>
+    </div>
+  </div>
+
+  <div class="card card-sky">
+    <h4>2. Unlimited Calls</h4>
+    <p><strong>What it does:</strong> Handle as many incoming calls as the business gets — no caps, no overage fees, no surprise bills during their busy season.</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>When a hailstorm hits and 20 calls come in within an hour, every single one is answered. No customer hears a busy signal. No revenue lost to capacity limits.</p></div>
+    </div>
+  </div>
+
+  <div class="card card-sky">
+    <h4>3. Custom AI Training For The Business</h4>
+    <p><strong>What it does:</strong> We train the AI specifically on the client's services, service areas, pricing tiers, scheduling rules, hours, and FAQ. It sounds like an employee who's worked there for years.</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>Customers don't realize they're talking to AI. The conversation feels natural, professional, and on-brand for their business.</p></div>
+    </div>
+  </div>
+
+  <div class="card card-sky">
+    <h4>4. Full Dashboard</h4>
+    <p><strong>What it does:</strong> Real-time dashboard showing every call: who called, what they wanted, whether they booked, full call recordings, transcripts, and outcomes.</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>The owner sees exactly what's happening with their business without listening to every call. Spot trends, find missed opportunities, prove ROI every single month.</p></div>
+    </div>
+  </div>
+
+  <div class="card card-sky">
+    <h4>5. Call Transcripts &amp; AI Summaries</h4>
+    <p><strong>What it does:</strong> Every call gets transcribed AND summarized in plain English. The owner can scan a one-paragraph summary in 10 seconds instead of listening to a 5-minute call.</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>Stays informed about the business without spending hours listening to recordings. Catches high-value leads before they go cold.</p></div>
+    </div>
+  </div>
+
+  <div class="card card-sky">
+    <h4>6. Interactive Appointment Calendar</h4>
+    <p><strong>What it does:</strong> AI books appointments directly into the client's calendar in real-time during the call. No double-bookings, no missed slots, no manual entry.</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>Customers leave the call WITH an appointment scheduled — not waiting for a callback. Booking rate doubles vs voicemail follow-up.</p></div>
+    </div>
+  </div>
+
+  <div class="card card-sky">
+    <h4>7. Lead Capture &amp; CRM</h4>
+    <p><strong>What it does:</strong> Every caller automatically becomes a contact in the CRM with their name, phone, what they called about, and the full call transcript attached.</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>Builds a database of every prospect — not just the ones who booked. They can follow up on missed bookings, market to them later, or reactivate cold leads months down the road.</p></div>
+    </div>
+  </div>
+
+  <div class="card card-sky">
+    <h4>8. Missed-Call Text-Back</h4>
+    <p><strong>What it does:</strong> If the AI can't reach a customer or the call drops, the system automatically texts them within 30 seconds: "Hi, sorry we missed you — what can we help you with?"</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>Customers who would have called a competitor come back. 85% of missed calls don't leave voicemails — text-back recovers a huge chunk of them.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 03 GROWTH DEEP DIVE -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-growth" class="sec">
+  <div class="sec-head">Growth — <em>Most Popular</em></div>
+  <p class="sec-sub">$497/month plus $997 setup. Where most clients land. Everything in Starter, plus the automation engine that grows their business while they sleep.</p>
+
+  <div class="hbox hbox-gold">
+    <div class="hbox-icon">◆</div>
+    <div class="hbox-body">
+      <h5>Who This Is For</h5>
+      <p>Service businesses with 1-3 person teams. 100-300 calls per month. Already growing and wants automation that reduces no-shows, drives Google reviews, and remembers repeat customers. The serious operator tier.</p>
+    </div>
+  </div>
+
+  <h3>How To Pitch It</h3>
+  <div class="sblock">
+    <div class="who who-you">YOU SAY</div>
+    <div class="st">"Growth is what most of our clients pick. You get everything in Starter — but more importantly, you get the automation that actually grows your business. The AI remembers your repeat customers. It automatically asks happy customers for Google reviews. It sends appointment reminders so your no-show rate drops to under 10%. This is the tier that pays for itself fastest."</div>
+  </div>
+
+  <div class="div"></div>
+
+  <h3>The 3 Premium Features That Make Growth Most Popular</h3>
+
+  <div class="card card-gold">
+    <h4>1. Saved Client Info — Repeat Caller Recognition</h4>
+    <p><strong>What it does:</strong> When a returning customer calls, the AI recognizes them, greets them by name, and already knows their history — past appointments, services they've used, special preferences, payment info on file.</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>Customers feel like a VIP every time they call. Repeat business goes up because they feel known and valued. The AI feels personal, never robotic.</p></div>
+    </div>
+  </div>
+
+  <div class="card card-gold">
+    <h4>2. Automated Review Requests</h4>
+    <p><strong>What it does:</strong> After every successfully completed job, the system automatically texts the customer asking for a Google review — sent at the perfect moment when they're happiest.</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>Google reviews are the #1 ranking factor for local businesses. Most service businesses get 1-2 reviews/month. Our clients average 8-15. More reviews = higher Google ranking = more inbound calls = more revenue.</p></div>
+    </div>
+  </div>
+
+  <div class="card card-gold">
+    <h4>3. Automated Appointment Reminders</h4>
+    <p><strong>What it does:</strong> Every booked appointment gets automatic reminders. 24 hours before — email. 1 hour before — text. Customer can confirm, reschedule, or cancel directly from the text.</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>No-show rates drop from 25-30% to under 10%. Every prevented no-show is a saved hour of tech time AND a saved revenue opportunity. <strong>This feature alone pays for the upgrade from Starter to Growth in 30 days.</strong></p></div>
+    </div>
+  </div>
+
+  <div class="hbox hbox-em">
+    <div class="hbox-icon">★</div>
+    <div class="hbox-body">
+      <h5>Why Growth Is The Default</h5>
+      <p>The three additional features deliver direct, measurable revenue lift. Reduced no-shows = more billable hours. More Google reviews = more inbound leads. Recognized repeat customers = higher customer lifetime value. This is the tier where the math gets undeniable.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 04 ELITE DEEP DIVE -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-elite" class="sec">
+  <div class="sec-head">Elite — <em>Premium Service</em></div>
+  <p class="sec-sub">$697/month plus $1,497 setup. For high-volume operators where every missed call is real money. Includes a dedicated human success manager — the killer differentiator no competitor offers.</p>
+
+  <div class="hbox hbox-violet">
+    <div class="hbox-icon">◆</div>
+    <div class="hbox-body">
+      <h5>Who This Is For</h5>
+      <p>Established service businesses with 300+ calls per month. Multi-truck or multi-tech operations. Storm-chase, restoration, or 24/7 emergency-driven operators. Booking jobs of $10K+ regularly. Owners who want a real human relationship with their AI vendor.</p>
+    </div>
+  </div>
+
+  <h3>How To Pitch It</h3>
+  <div class="sblock">
+    <div class="who who-you">YOU SAY</div>
+    <div class="st">"Elite is for operators where missed calls cost real money — the storm chasers, the multi-truck shops, the guys booking $10,000+ jobs. You get everything in Growth, plus your AI handles your Google reviews automatically — good and bad. You get voicemail drop for outbound. And you get your own dedicated success manager. That's a real person on our team whose job is to make sure your AI is performing for you. You text them direct. No support tickets. No waiting in queues."</div>
+  </div>
+
+  <div class="div"></div>
+
+  <h3>The 3 Premium Features That Justify Elite</h3>
+
+  <div class="card card-violet">
+    <h4>1. AI Review Responses (Good &amp; Bad)</h4>
+    <p><strong>What it does:</strong> AI automatically responds to every Google review the client gets — thanking 5-star reviewers warmly and professionally addressing negative reviews to protect their reputation.</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>Most owners never respond to reviews because it takes time. AI does it instantly, professionally, and consistently. Google ranking goes up because Google rewards businesses that engage with their reviews.</p></div>
+    </div>
+  </div>
+
+  <div class="card card-violet">
+    <h4>2. Voicemail Drop</h4>
+    <p><strong>What it does:</strong> When the team is calling a customer back and reaches voicemail, they drop a pre-recorded professional voicemail with one click. No fumbling for the right words. Perfect message every time.</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>Saves the team 30-60 seconds per voicemail. Across 50+ outbound callbacks per week, that's 30+ minutes of recovered time. Every voicemail sounds polished and professional, never rushed.</p></div>
+    </div>
+  </div>
+
+  <div class="card card-violet">
+    <h4>3. Priority Support + Dedicated Success Manager</h4>
+    <p><strong>What it does:</strong> The client gets a named person on our team — their dedicated success manager — with direct phone, email, and texting access. Monthly performance reviews. Proactive monitoring. Same-day issue resolution. No support tickets. No waiting in queues.</p>
+    <div class="hbox hbox-em" style="margin-bottom:0;">
+      <div class="hbox-icon">$</div>
+      <div class="hbox-body"><h5>Why It Matters For The Client</h5><p>When something needs adjusting at 8pm on a Saturday, they text their success manager directly and it gets handled. Premium clients get premium service. Direct human relationship with their AI vendor instead of being a number in a queue.</p></div>
+    </div>
+  </div>
+
+  <div class="hbox hbox-violet">
+    <div class="hbox-icon">★</div>
+    <div class="hbox-body">
+      <h5>The Killer Differentiator</h5>
+      <p>Every AI receptionist competitor sells features. <strong>Almost none assign a real human to the account.</strong> For high-volume operators who don't want to be ticket #4827 in someone's support queue, this is often the deciding feature. <strong>Lead with this when pitching Elite.</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 05 ADD-ONS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-addons" class="sec">
+  <div class="sec-head">Add-Ons — <em>Available On Any Tier</em></div>
+  <p class="sec-sub">Two add-ons that fit specific client situations. Always price the base tier first. Bring up add-ons only after the base tier is accepted — never lead the price reveal with add-ons.</p>
+
+  <div class="addon-grid">
+    <div class="addon">
+      <div class="addon-label">— Bilingual Spanish —</div>
+      <div class="addon-price">+$100 / month</div>
+      <p style="margin:0 0 6px 0;font-size:12px;color:var(--text3);">Setup included</p>
+      <div class="addon-desc">AI handles calls in fluent Spanish AND English. Switches automatically based on the caller. No "press 1 for English" prompts.</div>
+      <div class="addon-when"><strong>Pitch in:</strong> Texas, Florida, California, Arizona, Nevada — anywhere with significant Spanish-speaking customers.</div>
+    </div>
+    <div class="addon gold">
+      <div class="addon-label">— Multi-Location —</div>
+      <div class="addon-price">+$150 / month per location</div>
+      <p style="margin:0 0 6px 0;font-size:12px;color:var(--text3);">For each additional location</p>
+      <div class="addon-desc">Routes calls to the right location. Handles location-specific scheduling. Separate dashboards per location. One AI, multiple locations.</div>
+      <div class="addon-when"><strong>Pitch when:</strong> Client has 2+ locations, multiple shops, multiple service areas, or franchises.</div>
+    </div>
+  </div>
+
+  <h3>Bilingual Pitch Script</h3>
+  <div class="sblock">
+    <div class="who who-you">YOU SAY</div>
+    <div class="st">"Quick question — do you ever get Spanish-speaking customers calling? Because if yes, we have a bilingual option that handles both languages automatically. Most of our trades clients in your area add it because they're losing 15-20% of their calls just to language barriers."</div>
+  </div>
+
+  <h3>Multi-Location Pitch Script</h3>
+  <div class="sblock">
+    <div class="who who-you">YOU SAY</div>
+    <div class="st">"Are you a single shop or do you have multiple locations? Because if you have more than one, we route calls to the right location automatically — we'll add a multi-location module so each shop gets its own setup."</div>
+  </div>
+
+  <div class="hbox hbox-amber">
+    <div class="hbox-icon">!</div>
+    <div class="hbox-body">
+      <h5>Critical Rule</h5>
+      <p><strong>Never lead with add-ons during the price reveal.</strong> Anchor the base tier first. Bring up add-ons only AFTER they've agreed to the base price OR when qualifying their specific situation. Front-loading add-ons creates sticker shock.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 06 MATCHING -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-matching" class="sec">
+  <div class="sec-head">Match The Tier <em>To The Client</em></div>
+  <p class="sec-sub">Match the prospect to the right tier in under 30 seconds. Use these signals during the qualification phase of every call.</p>
+
+  <div class="match-group">
+    <h3 style="color:var(--sky);">→ Pitch STARTER if you hear:</h3>
+    <div class="match-list match-list-starter">
+      <div class="match-item">Solo operator. Owner answers their own phone today.</div>
+      <div class="match-item">Less than 100 calls per month.</div>
+      <div class="match-item">Tight budget — wants to "try it" before committing.</div>
+      <div class="match-item">Husband-and-wife team. Simple operation.</div>
+      <div class="match-item">Just starting out. Newer business under 2 years old.</div>
+    </div>
+  </div>
+
+  <div class="match-group">
+    <h3 style="color:var(--gold);">★ Pitch GROWTH if you hear: <span style="font-family:'DM Sans';font-size:14px;color:var(--text3);font-weight:400;">(default for most clients)</span></h3>
+    <div class="match-list match-list-growth">
+      <div class="match-item">1-3 person team. Moderate complexity.</div>
+      <div class="match-item">100 to 300 calls per month. Growing.</div>
+      <div class="match-item">Wants better Google reviews or fewer no-shows.</div>
+      <div class="match-item">Has a CRM but isn't using it well.</div>
+      <div class="match-item">Anyone who asks: "What do most of your clients pick?"</div>
+    </div>
+  </div>
+
+  <div class="match-group">
+    <h3 style="color:var(--violet);">→ Pitch ELITE if you hear:</h3>
+    <div class="match-list match-list-elite">
+      <div class="match-item">Multi-truck or multi-tech operation.</div>
+      <div class="match-item">300+ calls per month, or strong seasonal spikes.</div>
+      <div class="match-item">Storm-chase, restoration, or 24/7 emergency operation.</div>
+      <div class="match-item">Booking jobs of $10,000+ regularly.</div>
+      <div class="match-item">Wants "white-glove" service or a named contact.</div>
+    </div>
+  </div>
+
+  <div class="hbox hbox-em">
+    <div class="hbox-icon">★</div>
+    <div class="hbox-body">
+      <h5>The Default Recommendation</h5>
+      <p>When in doubt, recommend <strong>Growth</strong>. It's the right answer for 60-70% of trades clients. Only push Starter if they're price-sensitive AND low-volume. Only push Elite if they have clear high-volume signals or premium-buyer signals. Growth is the safe default — it's where most clients land naturally.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 07 ROI MATH -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-roi" class="sec">
+  <div class="sec-head">The Numbers <em>That Close Deals</em></div>
+  <p class="sec-sub">Always have these numbers ready. Use them when prospects hesitate on price. The math is simple — and the math always wins.</p>
+
+  <h3>The Big Picture</h3>
+  <div class="stat-row">
+    <div class="stat-label">Average roofing or HVAC job</div>
+    <div class="stat-value">$5,000 - $10,000</div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-label">Our Growth tier monthly</div>
+    <div class="stat-value">$497</div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-label">Calls captured to pay for the YEAR</div>
+    <div class="stat-value">1 extra job</div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-label">Average extra jobs our clients capture</div>
+    <div class="stat-value">2 - 5 / month</div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-label">Setup fee payback period</div>
+    <div class="stat-value">7 - 14 days</div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-label">Money-back guarantee on setup</div>
+    <div class="stat-value">30 days</div>
+  </div>
+
+  <div class="div"></div>
+
+  <h3>How To Show Their Math Live On A Call</h3>
+
+  <div class="pullquote">
+    <div class="pullquote-text">Quick math — you said about 50 calls per week, right? Industry data shows 76% of those go unanswered. So that's 38 missed calls per week. If 10% of those were going to book a $5,000 job, you're losing $19,000 a week. $76,000 a month. Going to voicemail. Our Growth tier is $497. The math kind of makes itself, doesn't it?</div>
+    <div class="pullquote-author">— THE LIVE ROI WALK-THROUGH</div>
+  </div>
+
+  <div class="hbox hbox-gold">
+    <div class="hbox-icon">★</div>
+    <div class="hbox-body">
+      <h5>The Key Principle</h5>
+      <p>Always do the math <strong>LIVE on the call using their numbers</strong>, not generic stats. The prospect needs to hear THEIR phone number, THEIR call volume, THEIR job value, and THEIR lost revenue. When the dollar figure has their name on it, it stops being theoretical.</p>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <h3>If They Ask...</h3>
+
+  <div class="g2">
+    <div class="card card-em">
+      <h4>"Does this actually pay for itself?"</h4>
+      <p style="font-size:14px;margin:0;">Average roofing/HVAC job is $5K-10K. Our service costs $497-697/mo. Capturing ONE extra job per month covers the entire year. Most clients capture 2-5 extra jobs per month.</p>
+    </div>
+    <div class="card card-em">
+      <h4>"How fast does it pay back?"</h4>
+      <p style="font-size:14px;margin:0;">Setup fee pays back within 7-14 days from the first captured job. Monthly fee pays back within the first 1-2 captured calls each month.</p>
+    </div>
+    <div class="card card-em">
+      <h4>"What if I don't like it?"</h4>
+      <p style="font-size:14px;margin:0;">30-day money-back guarantee on the setup fee. We refund the setup if it's not performing. We rarely have anyone ask — it works.</p>
+    </div>
+    <div class="card card-em">
+      <h4>"How is this different from voicemail?"</h4>
+      <p style="font-size:14px;margin:0;">Voicemail captures 0% of your callers (85% won't leave a message). A $99 service does basic answering. We do conversation, qualification, booking, AND recovery — the difference between a phone tree and an actual employee.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 08 DEMO FLOW -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-demo" class="sec">
+  <div class="sec-head">The 20-Minute <em>Demo Flow</em></div>
+  <p class="sec-sub">Every demo follows the same 7-stage structure. Trades demos are 15-20 minutes. Medical and aesthetic demos can run 30-45 minutes (more polish required).</p>
+
+  <div class="stage">
+    <div class="stage-time">0-2</div>
+    <div class="stage-body">
+      <h4>Rapport + Recap</h4>
+      <p>Before diving in, do a quick recap of what they're dealing with. Use their exact pain points from the discovery call. Get them nodding before you go further.</p>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="stage-time">2-5</div>
+    <div class="stage-body">
+      <h4>The Cost Of Missed Calls</h4>
+      <p>Walk through THEIR specific math. Use the 76% missed call stat applied to their volume. Translate it into dollars per month they're losing. Make it real.</p>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="stage-time">5-10</div>
+    <div class="stage-body">
+      <h4>Live AI Demo</h4>
+      <p>Call your demo number. Let the prospect hear the AI handle a realistic call for THEIR business type. <strong>This is the wow moment. Stay quiet during the call. Silence sells here.</strong></p>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="stage-time">10-13</div>
+    <div class="stage-body">
+      <h4>Show The Dashboard</h4>
+      <p>Screen-share the dashboard. Show them what they'd see Monday morning — every call, every booking, every transcript, every dollar captured.</p>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="stage-time">13-16</div>
+    <div class="stage-body">
+      <h4>Pricing Reveal — Anchor With Elite</h4>
+      <p>Three tiers. Elite at $697 for high-volume operators. Growth at $497, the most popular pick. Starter at $397 for solo operators. Setup is $997 to $1,497. Watch their reaction carefully.</p>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="stage-time">16-18</div>
+    <div class="stage-body">
+      <h4>Match Them To A Tier</h4>
+      <p>Based on volume and needs, recommend ONE tier with a clear reason. "For your size, Growth makes the most sense because [specific reason from their situation]."</p>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="stage-time">18-20</div>
+    <div class="stage-body">
+      <h4>Close</h4>
+      <p>"If we set this up this week, when do you want it live — Monday or Wednesday?" Assume the close. Hand them a Calendly link or take payment over the phone.</p>
+    </div>
+  </div>
+
+  <div class="hbox hbox-amber">
+    <div class="hbox-icon">★</div>
+    <div class="hbox-body">
+      <h5>The Critical Demo Moment</h5>
+      <p>The 5 minutes the prospect spends listening to the live AI demo is the most powerful sales moment of the entire call. <strong>Stay quiet. Let the AI sell itself.</strong> The temptation to narrate or explain WHILE the AI is working will kill the wow factor.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 09 OBJECTIONS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-objections" class="sec">
+  <div class="sec-head">Top 12 <em>Objections</em></div>
+  <p class="sec-sub">These are the actual responses that close deals. Memorize them. Practice them in role-play. Use them word-for-word until they become natural.</p>
+
+  <div class="obj">
+    <div class="obj-they">— They Say —</div>
+    <div class="obj-text">"It's too expensive."</div>
+    <div class="obj-you">— You Say —</div>
+    <div class="obj-resp">"Compared to what? A full-time receptionist costs $4,000 per month. Voicemail is free but loses you $5,000 to $15,000 storm jobs every month. Our Growth tier is $497 — one captured job pays for the whole year. The real question is, what's the cost of NOT having this?"</div>
+  </div>
+
+  <div class="obj">
+    <div class="obj-they">— They Say —</div>
+    <div class="obj-text">"I already have a receptionist."</div>
+    <div class="obj-you">— You Say —</div>
+    <div class="obj-resp">"That's great — and we don't replace her. We extend her. She handles in-person visitors and front-office work during business hours. We handle after-hours, overflow, and weekends so she's not drowning during peak times. Best of both worlds."</div>
+  </div>
+
+  <div class="obj">
+    <div class="obj-they">— They Say —</div>
+    <div class="obj-text">"I'll think about it."</div>
+    <div class="obj-you">— You Say —</div>
+    <div class="obj-resp">"Of course — what specifically would help you decide? Is it the price, the features, the integration with your current setup? Let me address whatever's holding you back so you have everything you need to make the call."</div>
+  </div>
+
+  <div class="obj">
+    <div class="obj-they">— They Say —</div>
+    <div class="obj-text">"My customers will know it's an AI."</div>
+    <div class="obj-you">— You Say —</div>
+    <div class="obj-resp">"Let me show you live right now — call this demo number. [Give them the demo line and stay quiet.] Most of our clients' customers don't realize. The voice is natural, the conversation flows, and the AI is trained on YOUR business specifically."</div>
+  </div>
+
+  <div class="obj">
+    <div class="obj-they">— They Say —</div>
+    <div class="obj-text">"What if it transfers a complex call wrong?"</div>
+    <div class="obj-you">— You Say —</div>
+    <div class="obj-resp">"Built-in escalation logic. Anything outside its capability — true emergencies, unusual requests, anything technical — gets routed to your phone or your team automatically. The AI never tries to handle what it shouldn't. It's smart enough to know when to hand off."</div>
+  </div>
+
+  <div class="obj">
+    <div class="obj-they">— They Say —</div>
+    <div class="obj-text">"I want to start with the cheapest plan."</div>
+    <div class="obj-you">— You Say —</div>
+    <div class="obj-resp">"Starter works great for solo operators. But if you have more than 100 calls a month, the missing automation in Growth — the review automation alone — typically pays for the upgrade in 30 days. Want to start on Growth and downgrade if it's overkill, or stay on Starter and upgrade later?"</div>
+  </div>
+
+  <div class="obj">
+    <div class="obj-they">— They Say —</div>
+    <div class="obj-text">"My phone isn't the problem — leads are."</div>
+    <div class="obj-you">— You Say —</div>
+    <div class="obj-resp">"Got it. And how many of your current leads call you before they book? [They'll say most.] Right. So if you're missing 76% of incoming calls today, you're losing the leads you're already paying for. We fix the leak before you fill the bucket."</div>
+  </div>
+
+  <div class="obj">
+    <div class="obj-they">— They Say —</div>
+    <div class="obj-text">"Can't I just use a service like Smith.ai?"</div>
+    <div class="obj-you">— You Say —</div>
+    <div class="obj-resp">"Smith starts at $255 for 20 calls — you'll burn through that in a week. They're also human-only or hybrid, so they're slower and cost more at volume. AI handles unlimited calls at a flat rate. Plus we're built specifically for trades — they're built for law firms."</div>
+  </div>
+
+  <div class="obj">
+    <div class="obj-they">— They Say —</div>
+    <div class="obj-text">"How long is the contract?"</div>
+    <div class="obj-you">— You Say —</div>
+    <div class="obj-resp">"Month-to-month after the initial setup. We earn your business every month. No long contracts. No early termination fees. If we're not performing, you can leave. That's how confident we are it'll work."</div>
+  </div>
+
+  <div class="obj">
+    <div class="obj-they">— They Say —</div>
+    <div class="obj-text">"Can it integrate with my software?"</div>
+    <div class="obj-you">— You Say —</div>
+    <div class="obj-resp">"Yes — we integrate with most major CRMs and field service tools. What are you using today? [Verify before promising. Common ones: ServiceTitan, Housecall Pro, Jobber, AccuLynx, JobNimbus, GHL.]"</div>
+  </div>
+
+  <div class="obj">
+    <div class="obj-they">— They Say —</div>
+    <div class="obj-text">"What about Spanish-speaking customers?"</div>
+    <div class="obj-you">— You Say —</div>
+    <div class="obj-resp">"Great question. We have a bilingual add-on for $100 per month — the AI handles English AND Spanish automatically based on the caller. In your market, most clients add it because they're losing 15-20% of calls to language barriers."</div>
+  </div>
+
+  <div class="obj">
+    <div class="obj-they">— They Say —</div>
+    <div class="obj-text">"I need to talk to my partner / wife / business partner."</div>
+    <div class="obj-you">— You Say —</div>
+    <div class="obj-resp">"Totally understand — when can we get them on a quick 15-minute call together? I'd rather walk you both through it once than have you try to explain it secondhand. What's their availability tomorrow or Thursday?"</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 10 RULES -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-rules" class="sec">
+  <div class="sec-head">The Five Rules <em>Of The PureCode Pitch</em></div>
+  <p class="sec-sub">These are the rules our top closers follow on every call. Break any one of them and the close rate drops. Memorize these. Live by these.</p>
+
+  <div class="rule">
+    <div class="rule-num">01</div>
+    <div class="rule-body">
+      <h4>Lead with the outcome, not the feature.</h4>
+      <p><strong>Wrong:</strong> "We have automated review requests."<br><strong>Right:</strong> "Most service businesses get 1-2 reviews per month. Our clients average 8-15. That's how you outrank competitors on Google."</p>
+    </div>
+  </div>
+
+  <div class="rule">
+    <div class="rule-num">02</div>
+    <div class="rule-body">
+      <h4>Always anchor with Elite.</h4>
+      <p>Present all three tiers. Mention Elite first. Growth becomes the obvious value pick when Elite is the anchor. Without the Elite anchor, Growth feels expensive. With it, Growth feels like a deal.</p>
+    </div>
+  </div>
+
+  <div class="rule">
+    <div class="rule-num">03</div>
+    <div class="rule-body">
+      <h4>Show their math, not generic stats.</h4>
+      <p>"76% of trades calls go unanswered" is forgettable. <strong>"You're losing $76,000 per month at your call volume"</strong> is unforgettable. The dollar figure must have their name on it.</p>
+    </div>
+  </div>
+
+  <div class="rule">
+    <div class="rule-num">04</div>
+    <div class="rule-body">
+      <h4>Assume the close.</h4>
+      <p><strong>Don't ask:</strong> "Do you want to sign up?"<br><strong>Ask:</strong> "When do you want it live — Monday or Wednesday?" The assumption forces them to think about the timing, not the decision.</p>
+    </div>
+  </div>
+
+  <div class="rule">
+    <div class="rule-num">05</div>
+    <div class="rule-body">
+      <h4>Dig one level on hesitation.</h4>
+      <p>"I need to think about it" almost always equals an unaddressed objection. Always respond: <strong>"Of course — what specifically would help you decide?"</strong> Then handle whatever comes back.</p>
+    </div>
+  </div>
+
+  <div class="closer">
+    <div class="closer-line">Every call matters.</div>
+    <div class="closer-line">Every pitch is practice.</div>
+    <div class="closer-line">Every close is the next referral.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 11 INTERNAL FAQ -->
+<!-- ═══════════════════════════════════════ -->
+<div id="sec-faq" class="sec">
+  <div class="sec-head">Internal <em>FAQ</em></div>
+  <p class="sec-sub">The questions our team asks most often. Know the answers cold so you never have to put a prospect on hold to check.</p>
+
+  <div class="faq">
+    <div class="faq-q">What's actually in the $997 setup fee?</div>
+    <p class="faq-a">Custom AI voice training on the client's business, knowledge base build (services, pricing, hours, FAQ), CRM integration, calendar integration, phone number provisioning, testing, and the onboarding call. Roughly 8-12 hours of work on our side.</p>
+  </div>
+
+  <div class="faq">
+    <div class="faq-q">Why is Elite's setup higher ($1,497)?</div>
+    <p class="faq-a">Elite gets the dedicated success manager kickoff call (45-60 min), AI review response training on their existing reviews, voicemail drop scripts custom-recorded, and priority queue placement during build.</p>
+  </div>
+
+  <div class="faq">
+    <div class="faq-q">Can clients downgrade or cancel mid-month?</div>
+    <p class="faq-a">Yes — month-to-month after setup. They keep the current tier through the end of the billing cycle, then switch. No early termination fees.</p>
+  </div>
+
+  <div class="faq">
+    <div class="faq-q">Can clients upgrade mid-month?</div>
+    <p class="faq-a">Yes — upgrades take effect immediately. Prorated for the remaining days. New features activate within 24-48 hours.</p>
+  </div>
+
+  <div class="faq">
+    <div class="faq-q">What does "1 line" actually mean?</div>
+    <p class="faq-a">One dedicated business phone number that the AI answers. If they want a 2nd line for a 2nd location, they need the Multi-Location add-on.</p>
+  </div>
+
+  <div class="faq">
+    <div class="faq-q">What about texting from the AI?</div>
+    <p class="faq-a">Outbound text-back (missed-call) is included on all tiers. Full SMS conversations from the AI are included from Growth tier upward (under Saved Client Info).</p>
+  </div>
+
+  <div class="faq">
+    <div class="faq-q">Can the AI make outbound cold calls?</div>
+    <p class="faq-a">No — that's a separate product. This is inbound AI receptionist only. Don't confuse these in pitches.</p>
+  </div>
+
+  <div class="faq">
+    <div class="faq-q">What's the refund policy?</div>
+    <p class="faq-a">30-day money-back guarantee on the setup fee. Monthly fees are non-refundable but cancel-anytime.</p>
+  </div>
+
+  <div class="faq">
+    <div class="faq-q">Can the AI book to multiple calendars?</div>
+    <p class="faq-a">Yes — Growth and Elite tiers support multiple calendar integrations (e.g., one per technician).</p>
+  </div>
+
+  <div class="faq">
+    <div class="faq-q">Does it integrate with [common CRM]?</div>
+    <p class="faq-a">Native integrations: GHL (default), HubSpot, Jobber, Housecall Pro, ServiceTitan, AccuLynx (roofers), JobNimbus, Acuity, Calendly. Other systems via Zapier.</p>
+  </div>
+
+  <div class="faq">
+    <div class="faq-q">Can I offer a discount to close a deal?</div>
+    <p class="faq-a">Setup fee discount up to $200 — OK without approval. Monthly fee discount or a free month — requires approval. Default position: don't discount, add value instead (e.g., free bilingual for 90 days).</p>
+  </div>
+
+  <div class="faq">
+    <div class="faq-q">What languages besides English/Spanish?</div>
+    <p class="faq-a">Spanish is the only built-in second language. Other languages are custom builds with additional setup fees. Refer these up before quoting.</p>
+  </div>
+</div>
+
+</div>
+
+<script>
+function show(secId, btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sec-'+secId).classList.add('on');
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+
+</body>
+</html>

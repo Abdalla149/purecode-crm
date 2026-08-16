@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PureCode — Live Call Sheet · Auto Repair</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0a0b0d;
+  --bg2:#111317;
+  --bg3:#171a1f;
+  --bg4:#1e2228;
+  --gold:#d4af37;
+  --gold2:#f0d980;
+  --em:#22c55e;
+  --em-bg:rgba(34,197,94,0.08);
+  --sky:#38bdf8;
+  --sky-bg:rgba(56,189,248,0.08);
+  --rose:#fb7185;
+  --rose-bg:rgba(251,113,133,0.08);
+  --amber:#fbbf24;
+  --amber-bg:rgba(251,191,36,0.08);
+  --violet:#a78bfa;
+  --violet-bg:rgba(167,139,250,0.08);
+  --text:#f0ede5;
+  --text2:#a8a498;
+  --text3:#6b6860;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:16px;
+  line-height:1.5;
+  padding-bottom:80px;
+}
+
+/* ── STICKY TOP BAR ── */
+.topbar{
+  position:sticky;top:0;z-index:200;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border2);
+  padding:14px 20px 12px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.4);
+}
+.topbar-title{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;
+}
+.topbar-title h1{
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;font-weight:700;
+  color:var(--text);
+  letter-spacing:0.01em;
+  display:flex;align-items:center;gap:8px;
+}
+.topbar-title h1 .dot{width:8px;height:8px;border-radius:50%;background:var(--em);box-shadow:0 0 8px var(--em);}
+.topbar-title .tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;border:1px solid var(--border2);padding:3px 8px;border-radius:5px;}
+
+/* search box */
+.search-box{
+  width:100%;
+  background:var(--bg4);
+  border:1px solid var(--border2);
+  border-radius:10px;
+  padding:12px 16px 12px 42px;
+  color:var(--text);
+  font-size:16px;
+  font-family:'DM Sans',sans-serif;
+  outline:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%236b6860' stroke-width='2' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:14px center;
+}
+.search-box:focus{border-color:var(--gold);}
+.search-box::placeholder{color:var(--text3);}
+
+/* ── QUICK JUMP CHIPS ── */
+.jump-row{
+  display:flex;gap:7px;overflow-x:auto;
+  padding:12px 20px 4px;
+  position:sticky;top:0;z-index:150;
+  -webkit-overflow-scrolling:touch;
+}
+.jump-row::-webkit-scrollbar{height:0}
+.jump{
+  flex-shrink:0;
+  padding:7px 14px;
+  border-radius:100px;
+  border:1px solid var(--border2);
+  background:var(--bg2);
+  color:var(--text2);
+  font-size:13px;font-weight:600;
+  cursor:pointer;
+  white-space:nowrap;
+  text-decoration:none;
+  transition:all 0.12s;
+}
+.jump:hover,.jump:active{background:var(--gold);color:var(--bg);border-color:var(--gold);}
+
+/* ── CONTENT ── */
+.wrap{max-width:820px;margin:0 auto;padding:8px 20px;}
+
+.section-label{
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.14em;
+  color:var(--gold);
+  margin:28px 0 4px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.section-label .num{
+  background:var(--gold);color:var(--bg);
+  width:20px;height:20px;border-radius:5px;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;
+}
+.section-hint{font-size:12px;color:var(--text3);margin:8px 0 14px;font-weight:500;}
+
+/* ── SCRIPT LINE (say this) ── */
+.say{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-left:3px solid var(--em);
+  border-radius:9px;
+  padding:14px 16px;
+  margin-bottom:10px;
+}
+.say .lbl{
+  font-family:'DM Mono',monospace;
+  font-size:9.5px;text-transform:uppercase;letter-spacing:0.12em;
+  color:var(--em);margin-bottom:6px;font-weight:500;
+  display:flex;align-items:center;gap:6px;
+}
+.say .txt{font-size:15.5px;line-height:1.55;color:var(--text);font-weight:500;}
+.say .txt .pause{color:var(--amber);font-style:italic;font-weight:600;}
+.say.q{border-left-color:var(--sky);}
+.say.q .lbl{color:var(--sky);}
+.say .note{font-size:12.5px;color:var(--text3);margin-top:8px;font-style:italic;line-height:1.5;}
+
+/* ── OBJECTION CARD (tap to expand) ── */
+.obj{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-left:3px solid var(--rose);
+  border-radius:9px;
+  margin-bottom:9px;
+  overflow:hidden;
+}
+.obj-head{
+  padding:14px 16px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;
+  user-select:none;
+}
+.obj-head:active{background:var(--bg3);}
+.obj-q{
+  font-size:15.5px;font-weight:700;color:var(--text);
+  display:flex;align-items:center;gap:9px;
+}
+.obj-q .qmark{
+  color:var(--rose);font-family:'Playfair Display',serif;
+  font-size:20px;line-height:1;flex-shrink:0;
+}
+.obj-toggle{
+  color:var(--text3);font-size:22px;flex-shrink:0;
+  transition:transform 0.18s;line-height:1;
+}
+.obj.open .obj-toggle{transform:rotate(45deg);color:var(--rose);}
+.obj-body{
+  max-height:0;overflow:hidden;
+  transition:max-height 0.25s ease;
+}
+.obj.open .obj-body{max-height:600px;}
+.obj-inner{padding:0 16px 16px;}
+.obj-say-lbl{
+  font-family:'DM Mono',monospace;
+  font-size:9.5px;text-transform:uppercase;letter-spacing:0.12em;
+  color:var(--em);margin-bottom:6px;font-weight:500;
+}
+.obj-say{
+  font-size:15px;line-height:1.6;color:var(--text);
+  background:var(--em-bg);
+  border-radius:7px;padding:12px 14px;
+  font-weight:500;
+}
+.obj-say .pause{color:var(--amber);font-style:italic;font-weight:600;}
+.obj-tip{
+  font-size:12.5px;color:var(--text3);
+  margin-top:9px;font-style:italic;line-height:1.5;
+  padding-left:2px;
+}
+
+/* ── PRICE BOX ── */
+.price-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:10px;}
+.price-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:9px;padding:14px 12px;text-align:center;
+}
+.price-card.pop{border:1.5px solid var(--gold);background:linear-gradient(180deg,rgba(212,175,55,0.06),transparent);}
+.price-tier{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:6px;}
+.price-card.pop .price-tier{color:var(--gold);}
+.price-amt{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--text);line-height:1;}
+.price-sub{font-size:11px;color:var(--text3);margin-top:4px;}
+.price-setup{font-size:11px;color:var(--text2);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);}
+
+/* ── MATH BOX ── */
+.mathbox{
+  background:linear-gradient(135deg,rgba(212,175,55,0.1),rgba(212,175,55,0.02));
+  border:1px solid rgba(212,175,55,0.25);
+  border-radius:10px;padding:16px 18px;margin-bottom:10px;
+}
+.mathbox h4{font-size:13px;color:var(--gold);margin-bottom:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;}
+.mathrow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:14px;}
+.mathrow .ml{color:var(--text2);}
+.mathrow .mv{color:var(--text);font-weight:700;font-family:'DM Mono',monospace;}
+.mathrow.total{border-top:1px solid rgba(212,175,55,0.25);margin-top:6px;padding-top:10px;}
+.mathrow.total .ml{color:var(--gold);font-weight:700;}
+.mathrow.total .mv{color:var(--gold2);font-size:18px;}
+
+/* ── FLOW STRIP ── */
+.flowstrip{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.flowstep{
+  flex:1;min-width:90px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:8px;padding:10px 8px;text-align:center;
+}
+.flowstep .fnum{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);margin-bottom:3px;}
+.flowstep .fname{font-size:12.5px;font-weight:600;color:var(--text);line-height:1.3;}
+.flowstep .fdesc{font-size:10.5px;color:var(--text3);margin-top:2px;line-height:1.3;}
+
+/* no results */
+.noresults{text-align:center;padding:40px 20px;color:var(--text3);font-size:15px;display:none;}
+
+.hidden{display:none !important;}
+
+/* ── FOOTER NOTE ── */
+.footer{text-align:center;color:var(--text3);font-size:11px;margin-top:36px;padding-top:16px;border-top:1px solid var(--border);line-height:1.6;}
+
+/* ── BACK TO TOP ── */
+.totop{
+  position:fixed;bottom:20px;right:20px;z-index:180;
+  width:48px;height:48px;border-radius:50%;
+  background:var(--gold);color:var(--bg);
+  border:none;cursor:pointer;
+  font-size:22px;font-weight:700;
+  box-shadow:0 4px 16px rgba(0,0,0,0.5);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.2s;
+}
+.totop.show{opacity:1;pointer-events:auto;}
+
+@media(max-width:600px){
+  .price-grid{grid-template-columns:1fr;}
+  .wrap{padding:8px 14px;}
+  .topbar{padding:12px 14px 10px;}
+  .jump-row{padding:10px 14px 4px;}
+}
+</style>
+</head>
+<body>
+
+<!-- STICKY TOP: title + search -->
+<div class="topbar">
+  <div class="topbar-title">
+    <h1><span class="dot"></span> PureCode · Live Call Sheet</h1>
+    <span class="tag">Auto Repair</span>
+  </div>
+  <input type="text" class="search-box" id="search" placeholder="Type an objection or keyword... (e.g. expensive, busy, voicemail)" oninput="filterAll()">
+</div>
+
+<!-- QUICK JUMP -->
+<div class="jump-row">
+  <a class="jump" href="#open">Opener</a>
+  <a class="jump" href="#discover">Discovery</a>
+  <a class="jump" href="#pain">Pain Q's</a>
+  <a class="jump" href="#math">The Math</a>
+  <a class="jump" href="#pitch">The Pitch</a>
+  <a class="jump" href="#price">Pricing</a>
+  <a class="jump" href="#close">Closing</a>
+  <a class="jump" href="#obj">Objections</a>
+</div>
+
+<div class="wrap">
+
+<div class="noresults" id="noresults">No match — try another word, or clear the search.</div>
+
+<!-- ══════════ OPENER ══════════ -->
+<div class="block" id="open">
+  <div class="section-label"><span class="num">1</span> The Opener</div>
+  <div class="section-hint">Goal: survive the first 20 seconds. No pitch. Ask a question. Then stop talking.</div>
+
+  <div class="say q">
+    <div class="lbl">▸ Best opener — the numbers hook</div>
+    <div class="txt">"Hey [Name] — quick question, I'll be 20 seconds. The average shop your size is losing around $11,000 a month just from calls that hit voicemail. Do you guys actually track how many calls you miss during the day?"</div>
+  </div>
+  <div class="say q">
+    <div class="lbl">▸ Backup — the after-hours angle</div>
+    <div class="txt">"Hey [Name] — when you guys close at 5, what happens to the calls that come in after that? Voicemail, or do you have something catching them?"</div>
+  </div>
+  <div class="say q">
+    <div class="lbl">▸ Backup — the peer / curiosity angle</div>
+    <div class="txt">"Hey [Name], I was hoping you could help me out for a sec. I'm not gonna pitch you — I just had a couple questions about how your shop handles its calls. That cool?"</div>
+  </div>
+</div>
+
+<!-- ══════════ DISCOVERY ══════════ -->
+<div class="block" id="discover">
+  <div class="section-label"><span class="num">2</span> Discovery Questions</div>
+  <div class="section-hint">Ask these in order. Write down his numbers — you'll use them in the math.</div>
+
+  <div class="say q"><div class="lbl">▸ Setup</div><div class="txt">"How many bays are you running over there?"</div></div>
+  <div class="say q"><div class="lbl">▸ Volume</div><div class="txt">"On a busy day, roughly how many calls come through? Ballpark."</div></div>
+  <div class="say q"><div class="lbl">▸ Staffing</div><div class="txt">"Who's grabbing the phone right now — a front desk person, or is your service writer doing it all?"</div></div>
+  <div class="say q"><div class="lbl">▸ Hours</div><div class="txt">"What happens to calls after you close, or on weekends?"</div></div>
+  <div class="say q"><div class="lbl">▸ Average ticket</div><div class="txt">"What's your average repair order run — ballpark?"</div></div>
+</div>
+
+<!-- ══════════ PAIN ══════════ -->
+<div class="block" id="pain">
+  <div class="section-label"><span class="num">3</span> Pain Questions</div>
+  <div class="section-hint">Make HIM say it's a problem. Ask, then <span style="color:var(--amber)">pause 3 seconds</span>. Don't rescue the silence.</div>
+
+  <div class="say q"><div class="lbl">▸ The morning rush</div><div class="txt">"When 3 calls come in at once during the morning rush and your guy's already with a customer — <span class="pause">[pause]</span> what happens to the other 2?"</div></div>
+  <div class="say q"><div class="lbl">▸ The callback reality</div><div class="txt">"Those folks who hit voicemail — do most of them call back? Or do they just call the next shop?"</div></div>
+  <div class="say q"><div class="lbl">▸ The awareness gap</div><div class="txt">"Do you actually have a way to know how many calls you're missing? Or is it more of a 'you know it's happening but can't see it' thing?"</div></div>
+  <div class="say q"><div class="lbl">▸ The no-show sting</div><div class="txt">"How's the no-show situation? When someone books and doesn't show — how often, and what's it do to your day?"</div></div>
+  <div class="say q"><div class="lbl">▸ The cost realization</div><div class="txt">"Have you ever added up what those missed calls cost you over a month? <span class="pause">[pause — let him do the math]</span>"</div></div>
+</div>
+
+<!-- ══════════ MATH ══════════ -->
+<div class="block" id="math">
+  <div class="section-label"><span class="num">4</span> The Math (Run It Live)</div>
+  <div class="section-hint">Use HIS numbers. When the total comes out of his mouth, the sale is 80% made.</div>
+
+  <div class="mathbox">
+    <h4>Typical 4-Bay Shop</h4>
+    <div class="mathrow"><span class="ml">Missed calls / day</span><span class="mv">8</span></div>
+    <div class="mathrow"><span class="ml">Real appointment calls (55%)</span><span class="mv">~4-5</span></div>
+    <div class="mathrow"><span class="ml">Average repair order</span><span class="mv">$550</span></div>
+    <div class="mathrow"><span class="ml">Close rate on captured calls</span><span class="mv">65%</span></div>
+    <div class="mathrow"><span class="ml">Working days / month</span><span class="mv">22</span></div>
+    <div class="mathrow total"><span class="ml">Lost per month</span><span class="mv">~$16,500</span></div>
+  </div>
+  <div class="say">
+    <div class="lbl">▸ Say it like this</div>
+    <div class="txt">"So 8 missed calls a day, even if only half are real appointments, at $550 each... that's over $16,000 a month walking to your competitor. Our whole thing is $497. <span class="pause">[pause]</span> The math kind of makes itself, right?"</div>
+  </div>
+  <div class="say">
+    <div class="lbl">▸ The lifetime-value punch</div>
+    <div class="txt">"And that's not one $550 job — that customer was worth $4,200 in lifetime value. Oil changes, brakes, referrals, for years. One missed call, gone forever."</div>
+  </div>
+</div>
+
+<!-- ══════════ PITCH ══════════ -->
+<div class="block" id="pitch">
+  <div class="section-label"><span class="num">5</span> The Pitch (In His Words)</div>
+  <div class="section-hint">Only after he's felt the pain. Tie every feature to something he told you.</div>
+
+  <div class="say">
+    <div class="lbl">▸ The bridge</div>
+    <div class="txt">"So based on what you told me — the morning rush, the weekend calls, the no-shows — here's what we set up: a 24/7 AI receptionist trained on your shop. Answers every call, books straight into your calendar, texts back anyone who doesn't connect, and sends reminders so no-shows basically disappear. Your service writer keeps doing what he does best — we just make sure the phone never goes unanswered."</div>
+  </div>
+  <div class="say">
+    <div class="lbl">▸ The proof line</div>
+    <div class="txt">"We're working with a bunch of shops already, and the average one recovers $8,000 to $16,000 a month in the first 30 days."</div>
+  </div>
+</div>
+
+<!-- ══════════ PRICING ══════════ -->
+<div class="block" id="price">
+  <div class="section-label"><span class="num">6</span> Pricing</div>
+  <div class="section-hint">Mention Elite first (anchor), then land on Growth. Never lead with Starter.</div>
+
+  <div class="price-grid">
+    <div class="price-card">
+      <div class="price-tier">Starter</div>
+      <div class="price-amt">$397</div>
+      <div class="price-sub">/month</div>
+      <div class="price-setup">$997 setup</div>
+    </div>
+    <div class="price-card pop">
+      <div class="price-tier">Growth ★</div>
+      <div class="price-amt">$497</div>
+      <div class="price-sub">/month · most popular</div>
+      <div class="price-setup">$997 setup</div>
+    </div>
+    <div class="price-card">
+      <div class="price-tier">Elite</div>
+      <div class="price-amt">$697</div>
+      <div class="price-sub">/month</div>
+      <div class="price-setup">$1,497 setup</div>
+    </div>
+  </div>
+  <div class="say">
+    <div class="lbl">▸ How to say it</div>
+    <div class="txt">"Three options. Elite's $697 — that's for high-volume shops with a dedicated manager. Growth is $497, that's what most shops pick — it's got the review automation and the appointment reminders. Starter's $397 for solo guys. <span class="pause">[pause]</span> For your size, Growth makes the most sense."</div>
+  </div>
+  <div class="say">
+    <div class="lbl">▸ Add-ons (only if it fits)</div>
+    <div class="txt">"Bilingual Spanish is +$100/mo · Multi-location is +$150/mo per shop."</div>
+    <div class="note">Never lead the price reveal with add-ons. Base tier first, always.</div>
+  </div>
+</div>
+
+<!-- ══════════ CLOSE ══════════ -->
+<div class="block" id="close">
+  <div class="section-label"><span class="num">7</span> Closing</div>
+  <div class="section-hint">Assume the close. Ask for a date, not a "yes."</div>
+
+  <div class="say"><div class="lbl">▸ The assumptive close</div><div class="txt">"If we kick this off this week, you'll be live in about 10 days. Does Tuesday or Thursday work better for the 30-minute setup call?"</div></div>
+  <div class="say"><div class="lbl">▸ The NEPQ natural close</div><div class="txt">"So where do you feel like we should go from here?" <span class="pause">[then stay silent]</span></div></div>
+  <div class="say"><div class="lbl">▸ The risk-reversal close</div><div class="txt">"Start with Growth, month to month, no contract. 30-day money-back on the setup. If it doesn't perform, you cancel and you've lost nothing. What's the downside?"</div></div>
+  <div class="say"><div class="lbl">▸ After he says yes — STOP SELLING</div><div class="txt">"Awesome. Let me get you booked for the setup call. You'll hear from our onboarding team within 24 hours. Welcome aboard."</div></div>
+</div>
+
+<!-- ══════════ OBJECTIONS ══════════ -->
+<div class="block" id="obj">
+  <div class="section-label"><span class="num">8</span> Objection Handling</div>
+  <div class="section-hint">Tap any objection to see the response. Or search the box up top.</div>
+
+  <!-- each .obj is tappable -->
+  <div class="obj" data-keywords="expensive cost price money afford too much high">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>It's too expensive.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"Compared to what? A receptionist is $3,500-4,500 a month and works one shift. Voicemail's free but it's losing you $11,000+ a month. Growth is $497 — most shops recover that in the first week. The real question is: what's it costing you NOT to have this?"</div>
+      <div class="obj-tip">If price is truly the wall: "If you knew for a fact it'd bring in more than it costs, would price still be the issue?" He says no → it's about value, not price.</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="service writer handles phone staff employee front desk">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>My service writer handles the phones.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"I'm sure he's great — but when he's got a customer at the counter AND two lines ringing, which one does he pick? <span class="pause">[pause]</span> And where do the other two go? We don't replace him. We catch the overflow so he can focus on the customer in front of him."</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="answering service ruby smith already have using competitor">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>We already have an answering service.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"Good — you take it seriously. Quick question: does your current one book appointments straight into your calendar, send review requests, and remember returning customers by name? Or does it just take messages? That's the difference between an answering service and what we do."</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="think about it thinking consider later">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>I need to think about it.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"Totally fair — what specifically are you weighing? Is it the price, whether it'll actually work, or the timing? <span class="pause">[pause]</span> Let me address whatever's on your mind so you've got what you need."</div>
+      <div class="obj-tip">"Think about it" always hides a real objection. Surface it, then handle THAT.</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="busy time no time slammed swamped later">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>I'm too busy right now.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"That's exactly the point, right? If you're too busy to catch every call, those calls are going to voicemail while you're heads-down. <span class="pause">[pause]</span> Where do you think they're going? 90 seconds — let me show you the math on what that busy day is costing you."</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="send info information email brochure details">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>Just send me some info.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"Happy to — but info doesn't show you how it sounds. It takes 90 seconds to hear a live demo. Let me play one right now — if it doesn't blow you away, I'll send the info and leave you alone. Fair?"</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="voicemail works fine free okay good">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>Voicemail works fine for us.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"How many voicemails did you get last week? <span class="pause">[pause]</span> For every one you got, about 4 more people called, got voicemail, and hung up without leaving one. 80% don't leave messages — they call the next shop in Google. Voicemail isn't free, it's the most expensive option you've got."</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="customers know ai robot fake sounds">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>Customers will know it's an AI.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"That's what every shop owner says until they hear it. Let me call the demo line right now — you listen and tell me if you can tell. <span class="pause">[call demo]</span> Most of our clients' customers have no idea. It's trained on YOUR shop specifically."</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="not many calls volume small low dont get">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>We don't get that many calls.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"How many a day would you say? And after 5pm and weekends — how many hit voicemail? Most shops are surprised when they actually count. Even 3 missed calls a day at $550 is $5,600 a month. Want me to run the exact math on your numbers?"</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="tried before didnt work already failed bad experience">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>We tried something like this before.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"What happened with the last one? <span class="pause">[listen]</span> Yeah, that'd frustrate me too. Most of those are generic bots that sound like a robot reading a menu. Ours is trained on auto repair — it knows a check engine light from a transmission, and it's built on YOUR shop's services. Totally different category. What would need to be different this time for you to feel good about it?"</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="partner wife husband boss talk discuss decision maker">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>I need to talk to my partner/wife.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"Totally get it. When can we get them on a quick 15-minute call together? I'd rather walk you both through it once than have you explain it secondhand. What's their availability tomorrow or Thursday?"</div>
+      <div class="obj-tip">Also ask: "What do you think their biggest question will be?" — surfaces the hidden objection.</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="contract commitment long term lock in cancel">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>How long is the contract?</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"Month to month. No contracts, no early termination. We earn your business every month. If we're not performing, you cancel. That's how confident we are it works."</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="software integrate shopware tekmetric mitchell system pms">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>Does it work with my shop software?</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"What are you using? <span class="pause">[answer]</span> Yes — we integrate with Shop-Ware, Tekmetric, Mitchell, ShopBoss, and most major systems. If yours isn't on the list, we connect through Zapier. Appointments go straight into your calendar, customer info into your CRM."</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="answer myself i answer own phone myself">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>I answer my own phone.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"I respect that. Quick question though — when you're elbow-deep in a timing belt and the phone rings, do you stop, wipe your hands, and grab it? Or does it go to voicemail? Every time it does, that's a $550 job calling the next shop. We catch those so you can stay on the work."</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="not interested no thanks stop">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>Not interested.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"Totally fair — wouldn't expect you to be interested in something you haven't seen. Quick question though: if I could show you exactly how many calls your shop's missing and what it's costing per month, would that be worth 90 seconds?"</div>
+    </div></div>
+  </div>
+
+  <div class="obj" data-keywords="doing fine good well dont need it happy">
+    <div class="obj-head" onclick="toggleObj(this)">
+      <span class="obj-q"><span class="qmark">"</span>We're doing fine without it.</span>
+      <span class="obj-toggle">+</span>
+    </div>
+    <div class="obj-body"><div class="obj-inner">
+      <div class="obj-say-lbl">▸ You say</div>
+      <div class="obj-say">"Sounds like the shop's doing well — I'm just curious, 'fine' compared to what? Do you actually know how many calls slip through, or is it more of a feeling that things are okay? <span class="pause">[pause]</span> Usually it's a feeling. Want me to help you actually measure it?"</div>
+    </div></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  PureCode Agency · Live Call Sheet · Auto Repair<br>
+  Keep this open during every call. Tap objections to expand. Search up top.
+</div>
+
+</div>
+
+<button class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+function toggleObj(head){
+  const obj = head.closest('.obj');
+  obj.classList.toggle('open');
+}
+
+function filterAll(){
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const objs = document.querySelectorAll('.obj');
+  const blocks = document.querySelectorAll('.block');
+  const noResults = document.getElementById('noresults');
+
+  if(q === ''){
+    // reset everything
+    document.querySelectorAll('.block, .obj').forEach(el => el.classList.remove('hidden'));
+    document.querySelectorAll('.obj').forEach(el => el.classList.remove('open'));
+    noResults.style.display = 'none';
+    return;
+  }
+
+  // when searching, focus on objections + any script block matching
+  let anyMatch = false;
+
+  // filter objections by keywords + visible text
+  objs.forEach(o => {
+    const kw = (o.dataset.keywords || '').toLowerCase();
+    const txt = o.textContent.toLowerCase();
+    if(kw.includes(q) || txt.includes(q)){
+      o.classList.remove('hidden');
+      o.classList.add('open');
+      anyMatch = true;
+    } else {
+      o.classList.add('hidden');
+    }
+  });
+
+  // filter script blocks by their text (except the objections block which we handled per-card)
+  blocks.forEach(b => {
+    if(b.id === 'obj'){
+      // show objections section if any obj matches
+      const hasVisible = b.querySelectorAll('.obj:not(.hidden)').length > 0;
+      b.classList.toggle('hidden', !hasVisible);
+      return;
+    }
+    const txt = b.textContent.toLowerCase();
+    if(txt.includes(q)){
+      b.classList.remove('hidden');
+      anyMatch = true;
+    } else {
+      b.classList.add('hidden');
+    }
+  });
+
+  noResults.style.display = anyMatch ? 'none' : 'block';
+}
+
+// back to top button
+window.addEventListener('scroll', () => {
+  document.getElementById('totop').classList.toggle('show', window.scrollY > 400);
+});
+</script>
+
+</body>
+</html>

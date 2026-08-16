@@ -523,6 +523,31 @@ export default function Resources() {
         </p>
       </div>
 
+      {/* Playbooks quick-access — open the full HTML playbooks in a new tab */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: "#4a4845", letterSpacing: ".14em", marginBottom: 10 }}>PLAYBOOKS · OPEN ANYTIME</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(215px, 1fr))", gap: 10 }}>
+          {[
+            { href: "/playbooks/live-call-cheatsheet.html",        emoji: "⚡", title: "Live Call Sheet",     desc: "Keep open during every call",       accent: "#00e5a0" },
+            { href: "/playbooks/auto-repair-sales-playbook.html",  emoji: "📘", title: "Elite Sales Playbook", desc: "Full auto-repair sales system",      accent: "#d4af37" },
+            { href: "/playbooks/nepq-method.html",                 emoji: "🎯", title: "NEPQ Method",          desc: "Jeremy Miner questioning system",    accent: "#a78bfa" },
+            { href: "/playbooks/team-playbook.html",               emoji: "👥", title: "Team Playbook",        desc: "How the team operates",              accent: "#38bdf8" },
+          ].map(p => (
+            <a key={p.href} href={p.href} target="_blank" rel="noopener noreferrer"
+              style={{ display: "flex", alignItems: "center", gap: 12, background: "#0e0f14", border: "1px solid rgba(255,255,255,0.08)", borderLeft: `3px solid ${p.accent}`, borderRadius: 10, padding: "12px 14px", textDecoration: "none" }}
+              onMouseEnter={e => { e.currentTarget.style.background = "#141620"; e.currentTarget.style.borderColor = p.accent; e.currentTarget.style.borderLeftColor = p.accent; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "#0e0f14"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderLeftColor = p.accent; }}>
+              <span style={{ fontSize: 20, flexShrink: 0 }}>{p.emoji}</span>
+              <span style={{ minWidth: 0 }}>
+                <span style={{ display: "block", fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 13, color: "#edeae3" }}>{p.title}</span>
+                <span style={{ display: "block", fontSize: 11, color: "#8a8780", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.desc}</span>
+              </span>
+              <span style={{ marginLeft: "auto", color: "#6b6860", fontSize: 14, flexShrink: 0 }}>↗</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
       {/* Tab bar */}
       <div style={{ display: "flex", gap: 8, marginBottom: 24, background: "#0e0f14", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 100, padding: 4, width: "fit-content" }}>
         {[
