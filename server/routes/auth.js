@@ -56,8 +56,10 @@ const USERS = [
     role: 'agent',
     name: 'Adam Black',
     ghlUserId: '07n150lGezYVHDmRy1Eu',
-    agentId: null,        // TODO: set Adam's JustCall agent ID
-    justcallNumbers: []   // TODO: assign JustCall number(s) so he can call
+    agentId: '526440',    // JustCall agent ID (v2)
+    justcallNumbers: [
+      { id: 'adam1', number: '+18317447201', label: 'Adam' },
+    ]
   }
 ];
 

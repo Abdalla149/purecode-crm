@@ -8,15 +8,17 @@
 // ═══════════════════════════════════════════════════════
 
 async function jcRequest(endpoint, options = {}) {
-  const base   = process.env.JUSTCALL_BASE_URL || 'https://api.justcall.io/v1';
+  // JustCall v2 API — Basic auth with base64(api_key:api_secret)
+  const base   = process.env.JUSTCALL_BASE_URL || 'https://api.justcall.io/v2';
   const key    = process.env.JUSTCALL_API_KEY;
   const secret = process.env.JUSTCALL_API_SECRET;
   const url    = `${base}${endpoint}`;
+  const authHeader = 'Basic ' + Buffer.from(`${key}:${secret}`).toString('base64');
 
   const res = await fetch(url, {
     ...options,
     headers: {
-      'Authorization': `Bearer ${key}:${secret}`,
+      'Authorization': authHeader,
       'Content-Type':  'application/json',
       'Accept':        'application/json',
       ...options.headers,
@@ -70,29 +72,46 @@ export async function makeCall({ fromNumber, toNumber, agentJustcallId }) {
 // ═══════════ CALL LOGS ═══════════
 
 /**
- * Get recent call logs for an agent
+ * Get call logs (JustCall v2), optionally filtered by agent + date range.
+ * Pages through /v2/calls and filters in-code (v2 returns newest-first).
+ * Dates are YYYY-MM-DD (inclusive). Returns normalized rows with durations
+ * in seconds — the source of truth for hours/performance reports.
  */
-export async function getCallLogs({ agentId, startDate, endDate, limit = 50 }) {
-  const params = new URLSearchParams({
-    per_page: String(limit),
-    ...(agentId && { agent_id: agentId }),
-    ...(startDate && { start_date: startDate }),
-    ...(endDate && { end_date: endDate }),
-  });
+export async function getCallLogs({ agentId, startDate, endDate, limit = 1000 } = {}) {
+  const start = startDate ? new Date(`${startDate}T00:00:00Z`).getTime() : null;
+  const end   = endDate   ? new Date(`${endDate}T23:59:59Z`).getTime()   : null;
+  const out = [];
 
-  const data = await jcRequest(`/calls?${params}`);
-  
-  return (data.data || []).map(call => ({
-    id: call.id,
-    from: call.from_number,
-    to: call.to_number,
-    duration: call.duration,
-    status: call.status,         // answered, no-answer, busy, etc
-    recordingUrl: call.recording_url || null,
-    agentId: call.agent_id,
-    timestamp: call.created_at,
-    direction: call.direction,
-  }));
+  for (let page = 0; page < 60; page++) {
+    const data = await jcRequest(`/calls?page=${page}&per_page=100`);
+    const rows = data.data || [];
+    for (const c of rows) {
+      if (agentId && String(c.agent_id) !== String(agentId)) continue;
+      const ts = new Date(`${c.call_date}T${c.call_time || '00:00:00'}Z`).getTime();
+      if (start && ts < start) continue;
+      if (end && ts > end) continue;
+      const dur = c.call_duration || {};
+      out.push({
+        id:               c.id,
+        contactNumber:    c.contact_number,
+        justcallNumber:   c.justcall_number,
+        line:             c.justcall_line_name,
+        agentId:          c.agent_id,
+        agentName:        c.agent_name,
+        direction:        c.call_info?.direction || null,
+        type:             c.call_info?.type || null,       // call, voicemail, missed, etc
+        totalSecs:        dur.total_duration ?? 0,          // full call length
+        conversationSecs: dur.conversation_time ?? 0,       // actual talk time
+        handleSecs:       dur.handle_time ?? 0,
+        timestamp:        ts,
+        date:             c.call_date,
+        recordingUrl:     c.call_info?.recording || null,
+      });
+      if (out.length >= limit) return out;
+    }
+    if (!data.next_page_link) break;
+  }
+  return out;
 }
 
 

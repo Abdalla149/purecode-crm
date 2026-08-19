@@ -15,7 +15,7 @@ services:
       - key: GHL_BASE_URL
         value: https://services.leadconnectorhq.com
       - key: JUSTCALL_BASE_URL
-        value: https://api.justcall.io/v1
+        value: https://api.justcall.io/v2
       - key: JWT_EXPIRES_IN
         value: 24h
       - key: FRONTEND_URL
