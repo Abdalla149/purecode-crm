@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { requireAuth, requireAdmin } from '../middleware/auth.js';
 import ghl from '../services/ghl.js';
+import justcall from '../services/justcall.js';
 import { getActiveAgents } from './feed.js';
 
 const router = Router();
@@ -143,6 +144,54 @@ router.get('/conversion', requireAdmin, async (req, res) => {
   } catch (err) {
     console.error('[STATS/CONVERSION]', err.message);
     res.status(500).json({ error: 'Could not load conversion data' });
+  }
+});
+
+// GET /api/stats/performance?range=12h|3d|1w|1m — admin only
+// Per-agent calling performance from JustCall over the selected window.
+router.get('/performance', requireAdmin, async (req, res) => {
+  try {
+    const range = req.query.range || '1w';
+    const SPANS = { '12h': 12*3600e3, '3d': 3*86400e3, '1w': 7*86400e3, '1m': 30*86400e3 };
+    const span = SPANS[range] || SPANS['1w'];
+    const cutoff = Date.now() - span;
+    const startDate = new Date(cutoff).toISOString().slice(0, 10); // bounds pagination
+
+    const calls  = await justcall.getCallLogs({ startDate, limit: 5000 });
+    const recent = calls.filter(c => c.timestamp >= cutoff);
+
+    const byAgent = {};
+    for (const c of recent) {
+      const id = c.agentId || 'unknown';
+      const a = byAgent[id] || (byAgent[id] = {
+        agentId: id, name: c.agentName || 'Unknown',
+        calls: 0, outbound: 0, inbound: 0, connected: 0, talkSecs: 0, totalSecs: 0,
+      });
+      a.calls++;
+      const outbound = (c.direction || '').toLowerCase().startsWith('out');
+      if (outbound) a.outbound++; else a.inbound++;
+      if ((c.conversationSecs || 0) > 0) a.connected++;
+      a.talkSecs  += c.conversationSecs || 0;
+      a.totalSecs += c.totalSecs || 0;
+    }
+
+    const agents = Object.values(byAgent).map(a => ({
+      ...a,
+      connectRate: a.calls ? Math.round((a.connected / a.calls) * 100) : 0,
+      talkMinutes: +(a.talkSecs / 60).toFixed(1),
+      avgCallSecs: a.connected ? Math.round(a.talkSecs / a.connected) : 0,
+    })).sort((x, y) => y.calls - x.calls);
+
+    res.json({
+      range,
+      since: new Date(cutoff).toISOString(),
+      totalCalls: recent.length,
+      totalTalkMinutes: +(recent.reduce((s, c) => s + (c.conversationSecs || 0), 0) / 60).toFixed(1),
+      agents,
+    });
+  } catch (err) {
+    console.error('[STATS/PERFORMANCE]', err.message);
+    res.status(500).json({ error: 'Could not load performance data' });
   }
 });
 

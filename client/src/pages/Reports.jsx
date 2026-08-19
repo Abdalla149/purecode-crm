@@ -13,6 +13,22 @@ function contactedOf(s) {
   return s.called + s.noAnswer + s.voicemail + s.callback +
          s.interested + s.demosBooked + s.closed + s.notQualified;
 }
+function fmtMins(mins) {
+  const m = Math.round(mins || 0);
+  if (m < 60) return `${m}m`;
+  return `${Math.floor(m / 60)}h ${m % 60}m`;
+}
+function mmss(secs) {
+  const s = Math.round(secs || 0);
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+const RANGES = [
+  { id: '12h', label: 'Last 12h' },
+  { id: '3d',  label: 'Last 3 days' },
+  { id: '1w',  label: 'Last week' },
+  { id: '1m',  label: 'Last month' },
+];
 
 function KpiCard({ label, value, accent }) {
   return (
@@ -29,6 +45,26 @@ export default function Reports() {
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]   = useState(null);
+
+  // Calling performance (JustCall) — its own date range
+  const [range, setRange]       = useState('1w');
+  const [perf, setPerf]         = useState(null);
+  const [perfLoading, setPerfLoading] = useState(true);
+  const [perfError, setPerfError]     = useState(null);
+
+  const loadPerf = useCallback(async (r) => {
+    setPerfLoading(true); setPerfError(null);
+    try {
+      const { data } = await api.get(`/stats/performance?range=${r}`);
+      setPerf(data);
+    } catch {
+      setPerfError('Could not load calling performance');
+    } finally {
+      setPerfLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { loadPerf(range); }, [range, loadPerf]);
 
   const load = useCallback(async () => {
     setLoading(true); setError(null);
@@ -62,6 +98,63 @@ export default function Reports() {
         <button className="btn btn-secondary" onClick={load} disabled={loading} style={{ gap: 6 }}>
           <RefreshCw size={14} /> Refresh
         </button>
+      </div>
+
+      {/* ── Calling Performance (JustCall) ── */}
+      <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: 20, marginTop: 8, marginBottom: 18 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
+          <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 15 }}>
+            Calling performance
+            {perf && <span style={{ fontSize: 12, color: 'var(--text3)', marginLeft: 10, fontFamily: "'DM Mono', monospace" }}>{perf.totalCalls} calls · {fmtMins(perf.totalTalkMinutes)} talk</span>}
+          </div>
+          {/* Range selector */}
+          <div style={{ display: 'flex', gap: 4, background: '#0e0f14', border: '1px solid var(--border)', borderRadius: 100, padding: 4 }}>
+            {RANGES.map(r => (
+              <button key={r.id} onClick={() => setRange(r.id)} style={{
+                background: range === r.id ? 'var(--primary)' : 'transparent',
+                color: range === r.id ? '#000' : 'var(--text3)',
+                border: 'none', borderRadius: 100, padding: '6px 14px',
+                fontSize: 12, fontWeight: 700, cursor: 'pointer', transition: 'all .12s',
+              }}>{r.label}</button>
+            ))}
+          </div>
+        </div>
+
+        {perfError && <div style={{ color: '#ff4d6a', fontSize: 13, padding: '8px 0' }}>{perfError}</div>}
+        {perfLoading && !perf && <div style={{ color: 'var(--text3)', fontSize: 13, padding: '8px 0' }}>Loading…</div>}
+
+        {perf && (
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 640 }}>
+              <thead>
+                <tr style={{ color: 'var(--text3)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.04em' }}>
+                  {['Agent', 'Calls', 'Outbound', 'Connected', 'Connect %', 'Talk time', 'Avg call'].map((h, i) => (
+                    <th key={h} style={{ textAlign: i === 0 ? 'left' : 'right', padding: '8px 10px', borderBottom: '1px solid var(--border)' }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {perf.agents.map(a => (
+                  <tr key={a.agentId}>
+                    <td style={{ padding: '10px', fontWeight: 600 }}>{a.name}</td>
+                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: "'DM Mono', monospace" }}>{a.calls}</td>
+                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: "'DM Mono', monospace" }}>{a.outbound}</td>
+                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: "'DM Mono', monospace" }}>{a.connected}</td>
+                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: "'DM Mono', monospace", color: a.connectRate >= 40 ? 'var(--primary)' : 'var(--text)' }}>{a.connectRate}%</td>
+                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: "'DM Mono', monospace", color: 'var(--gold)' }}>{fmtMins(a.talkMinutes)}</td>
+                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: "'DM Mono', monospace" }}>{mmss(a.avgCallSecs)}</td>
+                  </tr>
+                ))}
+                {perf.agents.length === 0 && (
+                  <tr><td colSpan={7} style={{ padding: 16, textAlign: 'center', color: 'var(--text3)' }}>No calls in this window yet.</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <p style={{ fontSize: 11, color: 'var(--text3)', marginTop: 12 }}>
+          Live from JustCall. Talk time = actual conversation time; connect % = calls that reached a person.
+        </p>
       </div>
 
       {error && (
